@@ -47,7 +47,7 @@ function startIntroAnimations(){
 function navigateTo(target) {
         if (target === 'student') window.location.href = 'student-portal.html'; 
         else if (target === 'faculty') window.location.href = 'faculty-portal.html';
-        else if (target === 'results') window.location.href = 'results-portal.html';
+        else if (target === 'results') window.location.href = 'result-portal.html';
         else if (target === 'enroll') window.location.href = 'enrollment.html';
     }
 
