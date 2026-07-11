@@ -22,7 +22,7 @@ async function checkResult(){
 
         const studentResponse =
             await fetch(
-                `https://pinnacle-backend-5i7n.onrender.com/api/student/${studentId}`
+                `https://pinnacle-backend-5i7n.onrender.com/api/students/${studentId}`
             );
 
         const studentData =
