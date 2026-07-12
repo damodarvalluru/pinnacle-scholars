@@ -2312,3 +2312,126 @@ PDF / PRINT OPTIMIZATION
         opacity:0;
     }
 }
+
+
+/* ==========================================================
+   PINNACLE SCHOLARS ACADEMY — MAIN SITE
+   GLOBAL MOBILE CONTENT SCALE-DOWN
+
+   HOW TO USE:
+   Paste this whole block onto the very END of css/all.css.
+   Being last in the file means it wins the cascade over the
+   existing (scattered) mobile rules already in that file —
+   no need to hunt through 2000+ lines, this just finishes
+   the job cleanly. Affects mobile only; desktop is untouched.
+   ========================================================== */
+
+@media(max-width:768px){
+
+    body{ font-size:15px; }
+
+    /* Hero */
+    .hero h1{
+        font-size:clamp(1.5rem,7vw,2.1rem) !important;
+        line-height:1.28 !important;
+    }
+    .hero p{
+        font-size:0.95rem !important;
+        line-height:1.55 !important;
+    }
+
+    /* Section headings */
+    section h2{
+        font-size:1.5rem !important;
+        margin-bottom:14px !important;
+    }
+    #overview p{ font-size:0.92rem !important; }
+
+    /* Cards / grid */
+    .grid{ gap:16px !important; margin-top:24px !important; }
+    .card{
+        padding:22px !important;
+        border-radius:18px !important;
+    }
+    .card h3{ font-size:1.05rem !important; margin-bottom:8px !important; }
+    .card p, .card li{ font-size:0.88rem !important; line-height:1.55 !important; }
+
+    /* Buttons */
+    .cta-btn, .portal-btn{
+        padding:11px 22px !important;
+        font-size:0.85rem !important;
+        border-radius:12px !important;
+    }
+    .theme-toggle-btn{
+        padding:8px 14px !important;
+        font-size:0.8rem !important;
+    }
+
+    /* Prospectus / brochure orb */
+    .hero-brochure-orb{ width:120px !important; height:120px !important; }
+    .hero-brochure-core{ width:92px !important; height:92px !important; }
+    .hero-brochure-core .icon{ font-size:1.5rem !important; margin-bottom:4px !important; }
+    .hero-brochure-core .title{ font-size:0.58rem !important; }
+
+    /* Ticker */
+    .notice-ticker-title{
+        min-width:130px !important;
+        font-size:0.8rem !important;
+        padding:0 12px !important;
+    }
+    .ticker-item{ font-size:0.85rem !important; }
+
+    /* Nav */
+    .nav-links a{
+        font-size:0.8rem !important;
+        padding:8px 14px !important;
+    }
+
+    /* Visitor counter band */
+    .visitor-title{ font-size:1.5rem !important; }
+    .visitor-subtitle{ font-size:0.9rem !important; }
+    .visitor-counter-box{ width:130px !important; height:130px !important; }
+    #visitor-count{ font-size:1.7rem !important; }
+
+    /* Footer */
+    footer{ font-size:0.82rem !important; padding:20px 16px !important; }
+
+    /* Floating scroll-to-top button */
+    .nav-scroll-btn{
+        width:44px !important;
+        height:44px !important;
+        bottom:18px !important;
+        right:18px !important;
+    }
+}
+
+@media(max-width:480px){
+
+    body{ font-size:14px; }
+
+    .hero h1{ font-size:clamp(1.3rem,8vw,1.7rem) !important; }
+    .hero p{ font-size:0.88rem !important; }
+
+    section h2{ font-size:1.3rem !important; }
+
+    .card{ padding:18px !important; }
+    .card h3{ font-size:1rem !important; }
+    .card p, .card li{ font-size:0.84rem !important; }
+
+    .cta-btn, .portal-btn{
+        width:100% !important;
+        justify-content:center !important;
+        padding:11px 16px !important;
+        font-size:0.8rem !important;
+    }
+
+    .hero-brochure-orb{ width:100px !important; height:100px !important; }
+    .hero-brochure-core{ width:78px !important; height:78px !important; }
+    .hero-brochure-core .icon{ font-size:1.25rem !important; }
+    .hero-brochure-core .title{ font-size:0.5rem !important; }
+
+    .visitor-counter-box{ width:110px !important; height:110px !important; }
+    #visitor-count{ font-size:1.4rem !important; }
+
+    footer{ font-size:0.76rem !important; padding:16px 12px !important; }
+}
