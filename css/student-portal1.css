@@ -1,0 +1,398 @@
+/* ==========================================================
+   PINNACLE SCHOLARS ACADEMY — STUDENT PORTAL
+   Premium Institutional Design System · Navy & Gold
+   ========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root{
+    --navy-deep:#050b1a;
+    --navy:#0b1530;
+    --navy-soft:#101d3f;
+    --gold:#e8c165;
+    --gold-bright:#ffdf8e;
+    --gold-dim:rgba(232,193,101,0.35);
+    --azure:#3b82f6;
+    --violet:#7c3aed;
+    --success:#34d399;
+    --ink:#f4f2ea;
+    --ink-dim:rgba(244,242,234,0.72);
+    --glass:rgba(255,255,255,0.055);
+    --glass-strong:rgba(255,255,255,0.09);
+    --border:rgba(232,193,101,0.22);
+    --radius-lg:26px;
+    --radius-md:16px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;}
+
+body{
+    font-family:'Inter',-apple-system,'Segoe UI',sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    color:var(--ink);
+
+    background:
+        radial-gradient(circle at 15% 10%, #0d1a3d 0%, transparent 45%),
+        radial-gradient(circle at 85% 90%, #1a1030 0%, transparent 50%),
+        linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 45%, #0a1128 100%);
+
+    background-size:220% 220%, 220% 220%, 100% 100%;
+    animation:gradientFlow 22s ease infinite;
+}
+
+/* Custom scrollbar for institutional polish */
+::-webkit-scrollbar{width:10px;}
+::-webkit-scrollbar-track{background:var(--navy-deep);}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--gold),#8a6d1f);border-radius:10px;}
+
+/* Aurora glow layer */
+body::before{
+    content:"";
+    position:fixed;
+    inset:-20%;
+    background:
+        radial-gradient(circle at 18% 22%, rgba(59,130,246,0.24), transparent 24%),
+        radial-gradient(circle at 82% 28%, rgba(124,58,237,0.20), transparent 24%),
+        radial-gradient(circle at 50% 85%, rgba(232,193,101,0.14), transparent 26%),
+        radial-gradient(circle at 8% 92%, rgba(236,72,153,0.12), transparent 22%);
+    filter:blur(95px);
+    animation:floatingLights 20s ease-in-out infinite alternate;
+    z-index:-3;
+}
+
+/* Fine gold-flecked grid */
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+        linear-gradient(rgba(232,193,101,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,193,101,0.05) 1px, transparent 1px);
+    background-size:44px 44px;
+    animation:gridMove 30s linear infinite;
+    z-index:-2;
+    mask-image:radial-gradient(circle at 50% 30%, black, transparent 75%);
+}
+
+/* Drifting particle constellation (pure CSS) */
+.portal-particles,
+#portalGeometryCanvas{
+    position:fixed;
+    inset:0;
+    width:100vw;
+    height:100vh;
+    pointer-events:none;
+    z-index:-1;
+}
+
+@keyframes gradientFlow{
+    0%{background-position:0% 50%, 100% 50%, 0% 0%;}
+    50%{background-position:100% 50%, 0% 50%, 0% 0%;}
+    100%{background-position:0% 50%, 100% 50%, 0% 0%;}
+}
+
+@keyframes floatingLights{
+    0%{transform:translate(0,0) scale(1) rotate(0deg);}
+    100%{transform:translate(-50px,-35px) scale(1.15) rotate(10deg);}
+}
+
+@keyframes gridMove{
+    0%{transform:translateY(0);}
+    100%{transform:translateY(44px);}
+}
+
+/* ==========================================================
+   LOGIN
+   ========================================================== */
+
+.login-container{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex:1;
+    padding:24px;
+    animation:fadeIn 0.9s ease;
+}
+
+.portal-card{
+    width:420px;
+    max-width:100%;
+    padding:48px 42px;
+
+    background:linear-gradient(165deg, var(--glass-strong), var(--glass));
+    border:1px solid var(--border);
+    backdrop-filter:blur(26px);
+    -webkit-backdrop-filter:blur(26px);
+    border-radius:var(--radius-lg);
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(255,255,255,0.02) inset,
+        0 0 45px rgba(232,193,101,0.08);
+
+    position:relative;
+    overflow:hidden;
+    animation:cardFloat 0.9s cubic-bezier(0.16,1,0.3,1);
+    transition:transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Rotating gold-edge border sheen */
+.portal-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:var(--radius-lg);
+    padding:1.5px;
+    background:conic-gradient(from 0deg, var(--gold), transparent 25%, transparent 60%, var(--azure), transparent 90%, var(--gold));
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    pointer-events:none;
+    animation:rotateBorder 7s linear infinite;
+    opacity:0.75;
+}
+
+/* Institutional crest emblem above heading */
+.portal-card::after{
+    content:"🎓";
+    display:block;
+    position:relative;
+    text-align:center;
+    font-size:34px;
+    margin:-6px auto 6px;
+    filter:drop-shadow(0 0 12px var(--gold-dim));
+}
+
+@keyframes rotateBorder{
+    to{transform:rotate(360deg);}
+}
+
+.portal-card:hover{
+    transform:translateY(-6px);
+    box-shadow:
+        0 34px 70px rgba(0,0,0,0.6),
+        0 0 55px rgba(232,193,101,0.16);
+}
+
+@keyframes cardFloat{
+    from{opacity:0; transform:translateY(44px) scale(0.94);}
+    to{opacity:1; transform:translateY(0) scale(1);}
+}
+
+h1,h2,h3{
+    font-family:'Playfair Display', serif;
+    color:var(--ink) !important;
+    letter-spacing:0.4px;
+}
+
+h2{
+    font-weight:800;
+    position:relative;
+    padding-bottom:14px;
+}
+
+h2::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:0;
+    transform:translateX(-50%);
+    width:64px;
+    height:3px;
+    border-radius:3px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+hr{
+    border:none;
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--border), transparent);
+    margin:18px 0;
+}
+
+input{
+    width:100%;
+    padding:15px 16px;
+    margin-bottom:18px;
+    border:1px solid rgba(255,255,255,0.09);
+    outline:none;
+    border-radius:14px;
+    background:rgba(255,255,255,0.05);
+    color:var(--ink);
+    font-size:15px;
+    font-family:'Inter',sans-serif;
+    transition:all 0.35s ease;
+}
+
+input::placeholder{color:rgba(244,242,234,0.48);}
+
+input:focus{
+    background:rgba(255,255,255,0.09);
+    border:1px solid var(--gold);
+    box-shadow:0 0 0 4px rgba(232,193,101,0.12), 0 0 24px rgba(232,193,101,0.18);
+}
+
+/* ==========================================================
+   BUTTONS
+   ========================================================== */
+
+.btn{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:14px;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:0.3px;
+    cursor:pointer;
+    color:#0b1530;
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+
+    background:linear-gradient(135deg, var(--gold-bright), var(--gold) 55%, #c99b32);
+    background-size:200% 200%;
+    animation:buttonGradient 6s ease infinite;
+
+    box-shadow:0 12px 28px rgba(232,193,101,0.28);
+    transition:all 0.35s ease;
+}
+
+/* Shimmer sweep on hover */
+.btn::before{
+    content:"";
+    position:absolute;
+    top:0; left:-120%;
+    width:60%;
+    height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent);
+    transform:skewX(-20deg);
+    transition:left 0.6s ease;
+    z-index:1;
+}
+
+.btn:hover::before{left:130%;}
+
+.btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 18px 38px rgba(232,193,101,0.38), 0 0 28px rgba(59,130,246,0.20);
+}
+
+.btn:active{transform:translateY(-1px) scale(0.99);}
+
+@keyframes buttonGradient{
+    0%{background-position:0% 50%;}
+    100%{background-position:100% 50%;}
+}
+
+/* Home / secondary buttons injected inline in HTML */
+button{transition:all 0.3s ease; font-family:'Inter',sans-serif;}
+button:hover{transform:translateY(-2px);}
+
+/* ==========================================================
+   DASHBOARD
+   ========================================================== */
+
+.dashboard{
+    display:none;
+    padding:56px 8%;
+    animation:fadeIn 0.9s ease;
+}
+
+.dashboard h1{
+    font-size:2.1rem;
+    margin-bottom:6px;
+}
+
+.dashboard h1 span{
+    color:var(--gold);
+    text-shadow:0 0 18px rgba(232,193,101,0.35);
+}
+
+.info-card{
+    background:linear-gradient(160deg, var(--glass-strong), var(--glass));
+    border:1px solid var(--border);
+    border-left:4px solid var(--gold);
+    backdrop-filter:blur(22px);
+    border-radius:var(--radius-md);
+    padding:30px 32px;
+    margin-bottom:26px;
+    box-shadow:0 16px 40px rgba(0,0,0,0.35);
+    transition:all 0.4s ease;
+    animation:fadeUp 0.7s ease;
+    position:relative;
+    overflow:hidden;
+}
+
+.info-card::before{
+    content:"";
+    position:absolute;
+    top:-40%; right:-15%;
+    width:220px; height:220px;
+    background:radial-gradient(circle, rgba(232,193,101,0.12), transparent 70%);
+    pointer-events:none;
+}
+
+.info-card:hover{
+    transform:translateY(-5px);
+    border-left-color:var(--azure);
+    box-shadow:0 24px 55px rgba(0,0,0,0.45), 0 0 30px rgba(59,130,246,0.16);
+}
+
+.info-card h3{
+    font-size:1.15rem;
+    margin-bottom:14px;
+}
+
+.info-card p{
+    color:var(--ink-dim);
+    margin:11px 0;
+    font-size:0.98rem;
+    line-height:1.55;
+}
+
+.info-card strong{color:var(--ink);}
+
+.fee-status{
+    display:inline-block;
+    color:var(--gold-bright);
+    font-weight:800;
+    letter-spacing:0.4px;
+    text-shadow:0 0 12px rgba(250,204,21,0.4);
+    padding:4px 12px;
+    border-radius:20px;
+    background:rgba(232,193,101,0.10);
+    border:1px solid var(--gold-dim);
+}
+
+a{
+    color:#a9c8ff !important;
+    text-decoration:none;
+    transition:all 0.3s ease;
+}
+
+a:hover{
+    color:var(--gold) !important;
+    text-shadow:0 0 12px rgba(232,193,101,0.55);
+}
+
+@keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+@keyframes fadeUp{from{opacity:0; transform:translateY(24px);} to{opacity:1; transform:translateY(0);}}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+@media(max-width:768px){
+    .portal-card{width:100%; padding:34px 26px;}
+    .dashboard{padding:34px 5%;}
+    .dashboard h1{font-size:1.6rem;}
+    .info-card{padding:24px;}
+}
