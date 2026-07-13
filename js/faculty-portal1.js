@@ -293,7 +293,7 @@ if(!result.success){
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                ctx.fillStyle = 'rgba(56, 189, 248, 0.23)'; // Matches cyan primary variables
+                ctx.fillStyle = 'rgba(139, 92, 246, 0.24)'; // Matches Faculty Portal violet identity
                 ctx.fill();
             }
 
@@ -323,7 +323,7 @@ if(!result.success){
                     
                     if (distance < maxDistance * maxDistance) {
                         let opacity = 1 - (distance / (maxDistance * maxDistance));
-                        ctx.strokeStyle = `rgba(56, 189, 248, ${opacity * 0.12})`;
+                        ctx.strokeStyle = `rgba(34, 211, 174, ${opacity * 0.14})`;
                         ctx.lineWidth = 1;
                         ctx.beginPath();
                         ctx.moveTo(particlesArray[a].x, particlesArray[a].y);

@@ -1253,20 +1253,121 @@ submitBtn.innerHTML =
 
 function downloadBrochure() {
     const watermark = "PINNACLE ACADEMY";
+
+    // Inject the brochure-viewer chrome stylesheet once. This governs only
+    // the on-screen "vault" presentation (backdrop, container frame, control
+    // bar, buttons) — never the printable document body, which is extracted
+    // separately via #printableProspectusArea.innerHTML in printProspectus()
+    // and must stay light/print-safe, so its own inline styles are untouched.
+    if (!document.getElementById('prospectusChromeStyle')) {
+        const chromeStyle = document.createElement('style');
+        chromeStyle.id = 'prospectusChromeStyle';
+        chromeStyle.textContent = `
+            /* ==========================================================
+               ACADEMIC BROCHURE VIEWER — "The Vault" Design System
+               Bronze / Ice-blue / Charcoal — distinct from Faculty
+               (violet/teal/amber), Student (rose/cyan/lime) and Fees
+               Payment (navy/gold/azure/emerald).
+               ========================================================== */
+            @keyframes prospectusBackdropIn{
+                from{ opacity:0; }
+                to{ opacity:1; }
+            }
+            @keyframes prospectusAuroraDrift{
+                0%{ transform:translate(0,0) scale(1); }
+                100%{ transform:translate(-40px,26px) scale(1.12); }
+            }
+            @keyframes prospectusUnfold{
+                0%{ opacity:0; transform:translateY(28px) scale(0.94) rotateX(-4deg); }
+                100%{ opacity:1; transform:translateY(0) scale(1) rotateX(0deg); }
+            }
+            @keyframes prospectusBorderSpin{ to{ transform:rotate(360deg); } }
+            @keyframes prospectusChromeShimmer{
+                0%{ left:-60%; }
+                100%{ left:130%; }
+            }
+            #prospectusViewModal.vault-open{
+                animation: prospectusBackdropIn 0.35s ease forwards;
+            }
+            #prospectusViewModal.vault-open::before{
+                content:"";
+                position:absolute;
+                inset:-10%;
+                background:
+                    radial-gradient(circle at 20% 20%, rgba(201,151,91,0.20), transparent 30%),
+                    radial-gradient(circle at 82% 78%, rgba(147,197,253,0.16), transparent 30%);
+                filter:blur(90px);
+                animation: prospectusAuroraDrift 16s ease-in-out infinite alternate;
+                pointer-events:none;
+            }
+            .vault-frame{
+                position:relative;
+                border-radius:16px;
+                padding:3px;
+                background:conic-gradient(from 120deg, #c9975b, transparent 30%, transparent 62%, #93c5fd, transparent 92%, #c9975b);
+                animation: prospectusUnfold 0.55s cubic-bezier(0.16,1,0.3,1) forwards, prospectusBorderSpin 10s linear infinite;
+                box-shadow: 0 30px 70px rgba(0,0,0,0.55), 0 0 50px rgba(201,151,91,0.18);
+                width:100%;
+                max-width:906px;
+                max-height:calc(100vh - 30px);
+            }
+            .vault-toolbar{
+                position:relative;
+                overflow:hidden;
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                margin-bottom:20px;
+                background:linear-gradient(135deg, rgba(201,151,91,0.14), rgba(147,197,253,0.10));
+                padding:10px 15px;
+                border-radius:8px;
+                border:1px solid rgba(201,151,91,0.35);
+                font-size:0.9rem;
+                font-family:'Segoe UI', Arial, sans-serif;
+            }
+            .vault-toolbar::after{
+                content:"";
+                position:absolute;
+                top:0; left:-60%;
+                width:35%; height:100%;
+                background:linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
+                transform:skewX(-20deg);
+                animation: prospectusChromeShimmer 5s ease-in-out infinite;
+            }
+            .vault-btn{
+                border:none;
+                padding:7px 13px;
+                border-radius:6px;
+                font-weight:bold;
+                cursor:pointer;
+                transition:transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+            }
+            .vault-btn:hover{ transform:translateY(-2px); filter:brightness(1.08); }
+            .vault-btn-home{ background:#2a1c10; color:#f3d9b8; }
+            .vault-btn-home:hover{ box-shadow:0 8px 18px rgba(201,151,91,0.35); }
+            .vault-btn-print{ background:linear-gradient(135deg, #c9975b, #8a5f2f); color:#1a1206; }
+            .vault-btn-print:hover{ box-shadow:0 8px 18px rgba(201,151,91,0.4); }
+            .vault-btn-close{ background:rgba(147,197,253,0.16); color:#dbeafe; border:1px solid rgba(147,197,253,0.35); }
+            .vault-btn-close:hover{ box-shadow:0 8px 18px rgba(147,197,253,0.28); }
+        `;
+        document.head.appendChild(chromeStyle);
+    }
+
     // Render a clean interface modal layout container
     let modal = document.getElementById('prospectusViewModal');
     if (!modal) {
         modal = document.createElement('div');
 
         modal.id = 'prospectusViewModal';
+        modal.classList.add('vault-open');
 
         modal.style.position = 'fixed';
         modal.style.top = '0';
         modal.style.left = '0';
         modal.style.width = '100%';
         modal.style.height = '100%';
-        modal.style.backgroundColor = 'rgba(15, 23, 42, 0.85)';
-        modal.style.backdropFilter = 'blur(4px)';
+        modal.style.backgroundColor = 'rgba(10, 9, 6, 0.86)';
+        modal.style.backdropFilter = 'blur(6px)';
         modal.style.zIndex = '10000';
         modal.style.display = 'flex';
         modal.style.justifyContent = 'center';
@@ -1279,6 +1380,7 @@ function downloadBrochure() {
 
     modal.innerHTML = `
 
+    <div class="vault-frame">
     <div id="printableProspectusArea"
         style="
             position: relative;
@@ -1286,11 +1388,10 @@ function downloadBrochure() {
             color: #2d3748;
             width: 100%;
             max-width: 900px;
-            max-height: calc(100vh - 30px);
+            max-height: calc(100vh - 36px);
             overflow-y: auto;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);
+            border-radius: 13px;
             font-family: 'Segoe UI', Arial, sans-serif;
             line-height: 1.5;
             box-sizing: border-box;
@@ -1318,20 +1419,9 @@ function downloadBrochure() {
         </div>
 
         <!-- Top Interactive System Control Utility Bar -->
-        <div class="no-print"
-            style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 20px;
-                background: #ebf8ff;
-                padding: 10px 15px;
-                border-radius: 6px;
-                border: 1px solid #bee3f8;
-                font-size: 0.9rem;
-            ">
+        <div class="no-print vault-toolbar">
 
-            <span style="color: #2b6cb0; font-weight: 600;">
+            <span style="color: #8a5f2f; font-weight: 600;">
                 📄 Prospectus Core Viewer Active
             </span>
 
@@ -1339,15 +1429,7 @@ function downloadBrochure() {
 
                 <button
                     onclick="window.location.href='index.html'"
-                    style="
-                        background: #1a365d;
-                        color: white;
-                        border: none;
-                        padding: 6px 12px;
-                        border-radius: 4px;
-                        font-weight: bold;
-                        cursor: pointer;
-                    ">
+                    class="vault-btn vault-btn-home">
 
                     🏠 Home
 
@@ -1355,15 +1437,7 @@ function downloadBrochure() {
 
                 <button
                     onclick="printProspectus()"
-                    style="
-                        background: #3182ce;
-                        color: white;
-                        border: none;
-                        padding: 6px 12px;
-                        border-radius: 4px;
-                        font-weight: bold;
-                        cursor: pointer;
-                    ">
+                    class="vault-btn vault-btn-print">
 
                     🖨️ Print / Download Syllabus
 
@@ -1371,15 +1445,7 @@ function downloadBrochure() {
 
                 <button
                     onclick="document.getElementById('prospectusViewModal').style.display='none'"
-                    style="
-                        background: #e5e7eb;
-                        color: #4b5563;
-                        border: none;
-                        padding: 6px 12px;
-                        border-radius: 4px;
-                        font-weight: bold;
-                        cursor: pointer;
-                    ">
+                    class="vault-btn vault-btn-close">
 
                     Close
 
@@ -1657,9 +1723,11 @@ function downloadBrochure() {
         </div>
 
     </div>
+    </div>
 
     `;
 
+    modal.classList.add('vault-open');
     modal.style.display = 'flex';
 }
 

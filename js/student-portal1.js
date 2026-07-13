@@ -190,7 +190,7 @@
                 this.rotationVelocity = (Math.random() * 0.01) - 0.005;
                 
                 // Translucent premium neon lighting accents
-                this.gradientColorPrimary = Math.random() > 0.5 ? 'rgba(59, 130, 246, 0.22)' : 'rgba(168, 85, 247, 0.18)';
+                this.gradientColorPrimary = Math.random() > 0.5 ? 'rgba(251, 113, 133, 0.22)' : 'rgba(34, 211, 238, 0.18)';
                 this.gradientColorSecondary = 'rgba(15, 23, 42, 0.4)';
             }
 
@@ -287,4 +287,16 @@
 
         buildRenderEnvironment();
         coreEngineLoop();
+    })();
+
+    // Removes the decorative briefcase-arrival overlay from paint once its
+    // fade-out animation finishes. Purely cosmetic cleanup — does not touch
+    // login/dashboard logic, and the overlay never blocks clicks either way
+    // since it is pointer-events:none for its entire lifetime.
+    (function cleanupBriefcaseIntro() {
+        const intro = document.getElementById('briefcaseIntro');
+        if (!intro) return;
+        intro.addEventListener('animationend', (e) => {
+            if (e.target === intro) intro.classList.add('briefcase-intro--done');
+        });
     })();

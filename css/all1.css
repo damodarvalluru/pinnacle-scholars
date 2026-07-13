@@ -1,39 +1,58 @@
         :root{
-            --primary:#071427;
-            --secondary:#2563eb;
-            --accent:#f59e0b;
+            /* ==========================================================
+               MAIN SITE — DARK MODE
+               "Ink & Signal" system · Deep ink / Indigo / Fuchsia
+               Replaces the previous navy+blue+amber combination and is
+               distinct from Faculty (violet/teal/amber), Student
+               (rose/cyan/lime) and Fees Payment (navy/gold/azure/emerald).
+               Names kept unchanged — every rule below already consumes
+               these custom properties via var(), so the new palette
+               cascades through headings, card accents, glows, etc.
+               ========================================================== */
+            --primary:#07060f;
+            --secondary:#6366f1;   /* indigo — was #2563eb blue */
+            --accent:#e879f9;      /* fuchsia — was #f59e0b amber */
             --light:#f8fafc;
-            --dark:#0f172a;
-            --grad-start:#020617;
-            --grad-end:#111827;
-            --text-main:#f8fafc;
-            --card-bg:rgba(15,23,42,0.72);
+            --dark:#0b0a16;
+            --grad-start:#050308;
+            --grad-end:#14101f;
+            --text-main:#f5f3fb;
+            --card-bg:rgba(20,16,31,0.72);
             --glass:rgba(255,255,255,0.08);
-            --border:rgba(255,255,255,0.12);
-            --shadow:0 10px 35px rgba(0,0,0,.35);
+            --border:rgba(230,121,249,0.16);
+            --shadow:0 10px 35px rgba(0,0,0,.4);
             --watermark-color:rgba(255,255,255,.03);
+            --glow-a: rgba(99,102,241,0.30);   /* indigo glow */
+            --glow-b: rgba(232,121,249,0.26);  /* fuchsia glow */
         }
         
         [data-theme="light"]{
-    --primary:#f5f7fa;
-    --secondary:#1e40af;
-    --accent:#b45309;
-    --grad-start:#eef2f7;
-    --grad-end:#dbe4f0;
-    --text-main:#0f172a;
+    /* ==========================================================
+       MAIN SITE — LIGHT MODE
+       Same Ink & Signal family, tuned for a bright surface:
+       deeper indigo/fuchsia for AA contrast on white/lavender.
+       ========================================================== */
+    --primary:#f8f7fc;
+    --secondary:#4338ca;   /* deep indigo — was #1e40af blue */
+    --accent:#a21caf;      /* deep fuchsia — was #b45309 brown-amber */
+    --grad-start:#f3f0fb;
+    --grad-end:#e5e0f5;
+    --text-main:#181022;
     --card-bg:#ffffff;
     --glass:rgba(255,255,255,.85);
-    --border:rgba(15,23,42,.10);
-    --shadow:0 10px 30px rgba(15,23,42,.08);
-    --watermark-color:rgba(15,23,42,.03);
+    --border:rgba(24,16,34,.10);
+    --shadow:0 10px 30px rgba(24,16,34,.08);
+    --watermark-color:rgba(24,16,34,.03);
+    --glow-a: rgba(67,56,202,0.14);
+    --glow-b: rgba(162,28,175,0.12);
 }
 
 [data-theme="light"] body{
     background:
-        radial-gradient(circle at top left, #c7d2fe 0%, transparent 30%),
-        radial-gradient(circle at bottom right, #bae6fd 0%, transparent 28%),
-        linear-gradient(180deg, #eef2f7 0%, #e2e8f0 60%, #cbd5e1 100%);
-    color:#0f172a;
+        radial-gradient(circle at top left, #ddd6fe 0%, transparent 30%),
+        radial-gradient(circle at bottom right, #fbcfe8 0%, transparent 28%),
+        linear-gradient(180deg, #f3f0fb 0%, #ebe6f7 60%, #ded6f0 100%);
+    color:#181022;
 }
 
         
@@ -47,11 +66,31 @@
         body{
             font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
             color:var(--text-main);
-            background:radial-gradient(circle at top left,#1e3a8a 0%,transparent 28%),radial-gradient(circle at bottom right,#7c3aed 0%,transparent 24%),linear-gradient(135deg,var(--grad-start),var(--grad-end));
+            background:radial-gradient(circle at top left,#3730a3 0%,transparent 28%),radial-gradient(circle at bottom right,#a21caf 0%,transparent 24%),linear-gradient(135deg,var(--grad-start),var(--grad-end));
             background-attachment:fixed;
             overflow-x:hidden;
             position:relative;
             line-height:1.7;
+        }
+
+        /* ==========================================================
+           PREMIUM GLOW SYSTEM (new, additive)
+           Subtle shine/glow used only on headings and card accents —
+           deliberately NOT applied to nav-links or .cta-btn/.portal-btn,
+           whose own CSS is left as-is per the brief.
+           ========================================================== */
+        @keyframes sectionGlowPulse{
+            0%,100%{ filter:drop-shadow(0 0 10px var(--glow-a)); }
+            50%{ filter:drop-shadow(0 0 22px var(--glow-b)); }
+        }
+        @keyframes cardTopSheen{
+            0%{ background-position:0% 50%; }
+            100%{ background-position:200% 50%; }
+        }
+        section h2{ animation: sectionGlowPulse 5s ease-in-out infinite; }
+        .card::before{ background-size:200% 100%; animation:cardTopSheen 6s linear infinite; }
+        @media (prefers-reduced-motion: reduce){
+            section h2, .card::before{ animation:none; }
         }
         
              [data-theme="light"] header{
