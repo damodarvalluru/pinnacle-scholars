@@ -1,0 +1,275 @@
+/* ==========================================================
+   CONTACT FORM — "EMBER & STEEL"
+   A brand-new premium palette exclusive to this section: warm
+   tangerine-ember as the primary identity color against a warm
+   graphite-charcoal backdrop, with cool neutral steel-gray as
+   the secondary tone and ivory text for warmth.
+   Distinct from every other section/portal already in the
+   project: Main (indigo/fuchsia), Fees Payment
+   (navy/gold/azure/emerald), Enrollment (rose-gold/amethyst),
+   Faculty (violet/teal/amber), Student Portal (rose/cyan/lime),
+   Result Portal (burgundy/platinum/gold-foil) and the Brochure
+   Vault (bronze/ice-blue/charcoal).
+   ========================================================== */
+:root{
+    --cf-bg-deep:#07070a;
+    --cf-bg-mid:#151109;
+    --cf-ink:#f6efe4;
+    --cf-ink-dim:#c8bfae;
+    --cf-primary:#fb7a3c;      /* ember tangerine */
+    --cf-primary-deep:#d9531c;
+    --cf-primary-bright:#ffab70;
+    --cf-secondary:#94a3b8;    /* cool steel-gray, neutral counterweight */
+    --cf-glass:rgba(255,255,255,0.05);
+    --cf-glass-strong:rgba(255,255,255,0.09);
+    --cf-border:rgba(251,122,60,0.28);
+    --cf-success:#4ade80;
+    --cf-error:#f87171;
+}
+
+.contact-section{
+    position:relative;
+    padding:70px 20px;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(251,122,60,0.14), transparent 42%),
+        radial-gradient(circle at 85% 80%, rgba(148,163,184,0.10), transparent 45%),
+        linear-gradient(160deg, var(--cf-bg-deep) 0%, var(--cf-bg-mid) 60%, #0b0906 100%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+/* Drifting ember orbs behind the card — purely decorative, GPU-cheap */
+.contact-orb{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(60px);
+    pointer-events:none;
+    opacity:0.55;
+    animation:cfOrbDrift 14s ease-in-out infinite alternate;
+}
+.contact-orb.orb-1{
+    width:280px;height:280px;
+    background:radial-gradient(circle, rgba(251,122,60,0.35), transparent 70%);
+    top:-60px; left:-60px;
+}
+.contact-orb.orb-2{
+    width:320px;height:320px;
+    background:radial-gradient(circle, rgba(148,163,184,0.22), transparent 70%);
+    bottom:-90px; right:-70px;
+    animation-delay:2s;
+}
+
+@keyframes cfOrbDrift{
+    0%{ transform:translate(0,0) scale(1); }
+    100%{ transform:translate(30px,-24px) scale(1.12); }
+}
+
+.contact-heading{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    margin-bottom:38px;
+    max-width:640px;
+}
+
+.contact-heading h2{
+    font-size:2.1rem;
+    font-weight:800;
+    color:var(--cf-ink);
+    letter-spacing:0.5px;
+    margin-bottom:10px;
+    text-shadow:0 0 24px rgba(251,122,60,0.25);
+}
+
+.contact-heading p{
+    color:var(--cf-ink-dim);
+    font-size:1rem;
+    line-height:1.6;
+}
+
+.contact-card{
+    position:relative;
+    z-index:2;
+    width:100%;
+    max-width:720px;
+    background:linear-gradient(160deg, var(--cf-glass-strong), var(--cf-glass));
+    border:1px solid var(--cf-border);
+    border-radius:26px;
+    padding:40px 36px;
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+    box-shadow:
+        0 30px 70px rgba(0,0,0,0.5),
+        0 0 60px rgba(251,122,60,0.08);
+    animation:cfCardRise 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+
+@keyframes cfCardRise{
+    from{ opacity:0; transform:translateY(34px) scale(0.97); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+}
+
+/* Thin rotating ember/steel frame, consistent with the "premium seal"
+   language used on other portals in this project, but in this
+   section's own unique hues. */
+.contact-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:26px;
+    padding:1.5px;
+    background:conic-gradient(from 120deg, var(--cf-primary), transparent 30%, transparent 62%, var(--cf-secondary), transparent 92%, var(--cf-primary));
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    animation:cfFrameSpin 11s linear infinite;
+    opacity:0.55;
+    pointer-events:none;
+}
+
+@keyframes cfFrameSpin{ to{ transform:rotate(360deg); } }
+
+.contact-form-grid{
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px 18px;
+}
+
+.contact-field{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+}
+
+.contact-field.full-width{
+    grid-column:1 / -1;
+}
+
+.contact-field label{
+    font-size:0.76rem;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--cf-ink-dim);
+    margin-bottom:8px;
+}
+
+.contact-field input,
+.contact-field textarea{
+    width:100%;
+    padding:14px 16px;
+    background:rgba(255,255,255,0.045);
+    border:1px solid rgba(255,255,255,0.09);
+    border-radius:14px;
+    color:var(--cf-ink);
+    font-family:inherit;
+    font-size:0.95rem;
+    outline:none;
+    transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+
+.contact-field textarea{
+    resize:vertical;
+    min-height:110px;
+    line-height:1.6;
+}
+
+.contact-field input::placeholder,
+.contact-field textarea::placeholder{
+    color:rgba(198,191,178,0.45);
+}
+
+.contact-field input:focus,
+.contact-field textarea:focus{
+    background:rgba(255,255,255,0.075);
+    border-color:var(--cf-primary);
+    box-shadow:0 0 0 4px rgba(251,122,60,0.14), 0 0 24px rgba(251,122,60,0.16);
+}
+
+/* Gentle glow ring that appears on focus, for a premium tactile feel */
+.contact-field input:focus + .cf-focus-glow,
+.contact-field textarea:focus + .cf-focus-glow{
+    opacity:1;
+}
+
+.contact-submit-btn{
+    grid-column:1 / -1;
+    margin-top:8px;
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:50px;
+    background:linear-gradient(135deg, var(--cf-primary-bright), var(--cf-primary) 55%, var(--cf-primary-deep));
+    color:#1a0a02;
+    font-weight:800;
+    font-size:1rem;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    cursor:pointer;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 14px 30px rgba(251,122,60,0.35);
+    transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+
+.contact-submit-btn::before{
+    content:"";
+    position:absolute;
+    top:0; left:-120%;
+    width:55%; height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent);
+    transform:skewX(-20deg);
+    transition:left 0.6s ease;
+}
+
+.contact-submit-btn:hover::before{ left:130%; }
+
+.contact-submit-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 20px 42px rgba(251,122,60,0.48);
+}
+
+.contact-submit-btn:disabled{
+    opacity:0.65;
+    cursor:not-allowed;
+    transform:none;
+}
+
+.contact-status{
+    grid-column:1 / -1;
+    text-align:center;
+    font-size:0.9rem;
+    font-weight:600;
+    padding:12px 16px;
+    border-radius:12px;
+    display:none;
+}
+
+.contact-status.show{ display:block; animation:cfFadeIn 0.4s ease; }
+
+.contact-status.success{
+    background:rgba(74,222,128,0.12);
+    border:1px solid rgba(74,222,128,0.35);
+    color:var(--cf-success);
+}
+
+.contact-status.error{
+    background:rgba(248,113,113,0.12);
+    border:1px solid rgba(248,113,113,0.35);
+    color:var(--cf-error);
+}
+
+@keyframes cfFadeIn{
+    from{ opacity:0; transform:translateY(-6px); }
+    to{ opacity:1; transform:translateY(0); }
+}
+
+@media(max-width:640px){
+    .contact-form-grid{ grid-template-columns:1fr; }
+    .contact-card{ padding:30px 22px; }
+    .contact-heading h2{ font-size:1.6rem; }
+}

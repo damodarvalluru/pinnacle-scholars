@@ -24,7 +24,6 @@ body{
     font-family:'Inter', -apple-system, 'Segoe UI', sans-serif;
     min-height:100vh;
     overflow-x:hidden;
-    overflow-y:auto;
     color:var(--ink);
 
     background:
@@ -81,8 +80,13 @@ body::after{
 }
 
 /* WATER DROPLETS — kept, restyled as falling gold-lit motes */
+/* FIX: was position:absolute — these animate from translateY(-100px) to
+   translateY(110vh), and absolutely-positioned elements that extend past
+   the viewport DO enlarge the document's scrollable area, which is what
+   produced the unwanted scrollbar. position:fixed keeps the identical
+   animation/visuals but excludes them from that calculation. */
 .droplet{
-    position:absolute;
+    position:fixed;
     width:12px;
     height:12px;
     background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.55), rgba(232,193,101,0.12) 70%);
