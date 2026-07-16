@@ -6,12 +6,14 @@
     <title>Pinnacle Scholars Academy | Noida</title>
     
     <link rel="stylesheet" href="css/all1.css"> 
+    <link rel="stylesheet" href="css/contact-form.css">
     
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <script src="js/scripts1.js"></script>
+    <script src="js/contact-form.js" defer></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -348,6 +350,56 @@ PPT OPENING DOORS
     <button class="portal-btn" style="background: var(--secondary);" onclick="navigateTo('faculty')">Faculty Login</button>
     <button class="portal-btn" style="background: var(--accent);" onclick="navigateTo('results')">Check Results</button>
 </div>
+</section>
+
+<section class="contact-section">
+    <div class="contact-orb orb-1"></div>
+    <div class="contact-orb orb-2"></div>
+
+    <div class="contact-heading">
+        <h2>Get In Touch</h2>
+        <p>Have a question about admissions, fees, or results? Send us a message and our team will reach out to you shortly.</p>
+    </div>
+
+    <div class="contact-card">
+        <form id="contactForm" class="contact-form-grid" novalidate>
+
+            <div class="contact-field">
+                <label for="contactName">Name</label>
+                <input type="text" id="contactName" name="name" placeholder="Your full name" autocomplete="name" required>
+            </div>
+
+            <div class="contact-field">
+                <label for="contactMobile">Mobile Number</label>
+                <input type="tel" id="contactMobile" name="mobile" placeholder="e.g. 9876543210" autocomplete="tel" required>
+            </div>
+
+            <div class="contact-field">
+                <label for="contactEmail">Email</label>
+                <input type="email" id="contactEmail" name="email" placeholder="you@example.com" autocomplete="email" required>
+            </div>
+
+            <div class="contact-field">
+                <label for="contactLocation">Location</label>
+                <input type="text" id="contactLocation" name="location" placeholder="City / Town" autocomplete="address-level2" required>
+            </div>
+
+            <div class="contact-field">
+                <label for="contactDob">Date of Birth</label>
+                <input type="date" id="contactDob" name="dob" required>
+            </div>
+
+            <div class="contact-field full-width">
+                <label for="contactMessage">Message</label>
+                <textarea id="contactMessage" name="message" placeholder="Tell us how we can help..." required></textarea>
+            </div>
+
+            <button type="submit" id="contactSubmitBtn" class="contact-submit-btn">Send Message</button>
+
+            <div id="contactStatus" class="contact-status"></div>
+
+        </form>
+    </div>
 </section>
 
 <section class="visitor-section">
