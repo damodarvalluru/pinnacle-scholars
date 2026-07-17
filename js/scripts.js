@@ -1347,8 +1347,14 @@ function downloadBrochure() {
             .vault-btn-home:hover{ box-shadow:0 8px 18px rgba(201,151,91,0.35); }
             .vault-btn-print{ background:linear-gradient(135deg, #c9975b, #8a5f2f); color:#1a1206; }
             .vault-btn-print:hover{ box-shadow:0 8px 18px rgba(201,151,91,0.4); }
-            .vault-btn-close{ background:rgba(147,197,253,0.16); color:#dbeafe; border:1px solid rgba(147,197,253,0.35); }
-            .vault-btn-close:hover{ box-shadow:0 8px 18px rgba(147,197,253,0.28); }
+            /* VISIBILITY FIX: was rgba(147,197,253,0.16) bg + #dbeafe text —
+               a near-transparent pale-blue tint on a dark toolbar, easy to
+               miss. Now a solid, unmistakable crimson "close" affordance
+               with strong white text, matching standard close-button
+               convention. Only this button's color changed — toolbar,
+               frame, other buttons, and all animations are untouched. */
+            .vault-btn-close{ background:linear-gradient(135deg, #ef4444, #b91c1c); color:#ffffff; border:1px solid rgba(255,255,255,0.25); box-shadow:0 4px 14px rgba(239,68,68,0.35); }
+            .vault-btn-close:hover{ box-shadow:0 8px 20px rgba(239,68,68,0.55); }
         `;
         document.head.appendChild(chromeStyle);
     }
