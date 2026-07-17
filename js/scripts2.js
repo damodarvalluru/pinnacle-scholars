@@ -1701,7 +1701,7 @@ function downloadBrochure() {
             <hr><hr><br>
             <div class="website-qr" style="width:140px;text-align:center;margin:auto;padding:10px;border:2px solid #1a365d;border-radius:10px;">
             <strong>Scan to Visit Pinnacle Scholars Academy</strong><br>
-    <img src="images/website-qr.png" alt="Website QR"  style="
+    <img src="images/pic.jpeg" alt="Website QR"  style="
         width:120px;
         height:120px;
         object-fit:contain;
