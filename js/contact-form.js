@@ -14,6 +14,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const statusBox = document.getElementById("contactStatus");
     const submitBtn = document.getElementById("contactSubmitBtn");
+    const dobInput = document.getElementById("contactDob");
+
+    // Restrict the Date of Birth field to today and earlier — a date of
+    // birth can never be in the future. Setting `max` dynamically (rather
+    // than hardcoding it in the HTML) keeps it correct on every visit.
+    if (dobInput) {
+        dobInput.max = new Date().toISOString().split("T")[0];
+    }
 
     form.addEventListener("submit", async function (e) {
         e.preventDefault();
@@ -39,6 +47,16 @@ document.addEventListener("DOMContentLoaded", function () {
         const mobilePattern = /^[0-9+\-\s]{7,15}$/;
         if (!mobilePattern.test(mobile)) {
             showContactStatus("Please enter a valid mobile number.", "error");
+            return;
+        }
+
+        // Future-date guard — mirrors the same check enforced on the
+        // backend (js/enrollment.js uses this exact pattern already).
+        const selectedDob = new Date(dob);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (selectedDob > today) {
+            showContactStatus("Date of Birth cannot be a future date.", "error");
             return;
         }
 

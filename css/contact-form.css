@@ -40,14 +40,18 @@
     align-items:center;
 }
 
-/* Drifting ember orbs behind the card — purely decorative, GPU-cheap */
+/* Drifting ember orbs behind the card — purely decorative, GPU-cheap.
+   Uses its own unique multi-directional "ember" motion (drift + gentle
+   rotation + opacity flicker) so it reads distinctly from the simple
+   float/rotate loops used elsewhere on the site (floatBlocks, floatOrb,
+   floatBox, pulse, rotateBg). */
 .contact-orb{
     position:absolute;
     border-radius:50%;
     filter:blur(60px);
     pointer-events:none;
     opacity:0.55;
-    animation:cfOrbDrift 14s ease-in-out infinite alternate;
+    animation:cfEmberDrift 15s ease-in-out infinite;
 }
 .contact-orb.orb-1{
     width:280px;height:280px;
@@ -58,12 +62,25 @@
     width:320px;height:320px;
     background:radial-gradient(circle, rgba(148,163,184,0.22), transparent 70%);
     bottom:-90px; right:-70px;
-    animation-delay:2s;
+    animation-name:cfEmberDriftReverse;
+    animation-duration:19s;
+    animation-delay:2.5s;
 }
 
-@keyframes cfOrbDrift{
-    0%{ transform:translate(0,0) scale(1); }
-    100%{ transform:translate(30px,-24px) scale(1.12); }
+@keyframes cfEmberDrift{
+    0%{   transform:translate(0,0) rotate(0deg) scale(1);           opacity:0.5;  }
+    22%{  transform:translate(26px,-20px) rotate(9deg) scale(1.08); opacity:0.7;  }
+    48%{  transform:translate(10px,-42px) rotate(-4deg) scale(0.94);opacity:0.45; }
+    74%{  transform:translate(-22px,-16px) rotate(6deg) scale(1.05);opacity:0.65; }
+    100%{ transform:translate(0,0) rotate(0deg) scale(1);           opacity:0.5;  }
+}
+
+@keyframes cfEmberDriftReverse{
+    0%{   transform:translate(0,0) rotate(0deg) scale(1);            opacity:0.45; }
+    30%{  transform:translate(-24px,18px) rotate(-8deg) scale(1.1);  opacity:0.68; }
+    60%{  transform:translate(-8px,36px) rotate(5deg) scale(0.92);   opacity:0.4;  }
+    82%{  transform:translate(20px,14px) rotate(-6deg) scale(1.06);  opacity:0.6;  }
+    100%{ transform:translate(0,0) rotate(0deg) scale(1);            opacity:0.45; }
 }
 
 .contact-heading{
@@ -272,4 +289,46 @@
     .contact-form-grid{ grid-template-columns:1fr; }
     .contact-card{ padding:30px 22px; }
     .contact-heading h2{ font-size:1.6rem; }
+}
+
+/* ==========================================================
+   LIGHT MODE — CONTACT SECTION
+   Previously this section kept its always-dark "Ember & Steel"
+   background even when the site's Light Mode toggle was on,
+   so it looked out of place next to every other section that
+   does switch. Re-pointing the same --cf-* custom properties
+   (scoped to this section only) means every rule above that
+   already consumes them via var(...) — card, inputs, text,
+   labels, borders — updates automatically, with colors chosen
+   for clear AA contrast on a bright surface.
+   ========================================================== */
+[data-theme="light"] .contact-section{
+    --cf-bg-deep:#fff7f0;
+    --cf-bg-mid:#ffe8d1;
+    --cf-ink:#2a1608;
+    --cf-ink-dim:#6b5643;
+    --cf-glass:rgba(255,255,255,0.55);
+    --cf-glass-strong:rgba(255,255,255,0.85);
+    --cf-border:rgba(217,83,28,0.25);
+    background:
+        radial-gradient(circle at 15% 20%, rgba(251,122,60,0.12), transparent 42%),
+        radial-gradient(circle at 85% 80%, rgba(148,163,184,0.12), transparent 45%),
+        linear-gradient(160deg, #fff7f0 0%, #ffe8d1 60%, #fff3e6 100%);
+}
+
+[data-theme="light"] .contact-field input,
+[data-theme="light"] .contact-field textarea{
+    background:rgba(255,255,255,0.75);
+    border:1px solid rgba(217,83,28,0.22);
+    color:#2a1608;
+}
+
+[data-theme="light"] .contact-field input::placeholder,
+[data-theme="light"] .contact-field textarea::placeholder{
+    color:rgba(107,86,67,0.55);
+}
+
+[data-theme="light"] .contact-field input:focus,
+[data-theme="light"] .contact-field textarea:focus{
+    background:rgba(255,255,255,0.95);
 }
