@@ -1,0 +1,375 @@
+/* ==========================================================
+   PINNACLE SCHOLARS ACADEMY — FEE PAYMENT PORTAL
+   Premium Institutional Design System · Navy & Gold
+   ========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root{
+    --navy-deep:#050b1a;
+    --navy:#0b1530;
+    --gold:#e8c165;
+    --gold-bright:#ffdf8e;
+    --azure:#3b82f6;
+    --emerald:#22c55e;
+    --ink:#f4f2ea;
+    --ink-dim:#c7cede;
+    --glass:rgba(255,255,255,0.06);
+    --border:rgba(232,193,101,0.22);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    font-family:'Inter', -apple-system, 'Segoe UI', sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+    color:var(--ink);
+
+    background:
+        radial-gradient(circle at 20% 15%, #101d3f 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, #1a1030 0%, transparent 50%),
+        linear-gradient(150deg, var(--navy-deep) 0%, var(--navy) 55%, #0a1128 100%);
+    background-size:220% 220%, 220% 220%, 100% 100%;
+    animation:gradientFlow 22s ease infinite;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+    padding:24px;
+}
+
+@keyframes gradientFlow{
+    0%{background-position:0% 50%, 100% 50%, 0% 0%;}
+    50%{background-position:100% 50%, 0% 50%, 0% 0%;}
+    100%{background-position:0% 50%, 100% 50%, 0% 0%;}
+}
+
+/* Aurora glow */
+body::before{
+    content:"";
+    position:fixed;
+    inset:-20%;
+    background:
+        radial-gradient(circle at 18% 22%, rgba(59,130,246,0.22), transparent 24%),
+        radial-gradient(circle at 82% 30%, rgba(232,193,101,0.16), transparent 24%),
+        radial-gradient(circle at 50% 88%, rgba(124,58,237,0.16), transparent 26%);
+    filter:blur(95px);
+    animation:floatingLights 20s ease-in-out infinite alternate;
+    z-index:0;
+}
+
+@keyframes floatingLights{
+    0%{transform:translate(0,0) scale(1);}
+    100%{transform:translate(-45px,-30px) scale(1.14);}
+}
+
+/* Fine gold grid */
+body > .payment-card ~ *{ }
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+        linear-gradient(rgba(232,193,101,0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,193,101,0.045) 1px, transparent 1px);
+    background-size:44px 44px;
+    z-index:0;
+    mask-image:radial-gradient(circle at 50% 40%, black, transparent 75%);
+}
+
+/* WATER DROPLETS — kept, restyled as falling gold-lit motes */
+/* FIX: was position:absolute — these animate from translateY(-100px) to
+   translateY(110vh), and absolutely-positioned elements that extend past
+   the viewport DO enlarge the document's scrollable area, which is what
+   produced the unwanted scrollbar. position:fixed keeps the identical
+   animation/visuals but excludes them from that calculation. */
+.droplet{
+    position:fixed;
+    width:12px;
+    height:12px;
+    background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.55), rgba(232,193,101,0.12) 70%);
+    border-radius:50%;
+    backdrop-filter:blur(3px);
+    box-shadow:0 0 10px rgba(232,193,101,0.25);
+    animation:drop linear infinite;
+    z-index:1;
+}
+
+@keyframes drop{
+    from{ transform:translateY(-100px); opacity:0; }
+    10%{ opacity:0.9; }
+    to{ transform:translateY(110vh); opacity:0.15; }
+}
+
+html{ scrollbar-width:none; -ms-overflow-style:none; } /* Firefox / IE-Edge */
+::-webkit-scrollbar{width:0; height:0; background:transparent;} /* Chrome/Safari/Opera — scrollbar fully hidden */
+
+/* ==========================================================
+   CARD
+   ========================================================== */
+
+.payment-card{
+    width:460px;
+    max-width:95%;
+
+    background:linear-gradient(165deg, rgba(255,255,255,0.09), rgba(255,255,255,0.045));
+    border:1px solid var(--border);
+    backdrop-filter:blur(24px);
+    -webkit-backdrop-filter:blur(24px);
+    border-radius:26px;
+    padding:40px 38px;
+
+    color:var(--ink);
+    position:relative;
+    z-index:10;
+    overflow:hidden;
+
+    box-shadow:
+        0 26px 60px rgba(0,0,0,0.5),
+        0 0 45px rgba(232,193,101,0.10);
+
+    animation:cardFloat 0.85s cubic-bezier(0.16,1,0.3,1);
+}
+
+.payment-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:26px;
+    padding:1.5px;
+    background:conic-gradient(from 0deg, var(--gold), transparent 25%, transparent 60%, var(--azure), transparent 90%, var(--gold));
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    animation:rotateBorder 7s linear infinite;
+    opacity:0.75;
+    pointer-events:none;
+}
+
+@keyframes rotateBorder{to{transform:rotate(360deg);}}
+
+@keyframes cardFloat{
+    from{ opacity:0; transform:translateY(40px) scale(0.95); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+}
+
+.payment-card h1{
+    text-align:center;
+    margin-bottom:8px;
+    font-family:'Playfair Display', serif;
+    font-size:1.85rem;
+    font-weight:800;
+    color:var(--gold);
+    text-shadow:0 0 22px rgba(232,193,101,0.3);
+    position:relative;
+    padding-bottom:16px;
+}
+
+.payment-card h1::after{
+    content:"💳  Secure Institutional Gateway";
+    display:block;
+    font-family:'Inter',sans-serif;
+    font-size:0.7rem;
+    font-weight:600;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    text-shadow:none;
+    margin-top:10px;
+}
+
+.input-box{ margin-bottom:20px; }
+
+.input-box label{
+    display:block;
+    margin-bottom:9px;
+    color:var(--ink-dim);
+    font-size:0.8rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+.input-box input{
+    width:100%;
+    padding:15px 16px;
+    border:1px solid rgba(255,255,255,0.09);
+    outline:none;
+    border-radius:14px;
+    background:rgba(255,255,255,0.05);
+    color:var(--ink);
+    font-size:1rem;
+    font-family:'Inter',sans-serif;
+    transition:all 0.3s ease;
+}
+
+.input-box input:focus{
+    background:rgba(255,255,255,0.09);
+    border-color:var(--gold);
+    box-shadow:0 0 0 4px rgba(232,193,101,0.12), 0 0 22px rgba(232,193,101,0.16);
+}
+
+.fetch-btn,
+.pay-btn{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:14px;
+    font-size:1rem;
+    font-weight:800;
+    letter-spacing:0.3px;
+    cursor:pointer;
+    position:relative;
+    overflow:hidden;
+    transition:all 0.3s ease;
+}
+
+.fetch-btn::before,
+.pay-btn::before{
+    content:"";
+    position:absolute;
+    top:0; left:-120%;
+    width:55%; height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
+    transform:skewX(-20deg);
+    transition:left 0.6s ease;
+}
+
+.fetch-btn:hover::before,
+.pay-btn:hover::before{ left:130%; }
+
+.fetch-btn{
+    background:linear-gradient(135deg, #93c5fd, var(--azure) 55%, #1d4ed8);
+    color:#08122b;
+    box-shadow:0 12px 26px rgba(59,130,246,0.28);
+}
+
+.fetch-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 18px 38px rgba(59,130,246,0.4);
+}
+
+.pay-btn{
+    background:linear-gradient(135deg, #86efac, var(--emerald) 55%, #15803d);
+    color:#052e16;
+    margin-top:16px;
+    box-shadow:0 12px 26px rgba(34,197,94,0.28);
+}
+
+.pay-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 18px 38px rgba(34,197,94,0.4);
+}
+
+.student-details{
+    margin-top:26px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.07);
+    padding:22px 20px;
+    border-radius:18px;
+    display:none;
+    animation:fadeUp 0.6s ease;
+}
+
+@keyframes fadeUp{
+    from{ opacity:0; transform:translateY(14px); }
+    to{ opacity:1; transform:translateY(0); }
+}
+
+.student-details p{
+    margin-bottom:13px;
+    color:var(--ink-dim);
+    font-size:0.95rem;
+    display:flex;
+    justify-content:space-between;
+    border-bottom:1px dashed rgba(255,255,255,0.08);
+    padding-bottom:8px;
+}
+
+.student-details p strong{
+    color:var(--ink);
+    font-weight:600;
+}
+
+.student-details p span{
+    color:var(--gold-bright);
+    font-weight:700;
+}
+
+.payment-options{ margin-top:22px; }
+
+.payment-options label{
+    display:block;
+    margin-bottom:8px;
+    color:var(--ink-dim);
+    font-size:0.8rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+select{
+    width:100%;
+    padding:13px 14px;
+    border:1px solid rgba(255,255,255,0.09);
+    border-radius:12px;
+    margin-top:6px;
+    background:rgba(255,255,255,0.05);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:0.95rem;
+    transition:all 0.3s ease;
+}
+
+select:focus{
+    outline:none;
+    border-color:var(--gold);
+    box-shadow:0 0 0 4px rgba(232,193,101,0.12);
+}
+
+.partial-box{ margin-top:16px; display:none; }
+
+.partial-box input{
+    width:100%;
+    padding:13px 14px;
+    border:1px solid rgba(255,255,255,0.09);
+    border-radius:12px;
+    background:rgba(255,255,255,0.05);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    transition:all 0.3s ease;
+}
+
+.partial-box input:focus{
+    outline:none;
+    border-color:var(--gold);
+    box-shadow:0 0 0 4px rgba(232,193,101,0.12);
+}
+
+.home-link{
+    text-align:center;
+    margin-top:24px;
+}
+
+.home-link a{
+    color:var(--gold);
+    text-decoration:none;
+    font-size:0.9rem;
+    font-weight:600;
+    transition:all 0.3s ease;
+}
+
+.home-link a:hover{
+    color:var(--gold-bright);
+    text-shadow:0 0 12px rgba(232,193,101,0.5);
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+@media(max-width:600px){
+    .payment-card{ padding:30px 24px; }
+    .payment-card h1{ font-size:1.5rem; }
+}
