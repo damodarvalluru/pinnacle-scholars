@@ -28,6 +28,19 @@
         loginArea.style.display = "block";
 
     }
+
+    // FIX: the registration form is long, so by the time a faculty
+    // member generates their ID they're usually scrolled well down
+    // the page. Swapping the tall register panel for the much
+    // shorter login panel shrinks the page height, but the browser
+    // never scrolls back up on its own — the login form renders
+    // correctly, it's just off-screen above the current scroll
+    // position, which is exactly why clicking "Continue To Login"
+    // (or "Login here" / "Register here") can look like it does
+    // nothing at all. Scrolling the freshly-shown panel into view
+    // fixes that for every view-switch path, not just the modal.
+    const shownArea = showRegister ? registerArea : loginArea;
+    shownArea.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 async  function processFacultyEnrollment() {
