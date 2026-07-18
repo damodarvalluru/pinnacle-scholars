@@ -353,6 +353,13 @@ select:focus{
     margin-top:24px;
 }
 
+/* Forgot ID uses the exact same link styling as "Back To Home" below,
+   just with a tighter top margin since it sits directly under the
+   Student ID field instead of at the bottom of the card. */
+.home-link.forgot-id-link{
+    margin-top:8px;
+}
+
 .home-link a{
     color:var(--gold);
     text-decoration:none;
