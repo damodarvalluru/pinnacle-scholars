@@ -1417,40 +1417,6 @@
     text-align:center;
 }
 
-/* ==========================================================
-   LIGHT MODE — VISITOR SECTION
-   Previously this section used the exact same teal/blue banner
-   in both Dark and Light Mode, so toggling the theme did nothing
-   here — inconsistent with every other section on the page.
-   Light Mode now gets its own vivid gradient that matches this
-   site's established Light Mode accent palette (deep indigo /
-   deep fuchsia, see the [data-theme="light"] :root block above),
-   with the counter number and subtitle re-tinted for strong,
-   clearly readable contrast against it.
-   ========================================================== */
-[data-theme="light"] .visitor-section{
-    background:
-        linear-gradient(
-            135deg,
-            #4338ca,
-            #a21caf,
-            #4338ca
-        );
-}
-
-[data-theme="light"] .visitor-overlay{
-    opacity:.35;
-}
-
-[data-theme="light"] .visitor-subtitle{
-    color:#f3e8ff;
-}
-
-[data-theme="light"] #visitor-count{
-    color:#fde68a;
-    text-shadow:0 0 15px rgba(253,230,138,.55);
-}
-
 .visitor-overlay{
     position:absolute;
     width:180%;
