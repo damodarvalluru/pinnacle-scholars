@@ -73,10 +73,29 @@ document.addEventListener("DOMContentLoaded", function () {
             const data = await response.json();
 
             if (data.success) {
+                // The DB write always succeeds first on the backend, so the
+                // enquiry itself is never lost even if a notification channel
+                // is down — keep the visitor-facing message reassuring.
                 showContactStatus(
                     "✅ Thank you! Your message has been sent successfully.",
                     "success"
                 );
+
+                // Still log the real per-channel result to the console so
+                // whoever is testing the form (you) can see instantly if
+                // email/WhatsApp delivery failed, without needing to check
+                // server logs. For a full live self-check any time, visit:
+                // https://pinnacle-backend-5i7n.onrender.com/api/contact/diagnostics
+                if (!data.emailSent || !data.whatsappSent) {
+                    console.warn("Contact form: one or more notification channels failed.", {
+                        emailSent: data.emailSent,
+                        emailError: data.emailError,
+                        whatsappSent: data.whatsappSent,
+                        whatsappError: data.whatsappError,
+                        diagnostics: `${CONTACT_API_BASE}/api/contact/diagnostics`
+                    });
+                }
+
                 form.reset();
             } else {
                 showContactStatus(
