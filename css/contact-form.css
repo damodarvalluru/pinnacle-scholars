@@ -151,9 +151,14 @@
     to{ opacity:1; transform:translateY(0) scale(1); }
 }
 
-/* Thin rotating ember/steel frame, consistent with the "premium seal"
-   language used on other portals in this project, but in this
-   section's own unique hues. */
+/* Living "aura" frame around the card. Previously this was a
+   conic-gradient ring spun with rotate(360deg) — the exact same
+   "rotating square" trick used elsewhere on the site (e.g. the
+   faculty success modal's border), just recolored. This version
+   uses a completely different technique: the ring never rotates
+   at all. Instead its opacity, brightness and hue breathe in and
+   out together, so the frame feels alive without ever spinning —
+   genuinely distinct motion, not just a different palette. */
 .contact-card::before{
     content:"";
     position:absolute;
@@ -164,12 +169,15 @@
     -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite:xor;
     mask-composite:exclude;
-    animation:cfFrameSpin 11s linear infinite;
-    opacity:0.55;
+    opacity:0.4;
     pointer-events:none;
+    animation:cfAuraBreathe 4.5s ease-in-out infinite;
 }
 
-@keyframes cfFrameSpin{ to{ transform:rotate(360deg); } }
+@keyframes cfAuraBreathe{
+    0%,100%{ opacity:0.32; filter:hue-rotate(0deg) brightness(1);    }
+    50%{     opacity:0.8;  filter:hue-rotate(28deg) brightness(1.3); }
+}
 
 .contact-form-grid{
     position:relative;

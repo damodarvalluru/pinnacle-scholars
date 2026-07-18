@@ -14,7 +14,7 @@
     <div class="portal-container" id="authContainer">
         
         <!-- Registration Form Layout Panel Block -->
-        <div class="portal-card" id="registerArea">
+        <div class="portal-card" id="registerArea" style="display:none;">
             <h2 style="color: var(--text-main); text-align: center; margin-top:0; margin-bottom: 24px; font-weight: 800; letter-spacing: -0.5px;">Faculty Enrollment</h2>
             
             <input type="text" id="facName" placeholder="Full Name">
@@ -45,16 +45,16 @@
         </div>
 
         <!-- Verification Secure Sign-in Layout Panel Block -->
-        <div class="portal-card" id="loginArea" style="display:none;">
+        <div class="portal-card" id="loginArea">
             <h2 style="color: var(--text-main); text-align: center; margin-top:0; margin-bottom: 24px; font-weight: 800;">Faculty Secure Login</h2>
             <input type="text" id="loginFacId" placeholder="Faculty ID (PS-FAC-2026-XXXX)">
             <label for="loginFacDob">Date of Birth</label>
             <input type="date" id="loginFacDob">
-            <button   id="facultyLoginBtn" class="btn" onclick="checkFacultyLogin()">Login to Dashboard</button><br>
+            <button   id="facultyLoginBtn" class="btn" onclick="checkFacultyLogin()">Login to Dashboard</button>
             <p style="text-align:center; margin-top: 12px; margin-bottom:0;"><a href="#" onclick="forgotFacultyId(); return false;">Forgot ID?</a></p>
             <p style="text-align:center; margin-top: 20px; margin-bottom:0;"><a href="#" onclick="toggleAuthViews(true)">New Faculty? Register/Enroll here</a></p>
-            <p align="center"><a href="index.html" class="home-btn-link"><button type="button" class="btn btn-secondary">
-                <span>🏠</span> Home</button>
+            <p align="center"><a href="index.html" class="home-btn-link">
+                <span>🏠</span> Home
             </a></p>
         </div>
     </div>
