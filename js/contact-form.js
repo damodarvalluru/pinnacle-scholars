@@ -14,6 +14,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const statusBox = document.getElementById("contactStatus");
     const submitBtn = document.getElementById("contactSubmitBtn");
+    const dobInput = document.getElementById("contactDob");
+    const today = new Date();
+    const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
+        .toISOString().slice(0, 10);
+    dobInput.max = localToday;
 
     form.addEventListener("submit", async function (e) {
         e.preventDefault();
@@ -39,6 +44,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const mobilePattern = /^[0-9+\-\s]{7,15}$/;
         if (!mobilePattern.test(mobile)) {
             showContactStatus("Please enter a valid mobile number.", "error");
+            return;
+        }
+
+        if (dob > localToday) {
+            showContactStatus("Date of birth cannot be in the future.", "error");
             return;
         }
 

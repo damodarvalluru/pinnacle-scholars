@@ -8,11 +8,15 @@
     loginBtn.innerText = "Authenticating...";
     if (!id || !dob) {
         alert("Please enter ID and DOB");
+        loginBtn.disabled = false;
+        loginBtn.innerText = "Login to Dashboard";
         return;
     }
     try {
         if(!/^PS-[A-Z]\/?[A-Z]?-\d{4}-\d+$/.test(id)){
             alert("Invalid Enrollment ID format.");
+            loginBtn.disabled = false;
+            loginBtn.innerText = "Login to Dashboard";
         return;
 }
         const response = await fetch(
@@ -29,6 +33,8 @@
         const dbDob =  String(user.dob).split("T")[0];
         if (dbDob !== dob) {
             alert("Invalid DOB");
+            loginBtn.disabled = false;
+            loginBtn.innerText = "Login to Dashboard";
             return;
         }
         activeSessionUserObject = user;

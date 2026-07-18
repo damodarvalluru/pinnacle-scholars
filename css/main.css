@@ -1533,6 +1533,32 @@
     letter-spacing:1px;
 }
 
+[data-theme="light"] .visitor-section{
+    background:linear-gradient(135deg, #e8f6ff 0%, #edf1ff 50%, #fff3e8 100%);
+}
+
+[data-theme="light"] .visitor-overlay{
+    opacity:.78;
+    background:radial-gradient(circle, rgba(37,99,235,.16), transparent 65%);
+}
+
+[data-theme="light"] .visitor-title{
+    color:#172554;
+    text-shadow:0 2px 14px rgba(37,99,235,.14);
+}
+
+[data-theme="light"] .visitor-subtitle{ color:#334155; }
+
+[data-theme="light"] .visitor-counter-box{
+    background:linear-gradient(145deg, rgba(255,255,255,.86), rgba(232,240,255,.72));
+    border-color:rgba(37,99,235,.25);
+    box-shadow:0 14px 32px rgba(37,99,235,.16);
+}
+
+[data-theme="light"] .pulse-ring{ border-color:rgba(37,99,235,.34); }
+[data-theme="light"] #visitor-count{ color:#1d4ed8; text-shadow:0 0 12px rgba(37,99,235,.23); }
+[data-theme="light"] .visitor-counter-box span{ color:#1e293b; }
+
 @keyframes fadeUp{
     from{
         opacity:0;

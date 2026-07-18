@@ -5,6 +5,7 @@
     <title>Faculty Portal | Pinnacle Scholars</title>
     <link rel="stylesheet" href="css/faculty-portal.css">
     <script src="js/faculty-portal.js"></script>
+    <script src="js/id-recovery.js"></script>
 </head>
 <body>
 
@@ -50,6 +51,7 @@
             <label for="loginFacDob">Date of Birth</label>
             <input type="date" id="loginFacDob">
             <button   id="facultyLoginBtn" class="btn" onclick="checkFacultyLogin()">Login to Dashboard</button>
+            <p style="text-align:center; margin:14px 0 0;"><button type="button" onclick="recoverFacultyId()" style="background:none;border:0;color:var(--accent-secondary);font-weight:700;cursor:pointer;text-decoration:underline;">Forgot ID?</button></p>
             <p style="text-align:center; margin-top: 20px; margin-bottom:0;"><a href="#" onclick="toggleAuthViews(true)">New Faculty? Register/Enroll here</a></p>
             <p align="center"><a href="index.html" class="home-btn-link">
                 <span>🏠</span> Home

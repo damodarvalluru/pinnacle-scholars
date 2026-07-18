@@ -6,6 +6,7 @@
     <title>Check Results | Pinnacle Scholars</title>
     <link rel="stylesheet" href="css/result-portal.css">
     <script src="js/result-portal.js"></script>
+    <script src="js/id-recovery.js"></script>
 </head>
 <body>
 
@@ -41,8 +42,8 @@
             
             <!-- Field 1: Roll ID Alignment -->
             <div class="form-group">
-                <label for="roll-input">Roll Number</label>
-                <input type="text" id="roll-input" placeholder="Enter Roll No." autocomplete="off">
+                <label for="roll-input">Student ID</label>
+                <input type="text" id="roll-input" placeholder="Enter Student ID" autocomplete="off">
             </div>
             
             <!-- Field 2: Validation Coordinates -->
@@ -53,6 +54,7 @@
             
             <!-- Interactive Trigger Execution -->
             <button class="btn" onclick="checkResult()">Search Result</button>
+            <button type="button" onclick="recoverStudentId()" style="margin-top:14px;background:none;border:0;color:var(--accent-color);font-weight:700;cursor:pointer;text-decoration:underline;">Forgot ID?</button>
             
             <br>
             <a href="index.html" class="back">← Return Home</a>

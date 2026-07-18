@@ -260,7 +260,9 @@ async function initiateGeneralPayment() {
         // STEP 4
         if (!student) {
 
-            alert("Student Not Found");
+            if (confirm("Student not found. Would you like to recover your ID using your date of birth?")) {
+                recoverStudentId();
+            }
             return;
         }
 
@@ -643,6 +645,18 @@ async function startTest(domain) {
             box-shadow:0 10px 25px rgba(0,217,255,0.3);
         }
 
+        .jee-forgot-id{
+            display:block;
+            margin:12px auto 16px;
+            padding:0;
+            border:0;
+            background:transparent;
+            color:#9ecbff;
+            font-weight:700;
+            text-decoration:underline;
+            cursor:pointer;
+        }
+
         .statusText{
             display:none;
             color:#9ae6ff;
@@ -708,6 +722,10 @@ ${examConfig[domain].instructions}
                 type="date"
                 id="jeeStudentDob"
             >
+
+            <button type="button" class="jee-forgot-id" onclick="recoverStudentId()">
+                Forgot ID?
+            </button>
 
             <button class="jee-btn" id="verifyEligibilityBtn">
                 Verify Eligibility & Start Test
