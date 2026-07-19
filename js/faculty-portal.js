@@ -419,3 +419,4 @@ function closeFacultyModal(){
 
     toggleAuthViews(false);
 }
+   
