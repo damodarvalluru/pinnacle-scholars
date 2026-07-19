@@ -399,6 +399,17 @@ if(!result.success){
     // (login-first, registration reached via a secondary link).
     document.getElementById("loginArea").style.display = "block";
     document.getElementById("registerArea").style.display = "none";
+
+    // FIX: cap Date of Birth and Enrollment Date pickers at today so
+    // a faculty member can't pick a future date while enrolling. The
+    // backend is the real source of truth for this (it rejects
+    // future dates outright), but restricting the picker itself
+    // means the invalid option is never even shown.
+    const todayISO = new Date().toISOString().split("T")[0];
+    const facDobInput = document.getElementById("facDob");
+    const facEnrollDateInput = document.getElementById("facEnrollDate");
+    if (facDobInput) facDobInput.max = todayISO;
+    if (facEnrollDateInput) facEnrollDateInput.max = todayISO;
     };
     function showFacultyModal(facultyId){
 
