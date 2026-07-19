@@ -168,6 +168,39 @@ btn.disabled = false;
             document.getElementById('dispFacDomain')
             .innerText = verifiedUser.domain;
 
+            // Compute tenure (whole years served) from enrollment_date.
+            // dispFacTenure existed in the markup already but was never
+            // being written to, so faculty only ever saw the blank
+            // "Years in Academy System File" label with no number.
+            const enrollDate =
+            new Date(verifiedUser.enrollment_date);
+
+            let tenureYears = 0;
+
+            if (!isNaN(enrollDate.getTime())) {
+
+                const today = new Date();
+
+                tenureYears =
+                today.getFullYear() - enrollDate.getFullYear();
+
+                const hasHadAnniversaryThisYear =
+                (today.getMonth() > enrollDate.getMonth()) ||
+                (today.getMonth() === enrollDate.getMonth() &&
+                 today.getDate() >= enrollDate.getDate());
+
+                if (!hasHadAnniversaryThisYear) {
+                    tenureYears -= 1;
+                }
+
+                if (tenureYears < 0) {
+                    tenureYears = 0;
+                }
+            }
+
+            document.getElementById('dispFacTenure')
+            .innerText = tenureYears;
+
             document.getElementById('dispFacQuals')
             .innerText =
             verifiedUser.qualifications || 'N/A';
