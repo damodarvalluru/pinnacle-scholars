@@ -298,6 +298,13 @@ const updatedRemaining =
     verificationResult.remainingFees;
                     if (verificationResult.success) {
 
+    if (window.downloadPaymentReceipt) downloadPaymentReceipt({
+        name: studentDetails.name, studentId: studentDetails.student_id,
+        domain: currentStudent.domain, paymentId: paymentReceipt.razorpay_payment_id,
+        orderId: paymentReceipt.razorpay_order_id, amount: amountInINR,
+        paymentType: studentDetails.payment_type
+    });
+
     currentStudent.feesPaid =
         Number(verificationResult.paidFees);
 

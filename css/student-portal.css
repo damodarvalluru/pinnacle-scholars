@@ -236,7 +236,7 @@ body::after{
     position:relative;
     overflow:hidden;
     /* Emerges from the briefcase landing point once the case has "opened" */
-    animation: cardEmerge 0.85s cubic-bezier(0.16,1,0.3,1) both 1.55s;
+    animation: cardEmerge 0.55s cubic-bezier(0.16,1,0.3,1) both;
     transition:transform 0.4s ease, box-shadow 0.4s ease;
 }
 

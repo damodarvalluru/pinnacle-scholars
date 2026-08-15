@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <title>Faculty Portal | Pinnacle Scholars</title>
     <link rel="stylesheet" href="css/faculty-portal.css">
+    <link rel="stylesheet" href="css/session-manager.css">
     <script src="js/forgot-id.js" defer></script>
     <script src="js/faculty-portal.js"></script>
+    <script src="js/session-manager.js"></script>
 </head>
 <body>
 
@@ -45,18 +47,18 @@
         </div>
 
         <!-- Verification Secure Sign-in Layout Panel Block -->
-        <div class="portal-card" id="loginArea">
+        <form class="portal-card" id="loginArea" onsubmit="checkFacultyLogin(); return false;">
             <h2 style="color: var(--text-main); text-align: center; margin-top:0; margin-bottom: 24px; font-weight: 800;">Faculty Secure Login</h2>
             <input type="text" id="loginFacId" placeholder="Faculty ID (PS-FAC-2026-XXXX)">
             <label for="loginFacDob">Date of Birth</label>
             <input type="date" id="loginFacDob">
-            <button   id="facultyLoginBtn" class="btn" onclick="checkFacultyLogin()">Login to Dashboard</button>
+            <button id="facultyLoginBtn" class="btn" type="submit">Login to Dashboard</button>
             <p style="text-align:center; margin-top: 12px; margin-bottom:0;"><a href="#" onclick="forgotFacultyId(); return false;">Forgot ID?</a></p>
             <p style="text-align:center; margin-top: 20px; margin-bottom:0;"><a href="#" onclick="toggleAuthViews(true)">New Faculty? Register/Enroll here</a></p>
             <p align="center"><a href="index.html" class="home-btn-link">
                 <span>🏠</span> Home
             </a></p>
-        </div>
+        </form>
     </div>
 
     <!-- Active Live Dashboard Screen Container Context -->
@@ -93,7 +95,7 @@
             <button  id="publishTestBtn" class="btn" style="background: var(--accent-success); color: #0f172a; width: auto; display: inline-block; padding: 12px 30px;" onclick="publishJeeTestFormat()">Publish Live JEE Format Test</button>
         </div>
 
-        <button onclick="location.reload()" class="btn btn-secondary" style="width: auto; padding: 10px 24px;">Logout Session</button>
+        <button onclick="PinnacleSession.logout(); location.reload()" class="btn btn-secondary" style="width: auto; padding: 10px 24px;">Logout Session</button>
     </div>
 <footer>
     <p style="text-align: center;color:white;font-size:x-large;">&copy; 2026 Pinnacle Scholars Academy, Noida. Empowering Futures.</p>

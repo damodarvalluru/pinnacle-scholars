@@ -131,6 +131,7 @@ btn.innerText = "Verifying Credentials...";
             "https://pinnacle-backend-5i7n.onrender.com/api/faculty/login",
             {
                 method: "POST",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -152,6 +153,7 @@ btn.disabled = false;
 
             activeFacultySessionObject =
             verifiedUser;
+            if (window.PinnacleSession) PinnacleSession.start('faculty');
 
             document.getElementById('authContainer')
             .style.display='none';
@@ -410,6 +412,12 @@ if(!result.success){
     const facEnrollDateInput = document.getElementById("facEnrollDate");
     if (facDobInput) facDobInput.max = todayISO;
     if (facEnrollDateInput) facEnrollDateInput.max = todayISO;
+
+    document.querySelectorAll('#registerArea input').forEach((field) => {
+        field.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') { event.preventDefault(); processFacultyEnrollment(); }
+        });
+    });
     };
     function showFacultyModal(facultyId){
 

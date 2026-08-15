@@ -190,4 +190,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     dobInput.max = today;
 
+    // The original card is intentionally not structurally rearranged into a
+    // form. This listener supplies the same submit action for Enter.
+    document.querySelectorAll('#enrollFormContainer input, #enrollFormContainer select').forEach((field) => {
+        field.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') { event.preventDefault(); enrollStudent(); }
+        });
+    });
+
 });

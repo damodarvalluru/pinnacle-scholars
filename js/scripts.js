@@ -13,35 +13,15 @@ function toggleTheme() {
 
 
 function startIntroAnimations(){
-
-    const intro =
-        document.getElementById("welcomeIntro");
-
-    if(!intro) return;
-
-    setTimeout(() => {
-        intro.classList.add("drop-bars");
-    }, 500);
-
-    setTimeout(() => {
-        intro.classList.add("open-bars");
-    }, 2500);
-
-    setTimeout(() => {
-        intro.classList.add("show-ppt");
-    }, 4000);
-
-    setTimeout(() => {
-        intro.classList.add("open-ppt");
-    }, 5500);
-
-    setTimeout(() => {
-
-        intro.classList.add("hide");
-
-        document.body.style.overflow = "auto";
-
-    }, 8000);
+    const intro = document.getElementById("welcomeIntro");
+    const title = intro && intro.querySelector('.intro-title');
+    if (!intro || !title) return;
+    const label = title.textContent.trim().toUpperCase();
+    title.innerHTML = Array.from(label).map((letter, index) =>
+        `<span class="intro-letter" style="animation-delay:${index * 0.055}s">${letter === ' ' ? '&nbsp;' : letter}</span>`
+    ).join('');
+    intro.classList.add('premium-letter-intro');
+    setTimeout(() => { intro.classList.add('hide'); document.body.style.overflow = 'auto'; }, 3200);
 }
 
 function navigateTo(target) {
@@ -1923,8 +1903,6 @@ const timer = setInterval(()=>{count += increment;
 // Welcome Intro Animation Sequence
 window.addEventListener("load", () => {
 
-    setTimeout(() => {
-        startIntroAnimations();
-    }, 4500);
+    startIntroAnimations();
 
 });

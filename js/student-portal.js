@@ -8,15 +8,20 @@
     loginBtn.innerText = "Authenticating...";
     if (!id || !dob) {
         alert("Please enter ID and DOB");
+        loginBtn.disabled = false;
+        loginBtn.innerText = "Login to Dashboard";
         return;
     }
     try {
         if(!/^PS-[A-Z]\/?[A-Z]?-\d{4}-\d+$/.test(id)){
             alert("Invalid Enrollment ID format.");
+            loginBtn.disabled = false;
+            loginBtn.innerText = "Login to Dashboard";
         return;
 }
         const response = await fetch(
-            `https://pinnacle-backend-5i7n.onrender.com/api/students/${id}`
+            'https://pinnacle-backend-5i7n.onrender.com/api/students/login',
+            { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ student_id: id, dob }) }
         );
         const data = await response.json();
         if (!data.success || !data.student) {
@@ -26,12 +31,8 @@
             return;
         }
         const user = data.student;console.log(user);
-        const dbDob =  String(user.dob).split("T")[0];
-        if (dbDob !== dob) {
-            alert("Invalid DOB");
-            return;
-        }
         activeSessionUserObject = user;
+        if (window.PinnacleSession) PinnacleSession.start('student');
         localStorage.setItem("active_student_id",user.student_id);
         localStorage.setItem("active_student_name",user.name);
         const totalFees = Number(user.total_fees || 0);
@@ -117,6 +118,12 @@
                     .then(verifyResponse => verifyResponse.json())
                     .then(verificationOutput => {
                         if (verificationOutput.success || verificationOutput.status === "verified") {
+                            if (window.downloadPaymentReceipt) downloadPaymentReceipt({
+                                name: activeSessionUserObject.name, studentId: activeSessionUserObject.student_id,
+                                domain: activeSessionUserObject.domain, paymentId: paymentVerificationData.razorpay_payment_id,
+                                orderId: paymentVerificationData.razorpay_order_id, amount: outstandingLiabilityAmount,
+                                paymentType: 'Student Portal Fee Payment'
+                            });
                             alert("Payment processed and verified successfully! ID: " + paymentVerificationData.razorpay_payment_id);
                            alert(
     "Payment verified and database updated successfully."
