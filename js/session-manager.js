@@ -22,6 +22,22 @@
     notice.innerHTML = '<strong>Session expires soon.</strong> Save any work and continue your task before you are signed out.';
     document.body.appendChild(notice);
   }
+  function renderClock() {
+    let clock = document.getElementById('pinnacleSessionClock');
+    if (!clock) {
+      clock = document.createElement('div');
+      clock.id = 'pinnacleSessionClock';
+      clock.className = 'pinnacle-session-clock';
+      clock.setAttribute('aria-live', 'polite');
+      document.body.appendChild(clock);
+    }
+    const session = read();
+    const remaining = session ? Math.max(0, session.expiresAt - Date.now()) : 25 * 60 * 1000;
+    const minutes = Math.floor(remaining / 60000).toString().padStart(2, '0');
+    const seconds = Math.floor((remaining % 60000) / 1000).toString().padStart(2, '0');
+    clock.innerHTML = `<span>Secure portal session</span><strong>${minutes}:${seconds}</strong>${session ? '' : '<em>Sign in to begin</em>'}`;
+    clock.classList.toggle('is-warning', Boolean(session && remaining <= WARNING_MS));
+  }
   function expire(message) {
     clear();
     window.alert(message || 'Your secure session has expired. Please sign in again.');
@@ -37,6 +53,7 @@
     if (left > WARNING_MS) warningTimer = setTimeout(() => renderWarning(session), left - WARNING_MS);
     else renderWarning(session);
     timer = setTimeout(() => expire(), left);
+    renderClock();
   }
   window.PinnacleSession = {
     start(role) {
@@ -47,5 +64,5 @@
     active(role) { const s = read(); return Boolean(s && s.role === role && s.expiresAt > Date.now()); },
     logout() { clear(); }
   };
-  document.addEventListener('DOMContentLoaded', schedule);
+  document.addEventListener('DOMContentLoaded', () => { schedule(); renderClock(); setInterval(renderClock, 1000); });
 }());

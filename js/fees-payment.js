@@ -298,12 +298,18 @@ const updatedRemaining =
     verificationResult.remainingFees;
                     if (verificationResult.success) {
 
-    if (window.downloadPaymentReceipt) downloadPaymentReceipt({
+    const previousPaid = Number(currentStudent.feesPaid || 0);
+    const receiptDetails = {
         name: studentDetails.name, studentId: studentDetails.student_id,
         domain: currentStudent.domain, paymentId: paymentReceipt.razorpay_payment_id,
         orderId: paymentReceipt.razorpay_order_id, amount: amountInINR,
-        paymentType: studentDetails.payment_type
-    });
+        previousPaid, totalPaid: Number(verificationResult.paidFees),
+        remainingFees: Number(verificationResult.remainingFees), paymentType: studentDetails.payment_type,
+        reference: `PSA-${paymentReceipt.razorpay_payment_id}`, dateTime: new Date().toLocaleString('en-IN')
+    };
+
+    if (window.showPaymentReceiptDownload) showPaymentReceiptDownload(receiptDetails);
+    if (window.downloadPaymentReceipt) downloadPaymentReceipt(receiptDetails);
 
     currentStudent.feesPaid =
         Number(verificationResult.paidFees);
