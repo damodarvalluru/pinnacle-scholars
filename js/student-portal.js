@@ -168,7 +168,8 @@
 
         let shapesArray = [];
         const shapeTypes = ['sphere', 'cube', 'torusRing'];
-        const totalShapesCount = 18; // Clean, premium distribution without visual overcrowding
+        // Fewer, lighter shapes on small screens for smoother mobile performance
+        const totalShapesCount = window.innerWidth <= 768 ? 9 : 18; // Clean, premium distribution without visual overcrowding
 
         function dynamicCanvasResize() {
             canvas.width = window.innerWidth;

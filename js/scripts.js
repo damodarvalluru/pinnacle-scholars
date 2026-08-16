@@ -707,6 +707,27 @@ ${examConfig[domain].instructions}
 
     document.body.appendChild(portal);
 
+    // ENTER KEY SUPPORT — jeeStudentId / jeeStudentDob
+    // Pressing Enter triggers the SAME existing verify button (single call, no duplicate requests)
+    (function(){
+        const enterFields = [
+            document.getElementById("jeeStudentId"),
+            document.getElementById("jeeStudentDob")
+        ];
+        enterFields.forEach(function(field){
+            if(!field) return;
+            field.addEventListener("keydown", function(event){
+                if(event.key === "Enter"){
+                    event.preventDefault();
+                    const verifyBtn = document.getElementById("verifyEligibilityBtn");
+                    if(verifyBtn && !verifyBtn.disabled){
+                        verifyBtn.click();
+                    }
+                }
+            });
+        });
+    })();
+
     // VERIFY BUTTON
 
     document

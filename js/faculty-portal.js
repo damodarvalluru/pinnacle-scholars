@@ -316,7 +316,8 @@ if(!result.success){
         const ctx = canvas.getContext('2d');
         
         let particlesArray = [];
-        const numberOfParticles = 45; // Balanced density to prevent UI lag
+        // Fewer nodes on small screens for smoother mobile performance
+        const numberOfParticles = window.innerWidth <= 768 ? 22 : 45; // Balanced density to prevent UI lag
         
         // Handle responsive viewport dimension adjustments
         function setCanvasSize() {

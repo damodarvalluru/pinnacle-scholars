@@ -411,3 +411,37 @@ payBtn.innerText = "Continue Payment";
 }
 }
 }
+
+// ===== ENTER KEY SUPPORT (Fees Portal) =====
+// Pressing Enter triggers the SAME existing button (fetchBtn / payBtn).
+// No duplicate submissions: buttons are only .click()'d when not already disabled,
+// and each button's own handler already guards against re-entrant calls.
+document.addEventListener("DOMContentLoaded", function () {
+
+    const studentIdInput = document.getElementById("studentId");
+    if (studentIdInput) {
+        studentIdInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                const fetchBtn = document.getElementById("fetchBtn");
+                if (fetchBtn && !fetchBtn.disabled) {
+                    fetchBtn.click();
+                }
+            }
+        });
+    }
+
+    const partialAmountInput = document.getElementById("partialAmount");
+    if (partialAmountInput) {
+        partialAmountInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                const payBtn = document.getElementById("payBtn");
+                if (payBtn && !payBtn.disabled) {
+                    payBtn.click();
+                }
+            }
+        });
+    }
+
+});
