@@ -1,23 +1,22 @@
         :root {
             /* ==========================================================
-               STUDENT ENROLLMENT — "EMERALD NOIR & ROSE-GOLD"
-               A premium palette exclusive to this portal: deep emerald/
-               forest ink background, warm rose-gold as the primary accent,
-               and a soft amethyst glow reserved for the generated ID.
-               Distinct from Main (indigo/fuchsia), Fees Payment
-               (navy/gold/azure/emerald), Faculty (violet/teal/amber) and
-               Student Portal (rose/cyan/lime). Variable NAMES are kept
-               unchanged so nothing downstream breaks.
+               STUDENT ENROLLMENT — "ACADEMIC NAVY & GOLD"
+               Unified institutional palette: deep navy/midnight-blue
+               background, cyan-teal for structure, soft gold as the
+               primary accent, reserved for CTAs and the generated ID
+               badge. Matches the site-wide Pinnacle Scholars identity.
+               Variable NAMES are kept unchanged so nothing downstream
+               breaks.
                ========================================================== */
-            --bg-gradient: linear-gradient(150deg, #04140f 0%, #0a2e22 45%, #142a1d 100%);
-            --glass-bg: rgba(232, 213, 196, 0.06);
-            --glass-border: rgba(212, 163, 115, 0.22);
-            --text-primary: #f5f1e8;
-            --text-secondary: #b9c9bf;
-            --accent-primary: #d4a373;   /* rose-gold — was #f97316 orange */
-            --accent-hover: #c98a52;
+            --bg-gradient: linear-gradient(150deg, #04122b 0%, #061b3a 45%, #0b2454 100%);
+            --glass-bg: rgba(0, 166, 199, 0.06);
+            --glass-border: rgba(244, 197, 66, 0.22);
+            --text-primary: #eef4fb;
+            --text-secondary: #a9bcd6;
+            --accent-primary: #F4C542;   /* soft gold — premium highlight */
+            --accent-hover: #e0b23a;
             --success-green: #34d399;
-            --glow-amethyst: #b98cf2;    /* reserved for the ID-badge glow only */
+            --glow-amethyst: #00A6C7;    /* teal glow, reserved for the ID-badge */
         }
 
         * {
@@ -199,7 +198,7 @@ footer p {
         }
 
         select option, select optgroup {
-            background: #0a2e22;
+            background: #061b3a;
             color: var(--text-primary);
         }
 
@@ -409,9 +408,9 @@ footer p {
                     0 0 18px rgba(212, 163, 115, 0.3);
             }
             4% {
-                color: #fff3e0;
+                color: #F4C542;
                 text-shadow:
-                    0 0 4px #fff3e0,
+                    0 0 4px #F4C542,
                     0 0 14px var(--accent-primary),
                     0 0 30px var(--glow-amethyst),
                     0 0 46px var(--glow-amethyst);
@@ -422,9 +421,9 @@ footer p {
                     0 0 18px rgba(212, 163, 115, 0.3);
             }
             46% {
-                color: #fff3e0;
+                color: #F4C542;
                 text-shadow:
-                    0 0 4px #fff3e0,
+                    0 0 4px #F4C542,
                     0 0 16px var(--accent-primary),
                     0 0 34px var(--glow-amethyst),
                     0 0 50px var(--glow-amethyst);

@@ -12,18 +12,18 @@
    Vault (bronze/ice-blue/charcoal).
    ========================================================== */
 :root{
-    --cf-bg-deep:#07070a;
-    --cf-bg-mid:#151109;
-    --cf-ink:#f6efe4;
-    --cf-ink-dim:#c8bfae;
-    --cf-primary:#fb7a3c;      /* ember tangerine */
-    --cf-primary-deep:#d9531c;
-    --cf-primary-bright:#ffab70;
-    --cf-secondary:#94a3b8;    /* cool steel-gray, neutral counterweight */
-    --cf-glass:rgba(255,255,255,0.05);
-    --cf-glass-strong:rgba(255,255,255,0.09);
-    --cf-border:rgba(251,122,60,0.28);
-    --cf-success:#4ade80;
+    --cf-bg-deep:#04122b;
+    --cf-bg-mid:#061b3a;
+    --cf-ink:#eef4fb;
+    --cf-ink-dim:#a9bcd6;
+    --cf-primary:#F4C542;      /* soft gold — unified accent */
+    --cf-primary-deep:#0B3D91;
+    --cf-primary-bright:#ffdf8e;
+    --cf-secondary:#00A6C7;    /* cyan/teal counterweight */
+    --cf-glass:rgba(0,166,199,0.05);
+    --cf-glass-strong:rgba(0,166,199,0.09);
+    --cf-border:rgba(244,197,66,0.28);
+    --cf-success:#34d399;
     --cf-error:#f87171;
 }
 
@@ -34,7 +34,7 @@
     background:
         radial-gradient(circle at 15% 20%, rgba(251,122,60,0.14), transparent 42%),
         radial-gradient(circle at 85% 80%, rgba(148,163,184,0.10), transparent 45%),
-        linear-gradient(160deg, var(--cf-bg-deep) 0%, var(--cf-bg-mid) 60%, #0b0906 100%);
+        linear-gradient(160deg, var(--cf-bg-deep) 0%, var(--cf-bg-mid) 60%, #0b2454 100%);
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -252,7 +252,7 @@
     border:none;
     border-radius:50px;
     background:linear-gradient(135deg, var(--cf-primary-bright), var(--cf-primary) 55%, var(--cf-primary-deep));
-    color:#1a0a02;
+    color:#04122b;
     font-weight:800;
     font-size:1rem;
     letter-spacing:0.5px;
@@ -334,24 +334,24 @@
    for clear AA contrast on a bright surface.
    ========================================================== */
 [data-theme="light"] .contact-section{
-    --cf-bg-deep:#fff7f0;
-    --cf-bg-mid:#ffe8d1;
-    --cf-ink:#2a1608;
-    --cf-ink-dim:#6b5643;
+    --cf-bg-deep:#eaf1fa;
+    --cf-bg-mid:#fce9bf;
+    --cf-ink:#0b2454;
+    --cf-ink-dim:#7f93b3;
     --cf-glass:rgba(255,255,255,0.55);
     --cf-glass-strong:rgba(255,255,255,0.85);
     --cf-border:rgba(217,83,28,0.25);
     background:
         radial-gradient(circle at 15% 20%, rgba(251,122,60,0.12), transparent 42%),
         radial-gradient(circle at 85% 80%, rgba(148,163,184,0.12), transparent 45%),
-        linear-gradient(160deg, #fff7f0 0%, #ffe8d1 60%, #fff3e6 100%);
+        linear-gradient(160deg, #eaf1fa 0%, #fce9bf 60%, #eaf1fa 100%);
 }
 
 [data-theme="light"] .contact-field input,
 [data-theme="light"] .contact-field textarea{
     background:rgba(255,255,255,0.75);
     border:1px solid rgba(217,83,28,0.22);
-    color:#2a1608;
+    color:#0b2454;
 }
 
 [data-theme="light"] .contact-field input::placeholder,

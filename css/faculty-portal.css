@@ -10,22 +10,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root{
-    /* -- identity tokens (names preserved, values redesigned) -- */
-    --bg-gradient: linear-gradient(160deg, #05060a 0%, #0d0a1c 42%, #070911 100%);
-    --card-bg: rgba(255,255,255,0.045);
-    --card-border: rgba(139,92,246,0.28);
-    --text-main: #edf0f7;
-    --text-muted: #93a0bd;
-    --accent-primary: #8b5cf6;    /* electric violet — replaces gold */
-    --accent-secondary: #22d3ae;  /* signal teal — replaces azure */
-    --accent-success: #facc15;    /* amber flag — replaces green */
-    --input-bg: rgba(7,9,16,0.7);
+    /* -- identity tokens (names preserved, values redesigned) --
+       ACADEMIC NAVY & GOLD — unified site-wide institutional
+       palette: deep navy/midnight-blue background, cyan-teal for
+       structure, soft gold reserved for success/highlight states. */
+    --bg-gradient: linear-gradient(160deg, #04122b 0%, #061b3a 42%, #0b2454 100%);
+    --card-bg: rgba(0,166,199,0.05);
+    --card-border: rgba(0,166,199,0.28);
+    --text-main: #edf3fb;
+    --text-muted: #93a8c9;
+    --accent-primary: #0B3D91;    /* royal academic blue */
+    --accent-secondary: #00A6C7;  /* signal teal */
+    --accent-success: #F4C542;    /* soft gold flag */
+    --input-bg: rgba(4,18,43,0.7);
 
     /* -- extended tokens for the control-deck system -- */
-    --violet-soft: rgba(139,92,246,0.16);
-    --teal-soft: rgba(34,211,174,0.16);
-    --amber-soft: rgba(250,204,21,0.14);
-    --grid-line: rgba(139,92,246,0.08);
+    --violet-soft: rgba(11,61,145,0.16);
+    --teal-soft: rgba(0,166,199,0.16);
+    --amber-soft: rgba(244,197,66,0.14);
+    --grid-line: rgba(0,166,199,0.08);
 }
 
 *{box-sizing:border-box;}
@@ -91,8 +94,8 @@ body::after{
 }
 
 ::-webkit-scrollbar{width:10px;}
-::-webkit-scrollbar-track{background:#05060a;}
-::-webkit-scrollbar-thumb{background:linear-gradient(var(--accent-primary), #4c2f9e); border-radius:10px;}
+::-webkit-scrollbar-track{background:#04122b;}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--accent-primary), #072a63); border-radius:10px;}
 
 /* Ambient particle canvas (owned by faculty-portal.js — untouched structurally) */
 #bg-canvas{
@@ -309,10 +312,10 @@ h1,h2,h3{
 .btn{
     width: 100%;
     padding: 15px;
-    background: linear-gradient(135deg, #c4b5fd, var(--accent-primary) 55%, #5b21b6);
+    background: linear-gradient(135deg, #4a8fd6, var(--accent-primary) 55%, #072a63);
     background-size:200% 200%;
     animation:btnShift 6s ease infinite;
-    color: #0b0a16;
+    color: #061B3A;
     border: none;
     border-radius: 12px;
     cursor: pointer;
@@ -353,8 +356,8 @@ h1,h2,h3{
 .btn:active{ transform: translateY(-1px); }
 
 .btn-accent{
-    background: linear-gradient(135deg, #7df3d6, var(--accent-secondary) 55%, #0f8f74);
-    color: #051612;
+    background: linear-gradient(135deg, #5fd8e8, var(--accent-secondary) 55%, #067a8a);
+    color: #04122b;
     box-shadow: 0 12px 26px rgba(34,211,174,0.3);
 }
 
@@ -553,9 +556,9 @@ a:hover{ color: var(--text-main); text-shadow:0 0 10px rgba(139,92,246,0.45); }
             0 0 18px rgba(139,92,246,0.3);
     }
     4%{
-        color:#f1e8ff;
+        color:#F4C542;
         text-shadow:
-            0 0 4px #f1e8ff,
+            0 0 4px #F4C542,
             0 0 14px var(--accent-primary),
             0 0 30px var(--accent-secondary),
             0 0 46px var(--accent-secondary);
@@ -566,9 +569,9 @@ a:hover{ color: var(--text-main); text-shadow:0 0 10px rgba(139,92,246,0.45); }
             0 0 18px rgba(139,92,246,0.3);
     }
     46%{
-        color:#f1e8ff;
+        color:#F4C542;
         text-shadow:
-            0 0 4px #f1e8ff,
+            0 0 4px #F4C542,
             0 0 16px var(--accent-primary),
             0 0 34px var(--accent-secondary),
             0 0 50px var(--accent-secondary);
@@ -589,8 +592,8 @@ a:hover{ color: var(--text-main); text-shadow:0 0 10px rgba(139,92,246,0.45); }
 .faculty-modal-btn{
     border:none;
     padding:15px 32px;
-    background:linear-gradient(135deg, #c4b5fd, var(--accent-primary));
-    color:#0b0a16;
+    background:linear-gradient(135deg, #4a8fd6, var(--accent-primary));
+    color:#061B3A;
     border-radius:12px;
     font-weight:700;
     font-family:'Space Grotesk', sans-serif;

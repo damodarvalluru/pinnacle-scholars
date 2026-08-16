@@ -8,20 +8,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root{
-    --navy-deep:#0b050f;   /* kept name for structural compatibility, repurposed to plum-black */
-    --navy:#170a1c;
-    --navy-soft:#20101f;
-    --gold:#fb7185;        /* kept name, repurposed to rose — primary accent */
-    --gold-bright:#fda4af;
-    --gold-dim:rgba(251,113,133,0.32);
-    --azure:#22d3ee;       /* kept name, repurposed to cyan — secondary accent */
-    --violet:#a78bfa;
-    --success:#a3e635;     /* kept name, repurposed to lime — tertiary accent */
-    --ink:#f7f0f2;
-    --ink-dim:rgba(247,240,242,0.72);
-    --glass:rgba(255,255,255,0.055);
-    --glass-strong:rgba(255,255,255,0.09);
-    --border:rgba(251,113,133,0.22);
+    --navy-deep:#04122b;   /* unified academic navy base */
+    --navy:#061b3a;
+    --navy-soft:#0b2454;
+    --gold:#F4C542;        /* soft gold — primary accent */
+    --gold-bright:#ffdf8e;
+    --gold-dim:rgba(244,197,66,0.28);
+    --azure:#00A6C7;       /* cyan/teal — secondary accent */
+    --violet:#0B3D91;      /* royal blue — kept name, repurposed */
+    --success:#34d399;     /* emerald — tertiary/success accent */
+    --ink:#eef4fb;
+    --ink-dim:rgba(238,244,251,0.72);
+    --glass:rgba(0,166,199,0.055);
+    --glass-strong:rgba(0,166,199,0.09);
+    --border:rgba(244,197,66,0.22);
     --radius-lg:26px;
     --radius-md:16px;
 }
@@ -41,9 +41,9 @@ body{
     color:var(--ink);
 
     background:
-        radial-gradient(circle at 15% 10%, #2a0f22 0%, transparent 45%),
+        radial-gradient(circle at 15% 10%, #0b2454 0%, transparent 45%),
         radial-gradient(circle at 85% 90%, #0d1a2e 0%, transparent 50%),
-        linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 45%, #0a0710 100%);
+        linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 45%, #04122b 100%);
 
     background-size:220% 220%, 220% 220%, 100% 100%;
     animation:gradientFlow 22s ease infinite;
@@ -53,7 +53,7 @@ body{
    portal's brief did not ask for it to be hidden) */
 ::-webkit-scrollbar{width:8px;}
 ::-webkit-scrollbar-track{background:var(--navy-deep);}
-::-webkit-scrollbar-thumb{background:linear-gradient(var(--gold),#9f1239);border-radius:10px;}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--gold),#072a63);border-radius:10px;}
 
 /* Aurora glow layer — rose/cyan/lime, distinct hues + path from other portals */
 body::before{
@@ -361,12 +361,12 @@ input:focus{
     font-size:15px;
     letter-spacing:0.3px;
     cursor:pointer;
-    color:#2b0a12;
+    color:#061B3A;
     position:relative;
     overflow:hidden;
     isolation:isolate;
 
-    background:linear-gradient(135deg, var(--gold-bright), var(--gold) 55%, #be123c);
+    background:linear-gradient(135deg, var(--gold-bright), var(--gold) 55%, #072a63);
     background-size:200% 200%;
     animation:buttonGradient 6s ease infinite;
 
@@ -482,7 +482,7 @@ button:hover{transform:translateY(-2px);}
 }
 
 a{
-    color:#7dd3fc !important;
+    color:#00A6C7 !important;
     text-decoration:none;
     transition:all 0.3s ease;
 }
