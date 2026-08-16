@@ -219,6 +219,10 @@ function showResultPopup(title, message, showDownload){
 
     document.body.appendChild(overlay);
 
+    if(title === "Result Found"){
+        document.getElementById('resultPopupBox').classList.add('celebrate');
+    }
+
 }
 
 /* ==========================================================

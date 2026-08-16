@@ -145,6 +145,8 @@ if (data.success  && data.student) {
         'successBox'
     ).style.display = 'block';
 
+    document.getElementById('successBox').classList.add('celebrate');
+
     document.getElementById('studentName').value = "";
     document.getElementById('dob').value = "";
     document.getElementById('domain').selectedIndex = 0;
