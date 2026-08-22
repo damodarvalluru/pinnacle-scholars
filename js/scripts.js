@@ -662,12 +662,6 @@ async function startTest(domain) {
 
         <h1>${examConfig[domain].portalTitle}</h1>
 
-        <div id="monthlyTestLoginClock" style="text-align:center; margin: 10px 0 20px;">
-            <span style="background: rgba(0, 217, 255, 0.12); color: #00d9ff; border: 1px solid rgba(0, 217, 255, 0.3); padding: 8px 18px; border-radius: 20px; font-weight: bold; font-size: 1rem; display: inline-block;">
-                ⏱️ Login Session Expires In: <strong id="monthlyTestTimeRemaining">07:00</strong>
-            </span>
-        </div>
-
         <p>
             Read all instructions carefully before proceeding.
         </p>
@@ -700,7 +694,7 @@ ${examConfig[domain].instructions}
                 Verify Eligibility & Start Test
             </button>
 
-            <p align="center"><a href="index.html" class="back" onclick="if(window._testLoginTimerInterval){clearInterval(window._testLoginTimerInterval);window._testLoginTimerInterval=null;}">← Return Home</a></p>
+            <p align="center"><a href="index.html" class="back">← Return Home</a></p>
 
             <div class="statusText" id="statusText">
                 Verifying student...
@@ -712,33 +706,6 @@ ${examConfig[domain].instructions}
     `;
 
     document.body.appendChild(portal);
-
-    // MONTHLY TEST PORTAL — EXACTLY 7-MINUTE (420 SECONDS) LOGIN TIMER
-    if(window._testLoginTimerInterval){
-        clearInterval(window._testLoginTimerInterval);
-        window._testLoginTimerInterval = null;
-    }
-    let testLoginSecondsLeft = 420;
-    function updateTestLoginClockDisplay(){
-        const mins = Math.floor(testLoginSecondsLeft / 60).toString().padStart(2, '0');
-        const secs = (testLoginSecondsLeft % 60).toString().padStart(2, '0');
-        const timerElem = document.getElementById("monthlyTestTimeRemaining");
-        if(timerElem){
-            timerElem.innerText = `${mins}:${secs}`;
-        }
-    }
-    updateTestLoginClockDisplay();
-    window._testLoginTimerInterval = setInterval(function(){
-        testLoginSecondsLeft--;
-        updateTestLoginClockDisplay();
-        if(testLoginSecondsLeft <= 0){
-            clearInterval(window._testLoginTimerInterval);
-            window._testLoginTimerInterval = null;
-            const portalModal = document.getElementById("ultimateJeePortal");
-            if(portalModal) portalModal.remove();
-            alert("Monthly Test Portal login session has expired (7 minutes). Please start again.");
-        }
-    }, 1000);
 
     // ENTER KEY SUPPORT — jeeStudentId / jeeStudentDob
     // Pressing Enter triggers the SAME existing verify button (single call, no duplicate requests)
@@ -762,12 +729,10 @@ ${examConfig[domain].instructions}
     })();
 
     // VERIFY BUTTON
+
     document
     .getElementById("verifyEligibilityBtn")
     .addEventListener("click", async function(){
-
-        const verifyBtn = document.getElementById("verifyEligibilityBtn");
-        if(verifyBtn.disabled) return;
 
         const studentId =
             document.getElementById("jeeStudentId").value.trim();
@@ -781,9 +746,6 @@ ${examConfig[domain].instructions}
 
             return;
         }
-
-        verifyBtn.disabled = true;
-        verifyBtn.innerText = "Verifying...";
 
         // SAVE LOGIN INFO
 
@@ -816,8 +778,6 @@ await fetch(
             if(!eligibilityData.eligible){
 
     status.style.display = "none";
-    verifyBtn.disabled = false;
-    verifyBtn.innerText = "Verify Eligibility & Start Test";
 
     if(eligibilityData.message){
 
@@ -866,9 +826,6 @@ await response.json();
 
 if(!data.success){
 
-    verifyBtn.disabled = false;
-    verifyBtn.innerText = "Verify Eligibility & Start Test";
-
     alert(
         data.message
     );
@@ -878,12 +835,6 @@ if(!data.success){
 
 const latestTest =
 data.test;
-
-            if(window._testLoginTimerInterval){
-                clearInterval(window._testLoginTimerInterval);
-                window._testLoginTimerInterval = null;
-            }
-
             document
             .getElementById("ultimateJeePortal")
             .remove();
@@ -893,8 +844,6 @@ data.test;
         }catch(err){
 
             console.error(err);
-            verifyBtn.disabled = false;
-            verifyBtn.innerText = "Verify Eligibility & Start Test";
 
             alert(
                 "Test system failed.\n\n" +
@@ -1766,13 +1715,11 @@ function downloadBrochure() {
             <footer
                 style="
                     margin-top: 30px;
-                    border-top: 2px solid #cbd5e0;
-                    padding-top: 14px;
-                    font-size: 13px;
-                    font-weight: 600;
-                    color: #1a365d;
+                    border-top: 1px solid #e2e8f0;
+                    padding-top: 10px;
+                    font-size: 10px;
+                    color: #a0aec0;
                     text-align: center;
-                    letter-spacing: 0.3px;
                 ">
 
                 © 2026 Pinnacle Scholars Academy, Noida.
