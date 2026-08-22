@@ -35,13 +35,16 @@
     const remaining = session ? Math.max(0, session.expiresAt - Date.now()) : 25 * 60 * 1000;
     const minutes = Math.floor(remaining / 60000).toString().padStart(2, '0');
     const seconds = Math.floor((remaining % 60000) / 1000).toString().padStart(2, '0');
-    clock.innerHTML = `<span>Secure portal session</span><strong>${minutes}:${seconds}</strong>${session ? '' : '<em>Sign in to begin</em>'}`;
+    const label = (session && session.role === 'fees') ? 'Fee Payment Session' : ((session && session.role === 'faculty') ? 'Faculty Portal Session' : 'Secure portal session');
+    clock.innerHTML = `<span>${label}</span><strong>${minutes}:${seconds}</strong>${session ? '' : '<em>Session Active</em>'}`;
     clock.classList.toggle('is-warning', Boolean(session && remaining <= WARNING_MS));
   }
   function expire(message) {
     clear();
     window.alert(message || 'Your secure session has expired. Please sign in again.');
-    const target = location.pathname.toLowerCase().includes('faculty') ? 'faculty-portal.html' : 'student-portal.html';
+    const isFees = location.pathname.toLowerCase().includes('fees');
+    const isFaculty = location.pathname.toLowerCase().includes('faculty');
+    const target = isFees ? 'fees-payment.html' : (isFaculty ? 'faculty-portal.html' : 'student-portal.html');
     location.replace(target);
   }
   function schedule() {
@@ -64,5 +67,14 @@
     active(role) { const s = read(); return Boolean(s && s.role === role && s.expiresAt > Date.now()); },
     logout() { clear(); }
   };
-  document.addEventListener('DOMContentLoaded', () => { schedule(); renderClock(); setInterval(renderClock, 1000); });
+  document.addEventListener('DOMContentLoaded', () => {
+    if (location.pathname.toLowerCase().includes('fees') && !read()) {
+      window.PinnacleSession.start('fees');
+    }
+    schedule();
+    renderClock();
+    if (!window._pinnacleClockInterval) {
+      window._pinnacleClockInterval = setInterval(renderClock, 1000);
+    }
+  });
 }());

@@ -95,6 +95,84 @@ body::after{
     z-index:-1;
 }
 
+/* ==========================================================
+   STUDENT PORTAL MOVING BACKGROUND OBJECTS
+   ========================================================== */
+.bg-moving-objects {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.student-float-obj {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(4px);
+    opacity: 0.25;
+    pointer-events: none;
+    animation: floatStudentObject 20s infinite ease-in-out alternate;
+}
+
+.student-float-obj.obj-1 {
+    width: 220px; height: 220px;
+    top: 10%; left: 8%;
+    background: radial-gradient(circle, rgba(0, 166, 199, 0.35), transparent 70%);
+    animation-duration: 18s;
+}
+
+.student-float-obj.obj-2 {
+    width: 280px; height: 280px;
+    bottom: 15%; right: 10%;
+    background: radial-gradient(circle, rgba(244, 197, 66, 0.25), transparent 70%);
+    animation-duration: 24s;
+    animation-delay: -5s;
+}
+
+.student-float-obj.obj-3 {
+    width: 180px; height: 180px;
+    top: 55%; left: 15%;
+    border: 2px dashed rgba(0, 166, 199, 0.3);
+    border-radius: 30px;
+    filter: none;
+    animation-duration: 22s;
+    animation-delay: -3s;
+}
+
+.student-float-obj.obj-4 {
+    width: 150px; height: 150px;
+    top: 20%; right: 20%;
+    border: 2px solid rgba(244, 197, 66, 0.25);
+    border-radius: 50%;
+    filter: none;
+    animation-duration: 26s;
+    animation-delay: -8s;
+}
+
+.student-float-obj.obj-5 {
+    width: 200px; height: 200px;
+    bottom: 25%; left: 45%;
+    background: radial-gradient(circle, rgba(11, 61, 145, 0.4), transparent 70%);
+    animation-duration: 20s;
+    animation-delay: -10s;
+}
+
+@keyframes floatStudentObject {
+    0% { transform: translateY(0) translateX(0) rotate(0deg) scale(1); }
+    50% { transform: translateY(-35px) translateX(25px) rotate(180deg) scale(1.08); }
+    100% { transform: translateY(20px) translateX(-20px) rotate(360deg) scale(0.95); }
+}
+
+@media (max-width: 768px) {
+    .student-float-obj { opacity: 0.15; }
+    .student-float-obj.obj-1 { width: 140px; height: 140px; }
+    .student-float-obj.obj-2 { width: 160px; height: 160px; }
+    .student-float-obj.obj-3, .student-float-obj.obj-4 { display: none; }
+}
+
 @keyframes gradientFlow{
     0%{background-position:0% 50%, 100% 50%, 0% 0%;}
     50%{background-position:100% 50%, 0% 50%, 0% 0%;}
