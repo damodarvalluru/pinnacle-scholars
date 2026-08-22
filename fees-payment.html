@@ -49,6 +49,10 @@ for(let i=0;i<40;i++){
 
 <div class="payment-card">
 
+    <div class="session-timer-badge" id="feeSessionTimer">
+        ⏱️ Session Time Remaining: <span id="feeTimerCount" style="font-weight:bold; color:var(--gold);">25:00</span>
+    </div>
+
     <h1>Fee Payment Portal</h1>
 
     <div class="input-box">
@@ -122,9 +126,18 @@ for(let i=0;i<40;i++){
     </div>
 
     <div class="home-link">
-        <a href="index.html">← Back To Home</a>
+        <a href="javascript:void(0)" onclick="window.location.href='index.html'">← Back To Home</a>
     </div>
 
+</div>
+
+<!-- Fee Payment Session Timeout Warning Modal -->
+<div id="feeTimeoutModal" class="fee-timeout-modal" style="display:none;">
+    <div class="fee-timeout-content">
+        <h2>⏱️ Payment Session Expired</h2>
+        <p>Your 25-minute fee payment session has timed out. Form input has been disabled for security.</p>
+        <button class="fetch-btn" onclick="location.reload()" style="margin-top:15px; width:auto; padding:10px 24px;">Reload Session</button>
+    </div>
 </div>
 </body>
 </html>

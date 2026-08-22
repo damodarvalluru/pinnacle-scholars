@@ -13,6 +13,13 @@
 <body>
 
     <canvas id="bg-canvas"></canvas>
+    <!-- Background Floating Objects Layer (Pure CSS/JS, non-intrusive) -->
+    <div class="fx-layer" aria-hidden="true">
+        <div class="fx-shape fx-hex"></div>
+        <div class="fx-shape fx-ring"></div>
+        <div class="fx-shape fx-tri"></div>
+        <div class="fx-shape fx-dot"></div>
+    </div>
     <!-- Portal Master Interface Content Wrapper -->
     <div class="portal-container" id="authContainer">
         
@@ -42,9 +49,8 @@
             <p style="text-align:center; margin-top: 20px; margin-bottom:0;"><a href="#" onclick="toggleAuthViews(false)">Already Enrolled? Login here</a></p>
             
             <!-- Fixed Home Button Link wrapping syntax error logic -->
-            <a href="index.html" class="home-btn-link">
-                <button type="button" class="btn btn-secondary">← Return Home</button>
-            </a>
+            <!-- Home Button Link -->
+            <button type="button" class="btn btn-secondary" style="margin-top: 15px;" onclick="window.location.href='index.html'">← Return Home</button>
         </div>
 
         <!-- Verification Secure Sign-in Layout Panel Block -->
@@ -56,9 +62,7 @@
             <button id="facultyLoginBtn" class="btn" type="submit">Login to Dashboard</button>
             <p style="text-align:center; margin-top: 12px; margin-bottom:0;"><a href="#" onclick="forgotFacultyId(); return false;">Forgot ID?</a></p>
             <p style="text-align:center; margin-top: 20px; margin-bottom:0;"><a href="#" onclick="toggleAuthViews(true)">New Faculty? Register/Enroll here</a></p>
-            <p align="center"><a href="index.html" class="home-btn-link">
-                <span>🏠</span> Home
-            </a></p>
+            <p align="center" style="margin-top: 15px;"><button type="button" class="btn btn-secondary" style="width: auto; padding: 8px 18px;" onclick="window.location.href='index.html'">🏠 Home</button></p>
         </form>
     </div>
 
@@ -66,6 +70,7 @@
     <div class="dashboard" id="dashboardArea">
         <h1 style="color: var(--text-main); margin-bottom: 30px; font-weight: 800;">Faculty Workspace | Welcome, <span id="dispFacName" style="color: var(--accent-primary)"></span></h1>
         
+        <!-- Section 1: Faculty Identity Metrics -->
         <div class="info-card">
             <h3 style="margin-top:0; color: var(--text-main)">Verified Identity & System Metrics</h3>
             <p><strong>Faculty Unique ID:</strong> <span id="dispFacId" style="color:var(--accent-primary); font-weight:bold;"></span></p>
@@ -73,6 +78,7 @@
             <p><strong>System Tracked Experience:</strong> <span id="dispFacTenure" style="color:var(--accent-secondary); font-weight:bold;"></span> Years in Academy System File</p>
         </div>
 
+        <!-- Section 2: Profile Summary Details -->
         <div class="info-card">
             <h3 style="margin-top:0; color: var(--text-main)">Profile Summary Details</h3>
             <p><strong>Qualifications:</strong> <span id="dispFacQuals"></span></p>
@@ -82,7 +88,79 @@
             <p><strong>Address Field:</strong> <span id="dispFacAddress"></span></p>
         </div>
 
-        <!-- Examination Question Paper Setup Generation Context Console Block -->
+        <!-- Section 3: Student Submission Tracker -->
+        <div class="info-card" style="border-left: 5px solid var(--accent-primary);">
+            <h3 style="margin-top:0; color: var(--text-main)">📊 Student Submission Tracker</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Track live student assignment & monthly test submissions across academic batches.</p>
+            
+            <div style="overflow-x: auto; margin-top: 15px;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; color: var(--text-main);">
+                    <thead>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05);">
+                            <th style="padding: 10px;">Student ID</th>
+                            <th style="padding: 10px;">Student Name</th>
+                            <th style="padding: 10px;">Assessment / Module</th>
+                            <th style="padding: 10px;">Submission Date</th>
+                            <th style="padding: 10px;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="submissionTrackerBody">
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.08);">
+                            <td style="padding: 10px; font-weight: bold; color: var(--accent-primary);">PS-I-2026-0001</td>
+                            <td style="padding: 10px;">Rohan Sharma</td>
+                            <td style="padding: 10px;">JEE Physics Core Assessment 04</td>
+                            <td style="padding: 10px;">Today, 14:30</td>
+                            <td style="padding: 10px;"><span style="background: rgba(34, 197, 94, 0.2); color: #4ade80; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">Submitted</span></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.08);">
+                            <td style="padding: 10px; font-weight: bold; color: var(--accent-primary);">PS-M-2026-0042</td>
+                            <td style="padding: 10px;">Ananya Verma</td>
+                            <td style="padding: 10px;">GATE Mathematics Integration Matrix</td>
+                            <td style="padding: 10px;">Yesterday</td>
+                            <td style="padding: 10px;"><span style="background: rgba(244, 197, 66, 0.2); color: #facc15; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">Pending Review</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section 4: Grade Input Panel -->
+        <div class="info-card" style="border-left: 5px solid var(--accent-secondary);">
+            <h3 style="margin-top:0; color: var(--text-main)">📝 Grade Input & Assessment Evaluator</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Submit grades, marks, and evaluation feedback for enrolled students.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                <input type="text" id="gradeStudentId" placeholder="Target Student ID (e.g., PS-I-2026-0001)">
+                <input type="text" id="gradeAssessmentTitle" placeholder="Assessment / Module Title">
+                <div style="display: flex; gap: 12px;">
+                    <input type="number" id="gradeMarksObtained" placeholder="Marks Obtained (e.g., 88)" style="flex: 1;">
+                    <input type="number" id="gradeTotalMarks" placeholder="Total Marks (e.g., 100)" style="flex: 1;">
+                </div>
+                <textarea id="gradeFeedback" rows="2" placeholder="Faculty Remarks / Feedback..."></textarea>
+                <button type="button" id="submitGradeBtn" class="btn" style="background: var(--accent-secondary); color: white; width: auto; padding: 10px 24px;" onclick="saveFacultyGradeEvaluation()">Save & Publish Grade</button>
+            </div>
+        </div>
+
+        <!-- Section 5: Announcement Management Panel -->
+        <div class="info-card" style="border-left: 5px solid var(--accent-primary);">
+            <h3 style="margin-top:0; color: var(--text-main)">📢 Faculty Broadcast Announcements</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Broadcast urgent notices or schedule updates to students.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                <input type="text" id="announceTitle" placeholder="Announcement Subject / Headline">
+                <textarea id="announceBody" rows="3" placeholder="Announcement content message..."></textarea>
+                <button type="button" id="broadcastAnnounceBtn" class="btn" style="background: var(--accent-primary); color: white; width: auto; padding: 10px 24px;" onclick="broadcastFacultyAnnouncement()">Broadcast Announcement</button>
+            </div>
+
+            <div id="facultyLiveAnnounceBoard" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px;">
+                    <strong style="color: var(--accent-primary); font-size: 0.95rem;">📢 Physics Problem Solving Session Scheduled</strong>
+                    <p style="margin: 4px 0 0; font-size: 0.85rem; color: var(--text-muted);">Posted by Core Faculty | JEE Batch 2026</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Examination Question Paper Setup Generation Context Console Block -->
         <div class="info-card" style="border-left: 5px solid var(--accent-success);">
             <h3 style="margin-top:0; color: var(--text-main)">JEE Format Examination Console Engine</h3>
             <p style="color: var(--text-muted)">Submit mock assessments or official weekly entry test structures directly to the student examination database layer.</p>
@@ -96,7 +174,7 @@
             <button  id="publishTestBtn" class="btn" style="background: var(--accent-success); color: #0f172a; width: auto; display: inline-block; padding: 12px 30px;" onclick="publishJeeTestFormat()">Publish Live JEE Format Test</button>
         </div>
 
-        <button onclick="PinnacleSession.logout(); location.reload()" class="btn btn-secondary" style="width: auto; padding: 10px 24px;">Logout Session</button>
+        <button type="button" onclick="PinnacleSession.logout(); location.reload()" class="btn btn-secondary" style="width: auto; padding: 10px 24px;">Logout Session</button>
     </div>
 <footer>
     <p style="text-align: center;color:white;font-size:x-large;">&copy; 2026 Pinnacle Scholars Academy, Noida. Empowering Futures.</p>

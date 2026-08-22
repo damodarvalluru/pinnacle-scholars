@@ -2523,3 +2523,25 @@ PDF / PRINT OPTIMIZATION
 
     footer{ font-size:0.76rem !important; padding:16px 12px !important; }
 }
+
+/* Background Vertical Falling Lines Layer (Home Page) */
+.falling-lines-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -10;
+    overflow: hidden;
+}
+.falling-line {
+    position: absolute;
+    top: -220px;
+    width: 1.5px;
+    height: 180px;
+    background: linear-gradient(to bottom, transparent, rgba(0, 166, 199, 0.22), transparent);
+    opacity: 0.35;
+    animation: fallingLineAnim linear infinite;
+}
+@keyframes fallingLineAnim {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(calc(100vh + 240px)); }
+}

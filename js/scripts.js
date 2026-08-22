@@ -677,6 +677,10 @@ ${examConfig[domain].instructions}
 </ul>
         </div>
 
+        <div style="background: rgba(0, 217, 255, 0.1); border: 1px solid rgba(0, 217, 255, 0.3); border-radius: 12px; padding: 10px 16px; margin: 15px 0 20px; text-align: center; color: #00d9ff; font-size: 0.95rem; font-weight: 600;">
+            ⏱️ Login Session Window: <span id="testLoginTimerCount" style="font-weight: 800; color: #ffffff;">07:00</span>
+        </div>
+
         <div class="verify-section">
 
             <input
@@ -706,6 +710,33 @@ ${examConfig[domain].instructions}
     `;
 
     document.body.appendChild(portal);
+
+    // 7-MINUTE COUNTDOWN TIMER FOR TEST LOGIN PAGE
+    let testLoginSeconds = 7 * 60; // 7 minutes = 420 seconds
+    const testLoginTimerDisplay = document.getElementById("testLoginTimerCount");
+    const testLoginTimerInterval = setInterval(function () {
+        testLoginSeconds--;
+        if (testLoginSeconds <= 0) {
+            clearInterval(testLoginTimerInterval);
+            if (testLoginTimerDisplay) testLoginTimerDisplay.innerText = "00:00";
+            
+            // On expiry: Lock the login form and show alert notice
+            const sIdInput = document.getElementById("jeeStudentId");
+            const sDobInput = document.getElementById("jeeStudentDob");
+            const vBtn = document.getElementById("verifyEligibilityBtn");
+            if (sIdInput) sIdInput.disabled = true;
+            if (sDobInput) sDobInput.disabled = true;
+            if (vBtn) vBtn.disabled = true;
+
+            alert("Session Expired: Your 7-minute login time window has expired. Please reload or return home to try again.");
+            return;
+        }
+        if (testLoginTimerDisplay) {
+            const mins = Math.floor(testLoginSeconds / 60);
+            const secs = testLoginSeconds % 60;
+            testLoginTimerDisplay.innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+    }, 1000);
 
     // ENTER KEY SUPPORT — jeeStudentId / jeeStudentDob
     // Pressing Enter triggers the SAME existing verify button (single call, no duplicate requests)
@@ -835,6 +866,7 @@ if(!data.success){
 
 const latestTest =
 data.test;
+            clearInterval(testLoginTimerInterval);
             document
             .getElementById("ultimateJeePortal")
             .remove();
@@ -1102,6 +1134,18 @@ async function showTestInterface(testObject) {
     `;
 
     document.body.appendChild(wrapper);
+
+    // ENTER KEY FORM SUBMISSION — Pressing Enter once triggers the existing submit function only
+    wrapper.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            const submitBtn = document.getElementById("submitTestBtn");
+            if (submitBtn && !submitBtn.disabled) {
+                submitBtn.click();
+            }
+        }
+    });
+
     window.onbeforeunload = function () {
     return "Your test is still in progress.";
 };
@@ -1715,11 +1759,13 @@ function downloadBrochure() {
             <footer
                 style="
                     margin-top: 30px;
-                    border-top: 1px solid #e2e8f0;
-                    padding-top: 10px;
-                    font-size: 10px;
-                    color: #a0aec0;
+                    border-top: 1px solid #cbd5e0;
+                    padding-top: 12px;
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #2d3748;
                     text-align: center;
+                    opacity: 0.95;
                 ">
 
                 © 2026 Pinnacle Scholars Academy, Noida.

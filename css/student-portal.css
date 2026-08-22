@@ -95,6 +95,56 @@ body::after{
     z-index:-1;
 }
 
+/* Floating background objects layer — Rose / Cyan / Lime theme */
+.fx-layer {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+}
+.fx-shape {
+    position: absolute;
+    opacity: 0.45;
+    will-change: transform;
+}
+.fx-hex {
+    top: 15%; left: 8%;
+    width: 60px; height: 60px;
+    border: 1.5px solid rgba(251, 113, 133, 0.45);
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    animation: orbitFloatA 26s ease-in-out infinite;
+    filter: drop-shadow(0 0 14px rgba(251, 113, 133, 0.35));
+}
+.fx-ring {
+    top: 70%; left: 82%;
+    width: 85px; height: 85px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(34, 211, 238, 0.4);
+    animation: orbitFloatB 32s ease-in-out infinite;
+    filter: drop-shadow(0 0 16px rgba(34, 211, 238, 0.3));
+}
+.fx-tri {
+    top: 78%; left: 12%;
+    width: 0; height: 0;
+    border-left: 24px solid transparent;
+    border-right: 24px solid transparent;
+    border-bottom: 40px solid rgba(163, 230, 53, 0.22);
+    animation: orbitFloatC 28s ease-in-out infinite;
+    filter: drop-shadow(0 0 12px rgba(163, 230, 53, 0.25));
+}
+.fx-dot {
+    top: 22%; left: 90%;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(251, 113, 133, 0.9), transparent 70%);
+    animation: orbitFloatD 18s ease-in-out infinite;
+}
+@keyframes orbitFloatA { 0%, 100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(50px, 40px) rotate(180deg); } }
+@keyframes orbitFloatB { 0%, 100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(-45px, -50px) rotate(-180deg); } }
+@keyframes orbitFloatC { 0%, 100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(35px, -45px) rotate(90deg); } }
+@keyframes orbitFloatD { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-30px, 35px) scale(1.4); } }
+
 @keyframes gradientFlow{
     0%{background-position:0% 50%, 100% 50%, 0% 0%;}
     50%{background-position:100% 50%, 0% 50%, 0% 0%;}
