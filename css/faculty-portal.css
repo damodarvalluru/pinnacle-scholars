@@ -10,25 +10,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root{
-    /* -- identity tokens (names preserved, values redesigned) --
-       ACADEMIC NAVY & GOLD — unified site-wide institutional
-       palette: deep navy/midnight-blue background, cyan-teal for
-       structure, soft gold reserved for success/highlight states. */
-    --bg-gradient: linear-gradient(160deg, #04122b 0%, #061b3a 42%, #0b2454 100%);
-    --card-bg: rgba(0,166,199,0.05);
-    --card-border: rgba(0,166,199,0.28);
-    --text-main: #edf3fb;
-    --text-muted: #93a8c9;
-    --accent-primary: #0B3D91;    /* royal academic blue */
-    --accent-secondary: #00A6C7;  /* signal teal */
-    --accent-success: #F4C542;    /* soft gold flag */
-    --input-bg: rgba(4,18,43,0.7);
+    --bg-gradient: linear-gradient(160deg, #06111F 0%, #0B1D32 45%, #081628 100%);
+    --card-bg: rgba(11,29,50,0.78);
+    --card-border: rgba(255,255,255,0.12);
+    --text-main: #F8FAFC;
+    --text-muted: #AAB7C7;
+    --accent-primary: #00C8FF;    /* luminous cyan */
+    --accent-secondary: #5865F2;  /* royal indigo */
+    --accent-success: #00D68F;    /* emerald success */
+    --input-bg: rgba(6,17,31,0.75);
 
-    /* -- extended tokens for the control-deck system -- */
-    --violet-soft: rgba(11,61,145,0.16);
-    --teal-soft: rgba(0,166,199,0.16);
+    --violet-soft: rgba(139,92,246,0.18);
+    --teal-soft: rgba(0,200,255,0.18);
     --amber-soft: rgba(244,197,66,0.14);
-    --grid-line: rgba(0,166,199,0.08);
+    --grid-line: rgba(0,200,255,0.06);
 }
 
 *{box-sizing:border-box;}

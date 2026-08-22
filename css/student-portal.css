@@ -8,27 +8,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root{
-    --navy-deep:#04122b;   /* unified academic navy base */
-    --navy:#061b3a;
-    --navy-soft:#0b2454;
-    --gold:#F4C542;        /* soft gold — primary accent */
+    --navy-deep:#06111F;
+    --navy:#0B1D32;
+    --navy-soft:#102847;
+    --gold:#F4C542;
     --gold-bright:#ffdf8e;
     --gold-dim:rgba(244,197,66,0.28);
-    --azure:#00A6C7;       /* cyan/teal — secondary accent */
-    --violet:#0B3D91;      /* royal blue — kept name, repurposed */
-    --success:#34d399;     /* emerald — tertiary/success accent */
-    --ink:#eef4fb;
-    --ink-dim:rgba(238,244,251,0.72);
-    --glass:rgba(0,166,199,0.055);
-    --glass-strong:rgba(0,166,199,0.09);
-    --border:rgba(244,197,66,0.22);
-    --radius-lg:26px;
-    --radius-md:16px;
+    --azure:#00C8FF;       /* luminous cyan academic accent */
+    --violet:#5865F2;      /* royal indigo accent */
+    --academic-violet:#8B5CF6;
+    --success:#00D68F;
+    --ink:#F8FAFC;
+    --ink-dim:#AAB7C7;
+    --glass:rgba(255,255,255,0.06);
+    --glass-strong:rgba(11,29,50,0.78);
+    --border:rgba(255,255,255,0.12);
+    --radius-lg:22px;
+    --radius-md:14px;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
 
-html{scroll-behavior:smooth; scrollbar-width:thin; scrollbar-color:var(--gold) var(--navy-deep);}
+html{scroll-behavior:smooth; scrollbar-width:thin; scrollbar-color:var(--azure) var(--navy-deep);}
 
 body{
     font-family:'Inter',-apple-system,'Segoe UI',sans-serif;
@@ -41,33 +42,32 @@ body{
     color:var(--ink);
 
     background:
-        radial-gradient(circle at 15% 10%, #0b2454 0%, transparent 45%),
-        radial-gradient(circle at 85% 90%, #0d1a2e 0%, transparent 50%),
-        linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 45%, #04122b 100%);
+        radial-gradient(circle at 15% 10%, #0B1D32 0%, transparent 45%),
+        radial-gradient(circle at 85% 90%, #06111F 0%, transparent 50%),
+        linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 45%, #040c18 100%);
 
     background-size:220% 220%, 220% 220%, 100% 100%;
     animation:gradientFlow 22s ease infinite;
 }
 
-/* Slim, on-brand scrollbar (kept visible but minimal — unlike fees-payment, this
-   portal's brief did not ask for it to be hidden) */
+/* Slim, on-brand scrollbar */
 ::-webkit-scrollbar{width:8px;}
 ::-webkit-scrollbar-track{background:var(--navy-deep);}
-::-webkit-scrollbar-thumb{background:linear-gradient(var(--gold),#072a63);border-radius:10px;}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--azure),#072a63);border-radius:10px;}
 
-/* Aurora glow layer — rose/cyan/lime, distinct hues + path from other portals */
+/* Premium Aurora glow layer */
 body::before{
     content:"";
     position:fixed;
     inset:-20%;
     background:
-        radial-gradient(circle at 18% 22%, rgba(251,113,133,0.20), transparent 24%),
-        radial-gradient(circle at 82% 28%, rgba(34,211,238,0.18), transparent 24%),
-        radial-gradient(circle at 50% 85%, rgba(163,230,53,0.10), transparent 26%),
-        radial-gradient(circle at 8% 92%, rgba(167,139,250,0.10), transparent 22%);
+        radial-gradient(circle at 18% 22%, rgba(0,200,255,0.20), transparent 28%),
+        radial-gradient(circle at 82% 28%, rgba(88,101,242,0.18), transparent 28%),
+        radial-gradient(circle at 50% 85%, rgba(139,92,246,0.14), transparent 30%);
     filter:blur(95px);
     animation:floatingLights 24s ease-in-out infinite alternate;
     z-index:-3;
+    pointer-events:none;
 }
 
 /* Fine rose-flecked diagonal grid (different orientation from Faculty's square pan) */
@@ -94,56 +94,6 @@ body::after{
     pointer-events:none;
     z-index:-1;
 }
-
-/* Floating background objects layer — Rose / Cyan / Lime theme */
-.fx-layer {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    overflow: hidden;
-}
-.fx-shape {
-    position: absolute;
-    opacity: 0.45;
-    will-change: transform;
-}
-.fx-hex {
-    top: 15%; left: 8%;
-    width: 60px; height: 60px;
-    border: 1.5px solid rgba(251, 113, 133, 0.45);
-    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-    animation: orbitFloatA 26s ease-in-out infinite;
-    filter: drop-shadow(0 0 14px rgba(251, 113, 133, 0.35));
-}
-.fx-ring {
-    top: 70%; left: 82%;
-    width: 85px; height: 85px;
-    border-radius: 50%;
-    border: 1.5px solid rgba(34, 211, 238, 0.4);
-    animation: orbitFloatB 32s ease-in-out infinite;
-    filter: drop-shadow(0 0 16px rgba(34, 211, 238, 0.3));
-}
-.fx-tri {
-    top: 78%; left: 12%;
-    width: 0; height: 0;
-    border-left: 24px solid transparent;
-    border-right: 24px solid transparent;
-    border-bottom: 40px solid rgba(163, 230, 53, 0.22);
-    animation: orbitFloatC 28s ease-in-out infinite;
-    filter: drop-shadow(0 0 12px rgba(163, 230, 53, 0.25));
-}
-.fx-dot {
-    top: 22%; left: 90%;
-    width: 14px; height: 14px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(251, 113, 133, 0.9), transparent 70%);
-    animation: orbitFloatD 18s ease-in-out infinite;
-}
-@keyframes orbitFloatA { 0%, 100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(50px, 40px) rotate(180deg); } }
-@keyframes orbitFloatB { 0%, 100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(-45px, -50px) rotate(-180deg); } }
-@keyframes orbitFloatC { 0%, 100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(35px, -45px) rotate(90deg); } }
-@keyframes orbitFloatD { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-30px, 35px) scale(1.4); } }
 
 @keyframes gradientFlow{
     0%{background-position:0% 50%, 100% 50%, 0% 0%;}

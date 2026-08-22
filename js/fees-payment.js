@@ -444,40 +444,4 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ===== 25-MINUTE COUNTDOWN TIMER (Fees Payment Portal) =====
-    (function initFeeSessionTimer() {
-        let timerSeconds = 25 * 60; // 25 minutes
-        const timerDisplay = document.getElementById("feeTimerCount");
-        if (!timerDisplay) return;
-
-        const countdownInterval = setInterval(function () {
-            timerSeconds--;
-            if (timerSeconds <= 0) {
-                clearInterval(countdownInterval);
-                timerDisplay.innerText = "00:00";
-                
-                // Expiry action: Disable form fields and display warning modal
-                const studentIdInput = document.getElementById("studentId");
-                const fetchBtn = document.getElementById("fetchBtn");
-                const payBtn = document.getElementById("payBtn");
-                const paymentTypeSelect = document.getElementById("paymentType");
-                const partialInput = document.getElementById("partialAmount");
-
-                if (studentIdInput) studentIdInput.disabled = true;
-                if (fetchBtn) fetchBtn.disabled = true;
-                if (payBtn) payBtn.disabled = true;
-                if (paymentTypeSelect) paymentTypeSelect.disabled = true;
-                if (partialInput) partialInput.disabled = true;
-
-                const modal = document.getElementById("feeTimeoutModal");
-                if (modal) modal.style.display = "flex";
-                return;
-            }
-
-            const mins = Math.floor(timerSeconds / 60);
-            const secs = timerSeconds % 60;
-            timerDisplay.innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-        }, 1000);
-    })();
-
 });
