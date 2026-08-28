@@ -6,17 +6,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root{
-    --navy-deep:#06111F;
-    --navy:#0B1D32;
+    --navy-deep:#04122b;
+    --navy:#061b3a;
     --gold:#F4C542;
     --gold-bright:#ffdf8e;
-    --azure:#00C8FF;
-    --indigo:#5865F2;
-    --emerald:#00D68F;
-    --ink:#F8FAFC;
-    --ink-dim:#AAB7C7;
-    --glass:rgba(255,255,255,0.06);
-    --border:rgba(255,255,255,0.12);
+    --azure:#00A6C7;
+    --emerald:#22c55e;
+    --ink:#eef4fb;
+    --ink-dim:#a9bcd6;
+    --glass:rgba(0,166,199,0.06);
+    --border:rgba(244,197,66,0.22);
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -28,9 +27,9 @@ body{
     color:var(--ink);
 
     background:
-        radial-gradient(circle at 20% 15%, #0B1D32 0%, transparent 45%),
-        radial-gradient(circle at 85% 85%, #06111F 0%, transparent 50%),
-        linear-gradient(150deg, var(--navy-deep) 0%, var(--navy) 55%, #040c18 100%);
+        radial-gradient(circle at 20% 15%, #101d3f 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, #0a2454 0%, transparent 50%),
+        linear-gradient(150deg, var(--navy-deep) 0%, var(--navy) 55%, #0a1128 100%);
     background-size:220% 220%, 220% 220%, 100% 100%;
     animation:gradientFlow 22s ease infinite;
 

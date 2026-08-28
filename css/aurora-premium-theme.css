@@ -1,0 +1,491 @@
+/* =========================================================================
+   PINNACLE SCHOLARS ACADEMY — HOME PAGE
+   "PREMIUM ACADEMIC AURORA GLASS"  ·  design pass v1
+   -------------------------------------------------------------------------
+   Scope: index.html ONLY. This file is linked LAST, after main.css,
+   contact-form.css and premium-fx.css, so it re-skins the existing markup
+   purely through the CSS custom properties every one of those files
+   already reads via var(--name)) plus a small set of new, additive rules.
+
+   IT DOES NOT:
+   - remove, rename or restructure any existing selector, id or class
+   - touch any <script> file, onclick handler, form action or API call
+   - change Enter-key submission, timers, payment, auth or test logic
+   - alter any other page (student/faculty portal, fees, enrollment,
+     results) — those keep their current stylesheets untouched.
+
+   IT ONLY:
+   - re-declares design tokens (colors, glass, glow) to the Aurora Glass
+     palette supplied by the brief
+   - layers a slow animated aurora + grid + particle background
+   - restyles hero, nav, buttons, cards, ticker, footer, forms, visitor
+     counter and light/dark mode to the new identity
+   - adds prefers-reduced-motion + mobile performance guardrails
+   ========================================================================= */
+
+/* -------------------------------------------------------------------
+   0. TYPE SYSTEM
+   Sora = premium/futuristic display face, used ONLY for the hero
+   headline, section headings and stat numbers. Everything else keeps
+   reading via Poppins/Segoe fallback already loaded for maximum
+   readability, per the "don't make the whole site futuristic" rule.
+   ------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* -------------------------------------------------------------------
+   1. TOKEN SYSTEM — PREMIUM ACADEMIC AURORA GLASS PALETTE
+   Every rule downstream (header, nav, cards, buttons, ticker, footer,
+   forms) already consumes --primary/--secondary/--accent/--cyan/
+   --violet/--gold/--card-bg/--border/--glow-a/--glow-b etc. via var(),
+   so re-declaring them here cascades the new identity through the
+   whole homepage automatically.
+   ------------------------------------------------------------------- */
+:root{
+    /* -- deep layered navy base -- */
+    --aurora-bg-1:#050B18;
+    --aurora-bg-2:#071226;
+    --aurora-bg-3:#0B1230;
+
+    /* -- accent family (the ONLY four hues used across the identity) -- */
+    --aurora-cyan:#00D9FF;
+    --aurora-blue:#315CFF;
+    --aurora-violet:#7C3CFF;
+    --aurora-magenta:#C43CFF;
+
+    /* -- semantic -- */
+    --aurora-success:#00D68F;
+    --aurora-warning:#FFC107;
+    --aurora-critical:#FF4D67;
+
+    /* -- text -- */
+    --aurora-text:#F8FAFC;
+    --aurora-text-dim:#A8B3C7;
+
+    /* re-theme every existing token name so main.css / contact-form.css /
+       premium-fx.css inherit the new palette without being edited */
+    --navy-950:var(--aurora-bg-1);
+    --navy-900:var(--aurora-bg-2);
+    --navy-800:var(--aurora-bg-3);
+    --navy-700:#101a3d;
+
+    --cyan:var(--aurora-cyan);
+    --teal:var(--aurora-blue);
+    --electric-blue:var(--aurora-blue);
+    --blue-500:var(--aurora-blue);
+    --blue-700:var(--aurora-blue);
+    --violet:var(--aurora-violet);
+    --purple:var(--aurora-magenta);
+    --gold:var(--aurora-violet);          /* premium highlight role now violet, not amber */
+    --gold-bright:var(--aurora-magenta);
+    --gold-dim:rgba(124,60,255,.28);
+    --emerald:var(--aurora-success);
+    --amber:var(--aurora-warning);
+    --crimson:var(--aurora-critical);
+    --ink:var(--aurora-text);
+    --ink-dim:var(--aurora-text-dim);
+
+    --primary:var(--aurora-bg-2);
+    --secondary:var(--aurora-blue);
+    --accent:var(--aurora-cyan);
+    --dark:var(--aurora-bg-3);
+    --grad-start:var(--aurora-bg-1);
+    --grad-end:var(--aurora-bg-3);
+    --text-main:var(--aurora-text);
+    --card-bg:rgba(255,255,255,0.05);
+    --glass:rgba(255,255,255,0.05);
+    --glass-strong:rgba(255,255,255,.09);
+    --border:rgba(255,255,255,0.12);
+    --shadow:0 10px 35px rgba(2,6,20,.55);
+    --watermark-color:rgba(255,255,255,.025);
+    --glow-a:rgba(0,217,255,.30);
+    --glow-b:rgba(124,60,255,.30);
+
+    --cf-bg-deep:var(--aurora-bg-2);
+    --cf-bg-mid:var(--aurora-bg-3);
+    --cf-ink:var(--aurora-text);
+    --cf-ink-dim:var(--aurora-text-dim);
+    --cf-primary:var(--aurora-cyan);
+    --cf-primary-deep:var(--aurora-blue);
+    --cf-primary-bright:var(--aurora-magenta);
+    --cf-secondary:var(--aurora-violet);
+    --cf-glass:rgba(255,255,255,.05);
+    --cf-glass-strong:rgba(255,255,255,.09);
+    --cf-border:rgba(255,255,255,.14);
+    --cf-success:var(--aurora-success);
+    --cf-error:var(--aurora-critical);
+
+    --font-display:'Sora', 'Poppins', 'Segoe UI', sans-serif;
+    --font-body:'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+[data-theme="light"]{
+    /* -------------------------------------------------------------
+       32. LIGHT MODE — a genuine re-design, not an inverted dark mode.
+       Aurora + glow intensity is intentionally dialled down; contrast
+       is prioritised.
+       ------------------------------------------------------------- */
+    --primary:#F5F8FC;
+    --secondary:#4F46E5;
+    --accent:#087EA4;
+    --text-main:#172033;
+    --ink-dim:#4B5670;
+    --card-bg:rgba(255,255,255,0.9);
+    --glass:rgba(255,255,255,.85);
+    --border:rgba(8,126,164,.16);
+    --shadow:0 10px 30px rgba(23,32,51,.10);
+    --watermark-color:rgba(23,32,51,.03);
+    --glow-a:rgba(8,126,164,.14);
+    --glow-b:rgba(79,70,229,.12);
+
+    --cyan:#087EA4;
+    --teal:#087EA4;
+    --violet:#4F46E5;
+    --purple:#4F46E5;
+    --gold:#4F46E5;
+    --emerald:#00A876;
+    --cf-primary:#087EA4;
+    --cf-secondary:#4F46E5;
+}
+
+body{ font-family:var(--font-body); }
+
+/* -------------------------------------------------------------------
+   2. LAYERED ANIMATED AURORA BACKGROUND (index.html only)
+   Rendered by the .aurora-bg wrapper injected right after <body>.
+   Slow, elegant, non-distracting — 18-26s loops, blur-heavy, opacity
+   kept low so body copy stays perfectly readable on top.
+   ------------------------------------------------------------------- */
+.aurora-bg{
+    position:fixed;
+    inset:0;
+    z-index:-6;
+    overflow:hidden;
+    pointer-events:none;
+}
+.aurora-layer{
+    position:absolute;
+    inset:-20%;
+    border-radius:50%;
+    filter:blur(70px);
+    opacity:.55;
+    will-change:transform,opacity;
+}
+.aurora-cyan-layer{
+    background:radial-gradient(45% 40% at 18% 20%, rgba(0,217,255,.30), transparent 70%);
+    animation:auroraDrift1 22s ease-in-out infinite alternate;
+}
+.aurora-violet-layer{
+    background:radial-gradient(40% 38% at 82% 15%, rgba(124,60,255,.26), transparent 70%);
+    animation:auroraDrift2 26s ease-in-out infinite alternate;
+}
+.aurora-magenta-layer{
+    background:radial-gradient(38% 34% at 30% 88%, rgba(196,60,255,.20), transparent 70%);
+    animation:auroraDrift3 24s ease-in-out infinite alternate;
+}
+.aurora-blue-layer{
+    background:radial-gradient(42% 40% at 88% 82%, rgba(49,92,255,.24), transparent 70%);
+    animation:auroraDrift1 20s ease-in-out infinite alternate-reverse;
+}
+@keyframes auroraDrift1{
+    0%{ transform:translate3d(0,0,0) scale(1) rotate(0deg); }
+    100%{ transform:translate3d(3%,2%,0) scale(1.12) rotate(6deg); }
+}
+@keyframes auroraDrift2{
+    0%{ transform:translate3d(0,0,0) scale(1) rotate(0deg); }
+    100%{ transform:translate3d(-4%,3%,0) scale(1.08) rotate(-5deg); }
+}
+@keyframes auroraDrift3{
+    0%{ transform:translate3d(0,0,0) scale(1); opacity:.5; }
+    100%{ transform:translate3d(2%,-3%,0) scale(1.15); opacity:.7; }
+}
+
+.aurora-grid{
+    position:absolute;
+    inset:-10%;
+    background-image:
+        linear-gradient(rgba(0,217,255,.045) 1px,transparent 1px),
+        linear-gradient(90deg, rgba(0,217,255,.045) 1px,transparent 1px);
+    background-size:54px 54px;
+    mask-image:radial-gradient(circle at 50% 25%, black, transparent 75%);
+    animation:auroraGridPan 42s linear infinite;
+}
+@keyframes auroraGridPan{
+    0%{ background-position:0 0,0 0; }
+    100%{ background-position:220px 160px,220px 160px; }
+}
+
+.aurora-particles{ position:absolute; inset:0; }
+.aurora-particles .particle{
+    position:absolute;
+    color:var(--aurora-cyan);
+    opacity:.35;
+    font-size:10px;
+    filter:drop-shadow(0 0 6px currentColor);
+    animation:particleFloat 14s ease-in-out infinite;
+}
+.aurora-particles .p2{ color:var(--aurora-violet); }
+.aurora-particles .p3{ color:var(--aurora-magenta); }
+.aurora-particles .p4{ color:var(--aurora-blue); }
+.aurora-particles .p1{ top:14%; left:8%; animation-duration:16s; }
+.aurora-particles .p2{ top:22%; left:88%; animation-duration:19s; animation-delay:1s; }
+.aurora-particles .p3{ top:62%; left:12%; animation-duration:17s; animation-delay:2s; }
+.aurora-particles .p4{ top:75%; left:80%; animation-duration:21s; animation-delay:.5s; }
+.aurora-particles .p5{ top:40%; left:50%; animation-duration:18s; animation-delay:1.5s; }
+.aurora-particles .p6{ top:85%; left:45%; animation-duration:15s; animation-delay:2.5s; }
+@keyframes particleFloat{
+    0%,100%{ transform:translateY(0) translateX(0); opacity:.25; }
+    50%{ transform:translateY(-22px) translateX(10px); opacity:.6; }
+}
+
+.aurora-particles .edu-icon{
+    position:absolute;
+    font-size:22px;
+    opacity:.10;
+    filter:grayscale(.2) drop-shadow(0 0 10px rgba(0,217,255,.35));
+    animation:eduIconDrift 20s ease-in-out infinite;
+}
+.icon-cap{ top:16%; left:78%; animation-duration:24s; }
+.icon-book{ top:70%; left:6%; animation-duration:22s; animation-delay:2s; }
+.icon-atom{ top:34%; left:4%; animation-duration:26s; animation-delay:1s; }
+.icon-code{ top:80%; left:86%; animation-duration:23s; animation-delay:3s; }
+@keyframes eduIconDrift{
+    0%,100%{ transform:translateY(0) rotate(0deg); }
+    50%{ transform:translateY(-26px) rotate(8deg); }
+}
+
+@media (max-width:768px){
+    .aurora-layer{ filter:blur(46px); opacity:.4; }
+    .aurora-grid{ opacity:.5; background-size:64px 64px; }
+    .aurora-particles .edu-icon{ display:none; }
+}
+@media (max-width:480px){
+    .aurora-particles .particle{ display:none; }
+    .aurora-magenta-layer,.aurora-blue-layer{ display:none; }
+}
+@media (prefers-reduced-motion:reduce){
+    .aurora-layer,.aurora-grid,.aurora-particles .particle,.aurora-particles .edu-icon{ animation:none; }
+}
+
+/* -------------------------------------------------------------------
+   3. NAVBAR
+   ------------------------------------------------------------------- */
+header{
+    background:rgba(5,11,24,.72);
+    backdrop-filter:blur(20px) saturate(140%);
+    -webkit-backdrop-filter:blur(20px) saturate(140%);
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+.brand-header-wrapper h1 span:first-child{
+    background:linear-gradient(135deg,var(--aurora-cyan) 10%,var(--aurora-blue) 55%,var(--aurora-violet) 100%) !important;
+    -webkit-background-clip:text !important;
+    -webkit-text-fill-color:transparent !important;
+    filter:drop-shadow(0 0 14px rgba(0,217,255,.35));
+}
+.brand-header-wrapper h1 span:nth-child(2){ color:var(--aurora-text-dim) !important; }
+.brand-header-wrapper h1 span:nth-child(2) span{ color:var(--aurora-cyan) !important; }
+
+/* Apply Now CTA — targets the existing "Enroll" link, no markup change */
+.nav-links a[href="enrollment.html"]{
+    background:linear-gradient(135deg,var(--aurora-cyan),var(--aurora-blue) 55%,var(--aurora-violet));
+    color:#04101f !important;
+    font-weight:700;
+    box-shadow:0 6px 20px rgba(0,217,255,.28);
+}
+.nav-links a[href="enrollment.html"]:hover{
+    box-shadow:0 10px 26px rgba(124,60,255,.35);
+    transform:translateY(-3px) scale(1.04);
+}
+[data-theme="light"] header{
+    background:rgba(245,248,252,.85);
+    border-bottom:1px solid rgba(23,32,51,.08);
+}
+
+/* -------------------------------------------------------------------
+   4. HERO
+   ------------------------------------------------------------------- */
+.hero h1{
+    font-family:var(--font-display);
+    font-weight:800;
+    background:linear-gradient(100deg,var(--aurora-cyan) 0%,var(--aurora-blue) 45%,var(--aurora-violet) 90%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 26px rgba(0,217,255,.22));
+    letter-spacing:.5px;
+}
+.hero p{
+    color:var(--aurora-text-dim);
+    text-shadow:none;
+}
+[data-theme="light"] .hero h1{
+    -webkit-text-fill-color:#172033 !important;
+    background:none !important;
+    filter:none;
+}
+
+/* Hero statistic strip — reuses the site's own existing copy
+   (94% Success Rate / Elite Faculty / Smart Analytics) so no new
+   claims are introduced. Purely decorative, no JS dependency. */
+.hero-stats-strip{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:18px;
+    margin-top:34px;
+    position:relative;
+    z-index:5;
+}
+.hero-stat-card{
+    min-width:150px;
+    padding:16px 22px;
+    border-radius:16px;
+    background:var(--glass);
+    border:1px solid var(--border);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    box-shadow:0 8px 24px rgba(2,6,20,.35);
+    transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.hero-stat-card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(0,217,255,.4);
+    box-shadow:0 14px 32px rgba(0,217,255,.18);
+}
+.hero-stat-number{
+    font-family:var(--font-display);
+    font-size:1.6rem;
+    font-weight:700;
+    background:linear-gradient(120deg,var(--aurora-cyan),var(--aurora-violet));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.hero-stat-label{
+    font-size:.78rem;
+    color:var(--aurora-text-dim);
+    letter-spacing:.4px;
+    margin-top:2px;
+}
+[data-theme="light"] .hero-stat-number{
+    background:linear-gradient(120deg,#087EA4,#4F46E5);
+    -webkit-background-clip:text;
+}
+
+/* -------------------------------------------------------------------
+   5. SECTION HEADINGS
+   ------------------------------------------------------------------- */
+section h2{
+    font-family:var(--font-display);
+    font-weight:700;
+    background:linear-gradient(100deg,var(--aurora-cyan),var(--aurora-violet));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+[data-theme="light"] section h2{
+    -webkit-text-fill-color:#172033 !important;
+    background:none !important;
+}
+
+/* -------------------------------------------------------------------
+   6. GLASS CARDS + subtle bento variance (no markup change needed)
+   ------------------------------------------------------------------- */
+.card{
+    background:var(--glass);
+    border:1px solid var(--border);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+}
+.card::after{
+    background:conic-gradient(from var(--angle),var(--aurora-cyan),var(--aurora-blue),var(--aurora-violet),var(--aurora-magenta),var(--aurora-cyan));
+}
+#overview .grid,
+#faculty-directory-section .grid{
+    grid-auto-rows:1fr;
+}
+#overview .grid .card:first-child{
+    border-color:rgba(0,217,255,.22);
+}
+
+/* -------------------------------------------------------------------
+   7. BUTTONS
+   ------------------------------------------------------------------- */
+.cta-btn{
+    background:linear-gradient(135deg,var(--aurora-cyan),var(--aurora-blue) 55%,var(--aurora-violet));
+    color:#04101f;
+    font-weight:700;
+    border:none;
+}
+.portal-btn{
+    background:linear-gradient(135deg,var(--aurora-blue),var(--aurora-violet));
+    color:#fff;
+    font-weight:700;
+}
+
+/* -------------------------------------------------------------------
+   8. TICKER
+   ------------------------------------------------------------------- */
+.notice-ticker-title{ background:linear-gradient(135deg,var(--aurora-blue),var(--aurora-violet)) !important; }
+.notice-ticker-title::before{ background:var(--aurora-cyan); }
+.ticker-link{ color:var(--aurora-cyan); }
+
+/* -------------------------------------------------------------------
+   9. FORMS
+   ------------------------------------------------------------------- */
+.contact-card{
+    background:var(--glass);
+    border:1px solid var(--border);
+    backdrop-filter:blur(18px);
+}
+.contact-field input:focus,
+.contact-field textarea:focus{
+    box-shadow:0 0 0 3px rgba(0,217,255,.18) !important;
+}
+.contact-submit-btn{
+    background:linear-gradient(135deg,var(--aurora-cyan),var(--aurora-violet)) !important;
+    color:#04101f !important;
+}
+
+/* -------------------------------------------------------------------
+   10. VISITOR COUNTER
+   ------------------------------------------------------------------- */
+.visitor-counter-box{
+    background:var(--glass);
+    border:1px solid var(--border);
+    backdrop-filter:blur(18px);
+}
+.pulse-ring{ border-color:var(--aurora-cyan) !important; }
+#visitor-count{
+    background:linear-gradient(120deg,var(--aurora-cyan),var(--aurora-violet));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+/* -------------------------------------------------------------------
+   11. FOOTER
+   ------------------------------------------------------------------- */
+footer{
+    background:linear-gradient(180deg,transparent,rgba(5,11,24,.7));
+    border-top:1px solid rgba(255,255,255,.08);
+}
+
+/* -------------------------------------------------------------------
+   12. ACCESSIBILITY
+   ------------------------------------------------------------------- */
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
+    outline:2px solid var(--aurora-cyan);
+    outline-offset:2px;
+}
+@media (prefers-reduced-motion:reduce){
+    *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+}
+
+/* -------------------------------------------------------------------
+   13. MOBILE REFINEMENT (adds to, never fights, the existing
+       mobile rules already at the end of main.css)
+   ------------------------------------------------------------------- */
+@media (max-width:768px){
+    .hero-stats-strip{ gap:10px; margin-top:22px; }
+    .hero-stat-card{ min-width:104px; padding:10px 14px; }
+    .hero-stat-number{ font-size:1.15rem; }
+    .hero-stat-label{ font-size:.68rem; }
+    .card{ backdrop-filter:blur(10px); }
+    header{ backdrop-filter:blur(14px); }
+}

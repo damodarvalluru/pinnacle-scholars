@@ -1,55 +1,58 @@
 :root{
+            /* ==========================================================
+               MAIN SITE — DARK MODE
+               "Ink & Signal" system · Deep ink / Indigo / Fuchsia
+               Replaces the previous navy+blue+amber combination and is
+               distinct from Faculty (violet/teal/amber), Student
+               (rose/cyan/lime) and Fees Payment (navy/gold/azure/emerald).
+               Names kept unchanged — every rule below already consumes
+               these custom properties via var(), so the new palette
+               cascades through headings, card accents, glows, etc.
+               ========================================================== */
+            --primary:#04122b;
+            --secondary:#00A6C7;   /* cyan/teal — academic accent */
+            --accent:#F4C542;      /* soft gold — premium highlight, used sparingly */
+            --light:#f8fafc;
+            --dark:#061B3A;
+            --grad-start:#030a1a;
+            --grad-end:#0d2350;
+            --text-main:#EEF4FB;
+            --card-bg:rgba(9,23,51,0.72);
+            --glass:rgba(255,255,255,0.06);
+            --border:rgba(0,166,199,0.18);
+            --shadow:0 10px 35px rgba(2,10,25,.5);
+            --watermark-color:rgba(255,255,255,.03);
+            --glow-a: rgba(11,61,145,0.32);   /* royal blue glow */
+            --glow-b: rgba(0,166,199,0.28);   /* teal glow */
+        }
+        
+        [data-theme="light"]{
     /* ==========================================================
-       PREMIUM ACADEMIC AURORA GLASS — DARK MODE
-       Academic Navy / Luminous Cyan / Royal Indigo / Academic Violet
-       ========================================================== */
-    --primary:#06111F;
-    --secondary:#00C8FF;   /* luminous cyan — academic technology accent */
-    --accent:#F4C542;      /* soft gold — premium highlight */
-    --violet:#8B5CF6;      /* academic violet */
-    --indigo:#5865F2;      /* royal indigo */
-    --light:#F8FAFC;
-    --dark:#0B1D32;
-    --grad-start:#06111F;
-    --grad-end:#0B1D32;
-    --text-main:#F8FAFC;
-    --card-bg:rgba(11,29,50,0.78);
-    --glass:rgba(255,255,255,0.06);
-    --border:rgba(255,255,255,0.12);
-    --shadow:0 20px 50px rgba(0,0,0,0.45);
-    --watermark-color:rgba(255,255,255,0.03);
-    --glow-a:rgba(0,200,255,0.25);   /* cyan glow */
-    --glow-b:rgba(88,101,242,0.22);  /* indigo glow */
-}
-
-[data-theme="light"]{
-    /* ==========================================================
-       PREMIUM ACADEMIC AURORA GLASS — LIGHT MODE
-       Pure Ice-Blue Surface / Deep Cyan / Royal Blue / Deep Violet
+       MAIN SITE — LIGHT MODE
+       Same Ink & Signal family, tuned for a bright surface:
+       deeper indigo/fuchsia for AA contrast on white/lavender.
        ========================================================== */
     --primary:#F5F8FC;
-    --secondary:#087EA4;   /* deep cyan academic accent */
-    --accent:#C9971F;      /* rich gold highlight */
-    --violet:#7C3AED;
-    --indigo:#4F46E5;
+    --secondary:#0B3D91;   /* royal academic blue */
+    --accent:#C9971F;      /* deeper gold, tuned for contrast on white */
     --grad-start:#F5F8FC;
-    --grad-end:#EAF1F8;
-    --text-main:#172033;
-    --card-bg:rgba(255,255,255,0.88);
-    --glass:rgba(255,255,255,0.92);
-    --border:rgba(15,23,42,0.10);
-    --shadow:0 15px 35px rgba(8,126,164,0.08);
-    --watermark-color:rgba(15,23,42,0.03);
-    --glow-a:rgba(8,126,164,0.15);
-    --glow-b:rgba(79,70,229,0.12);
+    --grad-end:#E7EEF7;
+    --text-main:#10233F;
+    --card-bg:#ffffff;
+    --glass:rgba(255,255,255,.85);
+    --border:rgba(11,61,145,.14);
+    --shadow:0 10px 30px rgba(11,61,145,.08);
+    --watermark-color:rgba(11,61,145,.03);
+    --glow-a: rgba(11,61,145,0.14);
+    --glow-b: rgba(0,166,199,0.14);
 }
 
 [data-theme="light"] body{
     background:
-        radial-gradient(circle at 15% 15%, #D6E6FA 0%, transparent 35%),
-        radial-gradient(circle at 85% 85%, #E2ECF8 0%, transparent 35%),
-        linear-gradient(180deg, #F5F8FC 0%, #EAF1F8 60%, #DCE8F7 100%);
-    color:#172033;
+        radial-gradient(circle at top left, #D6E6FA 0%, transparent 30%),
+        radial-gradient(circle at bottom right, #FCE9BF 0%, transparent 28%),
+        linear-gradient(180deg, #F5F8FC 0%, #EAF1FA 60%, #DCE8F7 100%);
+    color:#10233F;
 }
 
         
