@@ -20,32 +20,27 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <script src="js/scripts.js"></script>
+    <script src="js/celestial-intro.js" defer></script>
     <script src="js/contact-form.js" defer></script>
     
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <!-- =========================
-WELCOME INTRO SCREEN
+WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
 ========================= -->
-
-<!-- =========================
-WELCOME INTRO SCREEN (LETTER DROP)
-========================= -->
-<div id="welcomeIntro">
-    <div class="intro-bg-effects">
-        <div class="intro-orb orb-1"></div>
-        <div class="intro-orb orb-2"></div>
-        <div class="intro-grid-pattern"></div>
-    </div>
-    
-    <div class="pinnacle-drop-stage">
-        <div class="drop-welcome-text">WELCOME TO</div>
-        <h1 class="intro-title" id="pinnacleDropTitle" aria-label="PINNACLE SCHOLARS ACADEMY">
-            <!-- Dynamically populated by celestial-intro.js letter by letter -->
+<div class="career-intro" id="welcomeIntro" aria-label="Pinnacle Scholars Academy opening experience" aria-live="polite">
+    <div class="intro-grid"></div>
+    <div class="intro-orb intro-orb-one"></div>
+    <div class="intro-orb intro-orb-two"></div>
+    <div class="intro-network"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="intro-copy">
+        <span class="intro-kicker">WELCOME TO</span>
+        <h1 aria-label="PINNACLE SCHOLARS ACADEMY" id="pinnacleDropTitle">
+            <!-- Populated dynamically by celestial-intro.js with letter-drop spans -->
         </h1>
-        <div class="drop-tagline" id="pinnacleDropTagline">NOIDA'S PREMIER ACADEMIC ACADEMY</div>
+        <p id="pinnacleDropTagline">NOIDA'S PREMIER ACADEMIC ACADEMY</p>
     </div>
 </div>
 

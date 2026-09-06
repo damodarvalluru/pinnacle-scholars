@@ -314,12 +314,7 @@ if(!result.success){
         const canvas = document.getElementById('bg-canvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
-        
-        let particlesArray = [];
-        // Fewer nodes on small screens for smoother mobile performance
-        const numberOfParticles = window.innerWidth <= 768 ? 22 : 45; // Balanced density to prevent UI lag
-        
-        // Handle responsive viewport dimension adjustments
+
         function setCanvasSize() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -327,72 +322,113 @@ if(!result.success){
         setCanvasSize();
         window.addEventListener('resize', setCanvasSize);
 
-        // Particle Object Configuration Blueprints
-        class GeometricParticle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                // Controls movement speeds across vectors
-                this.directionX = (Math.random() * 0.6) - 0.3;
-                this.directionY = (Math.random() * 0.6) - 0.3;
-                this.size = Math.random() * 2.5 + 1.5;
-            }
-            
-            // Render the floating nodes
-            draw() {
+        let time = 0;
+
+        // Render 3D Liquid Ribbon Wave matching the user's reference image
+        // (Electric Purple, Royal Blue, Luminous Cyan, Emerald Green)
+        function renderLiquidRibbonMesh() {
+            time += 0.008; // Continuous fluid wave motion
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // 1. Dark Space Backdrop
+            const baseGrad = ctx.createRadialGradient(w * 0.3, h * 0.3, 50, w * 0.5, h * 0.5, Math.max(w, h));
+            baseGrad.addColorStop(0, '#1c0836');
+            baseGrad.addColorStop(0.5, '#0b061d');
+            baseGrad.addColorStop(1, '#03010a');
+            ctx.fillStyle = baseGrad;
+            ctx.fillRect(0, 0, w, h);
+
+            // 2. Render Layered Flowing 3D Liquid Mesh Waves
+            const numRibbons = 12;
+            const stepY = h / 40;
+
+            for (let i = 0; i < numRibbons; i++) {
+                const ribbonPhase = i * 0.45;
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                ctx.fillStyle = 'rgba(139, 92, 246, 0.24)'; // Matches Faculty Portal violet identity
-                ctx.fill();
-            }
 
-            // Update coordinate ticks and handle boundary bounces
-            update() {
-                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
-                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
-                
-                this.x += this.directionX;
-                this.y += this.directionY;
-                this.draw();
-            }
-        }
+                let firstX = 0, firstY = 0;
 
-        // Initialize particle array collection
-        for (let i = 0; i < numberOfParticles; i++) {
-            particlesArray.push(new GeometricParticle());
-        }
-
-        // Calculate proximity vectors to render link paths
-        function connectNodes() {
-            let maxDistance = 160;
-            for (let a = 0; a < particlesArray.length; a++) {
-                for (let b = a; b < particlesArray.length; b++) {
-                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
-                                 + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                for (let y = -50; y <= h + 50; y += stepY) {
+                    const normY = y / h;
                     
-                    if (distance < maxDistance * maxDistance) {
-                        let opacity = 1 - (distance / (maxDistance * maxDistance));
-                        ctx.strokeStyle = `rgba(34, 211, 174, ${opacity * 0.14})`;
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                        ctx.stroke();
+                    // Voluptuous 3D liquid ribbon wave contour functions
+                    const wave1 = Math.sin(normY * 3.2 + time * 1.4 + ribbonPhase) * (w * 0.22);
+                    const wave2 = Math.cos(normY * 2.1 - time * 0.95 + ribbonPhase * 1.5) * (w * 0.15);
+                    const wave3 = Math.sin(normY * 5.0 + time * 2.1) * 35;
+
+                    const ribbonX = (w * 0.45) + wave1 + wave2 + wave3 + (i * 28 - (numRibbons * 14));
+
+                    if (y === -50) {
+                        ctx.moveTo(ribbonX, y);
+                        firstX = ribbonX;
+                        firstY = y;
+                    } else {
+                        ctx.lineTo(ribbonX, y);
                     }
                 }
+
+                ctx.lineTo(w + 100, h + 50);
+                ctx.lineTo(w + 100, -50);
+                ctx.closePath();
+
+                // Dynamic Multi-color Liquid Gradient (matching reference image)
+                const gradX1 = (w * 0.2) + Math.sin(time + ribbonPhase) * 100;
+                const gradY1 = Math.cos(time * 0.8) * 100;
+                const gradX2 = w * 0.8;
+                const gradY2 = h;
+
+                const ribbonGrad = ctx.createLinearGradient(gradX1, gradY1, gradX2, gradY2);
+                
+                ribbonGrad.addColorStop(0, `rgba(76, 29, 149, ${0.88 - i * 0.03})`);   // Deep Electric Purple
+                ribbonGrad.addColorStop(0.28, `rgba(124, 58, 237, ${0.92 - i * 0.03})`); // Violet
+                ribbonGrad.addColorStop(0.52, `rgba(37, 99, 235, ${0.9 - i * 0.03})`);   // Royal Indigo Blue
+                ribbonGrad.addColorStop(0.74, `rgba(6, 182, 212, ${0.93 - i * 0.03})`);  // Luminous Cyan
+                ribbonGrad.addColorStop(1, `rgba(16, 185, 129, ${0.95 - i * 0.03})`);   // Neon Emerald Green
+
+                ctx.fillStyle = ribbonGrad;
+                ctx.fill();
+
+                // Highlight Ridge Line (creates 3D folded silk / liquid contour depth)
+                ctx.lineWidth = 2.5;
+                ctx.strokeStyle = i % 2 === 0 ? 'rgba(0, 245, 212, 0.42)' : 'rgba(192, 132, 252, 0.45)';
+                ctx.stroke();
             }
+
+            // 3. Floating Ambient Glowing Fluid Orbs
+            ctx.save();
+            ctx.globalCompositeOperation = 'screen';
+            
+            // Purple Glow Orb
+            const orb1X = w * 0.25 + Math.sin(time * 0.7) * 120;
+            const orb1Y = h * 0.3 + Math.cos(time * 0.5) * 80;
+            const orb1Grad = ctx.createRadialGradient(orb1X, orb1Y, 10, orb1X, orb1Y, 320);
+            orb1Grad.addColorStop(0, 'rgba(147, 51, 234, 0.35)');
+            orb1Grad.addColorStop(1, 'transparent');
+            ctx.fillStyle = orb1Grad;
+            ctx.beginPath();
+            ctx.arc(orb1X, orb1Y, 320, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Emerald Green Glow Orb
+            const orb2X = w * 0.7 + Math.cos(time * 0.6) * 140;
+            const orb2Y = h * 0.6 + Math.sin(time * 0.8) * 100;
+            const orb2Grad = ctx.createRadialGradient(orb2X, orb2Y, 10, orb2X, orb2Y, 360);
+            orb2Grad.addColorStop(0, 'rgba(16, 185, 129, 0.32)');
+            orb2Grad.addColorStop(1, 'transparent');
+            ctx.fillStyle = orb2Grad;
+            ctx.beginPath();
+            ctx.arc(orb2X, orb2Y, 360, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+
+            requestAnimationFrame(renderLiquidRibbonMesh);
         }
 
-        // Continuous Loop Animation Thread Execution Frame
-        function renderMatrixLoop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-            }
-            connectNodes();
-            requestAnimationFrame(renderMatrixLoop);
-        }
-        renderMatrixLoop();
+        renderLiquidRibbonMesh();
     })();
 
     window.onload = function () {

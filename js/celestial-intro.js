@@ -1,4 +1,4 @@
-// Pinnacle Scholars Academy - Single Letter Drop Intro Animation for 3 Words
+// Pinnacle Scholars Academy - Career AI Visual System & Letter Drop Intro
 document.addEventListener('DOMContentLoaded', function() {
     initPinnacleLetterDropIntro();
 });
@@ -6,11 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
 function initPinnacleLetterDropIntro() {
     const welcomeIntro = document.getElementById('welcomeIntro');
     const pinnacleDropTitle = document.getElementById('pinnacleDropTitle');
-    const pinnacleDropTagline = document.getElementById('pinnacleDropTagline');
     
     if (!welcomeIntro || !pinnacleDropTitle) return;
 
-    // Guaranteed safety timeout to ensure website always appears even if interrupted
+    // Guaranteed safety timeout to ensure website always appears cleanly
     const autoDismissTimer = setTimeout(() => {
         dismissWelcomeIntro();
     }, 4500);
@@ -18,7 +17,7 @@ function initPinnacleLetterDropIntro() {
     // Check if intro was already shown in this tab session
     if (sessionStorage.getItem('pinnacleIntroPlayed') === 'true') {
         welcomeIntro.style.display = 'none';
-        welcomeIntro.classList.add('hide');
+        welcomeIntro.classList.add('is-complete', 'hide');
         document.body.classList.remove('entry-active');
         document.body.style.overflow = 'auto';
         clearTimeout(autoDismissTimer);
@@ -27,55 +26,50 @@ function initPinnacleLetterDropIntro() {
     
     document.body.classList.add('entry-active');
     
-    // The 3 words to drop letter by letter
+    // The 3 words of Pinnacle Scholars Academy to drop letter by letter
     const words = ["PINNACLE", "SCHOLARS", "ACADEMY"];
     pinnacleDropTitle.innerHTML = '';
     
-    let globalLetterIndex = 0;
+    let letterDelay = 0.15;
     
     words.forEach((wordText, wordIdx) => {
         const wordSpan = document.createElement('span');
-        wordSpan.className = 'intro-word';
+        wordSpan.className = 'intro-word' + (wordIdx === 2 ? ' intro-word-accent' : '');
         
         wordText.split('').forEach((char) => {
             const letterSpan = document.createElement('span');
-            letterSpan.className = 'intro-letter';
+            letterSpan.className = 'intro-letter-span';
             letterSpan.textContent = char;
-            // Staggered drop delay per single letter
-            letterSpan.style.animationDelay = `${globalLetterIndex * 0.065}s`;
+            letterSpan.style.animationDelay = `${letterDelay.toFixed(2)}s`;
             wordSpan.appendChild(letterSpan);
-            globalLetterIndex++;
+            letterDelay += 0.07;
         });
         
         pinnacleDropTitle.appendChild(wordSpan);
-    });
-    
-    const totalLettersCount = globalLetterIndex;
-    const animationCompletionTime = (totalLettersCount * 65) + 550; // ~2.1 seconds
-    
-    // Stage 2: After all single letters drop and land at constant center place, illuminate the 3 words
-    setTimeout(() => {
-        pinnacleDropTitle.classList.add('title-revealed');
-        if (pinnacleDropTagline) {
-            pinnacleDropTagline.classList.add('visible');
+        
+        if (wordIdx < words.length - 1) {
+            const spaceEm = document.createElement('em');
+            spaceEm.className = 'intro-word-space';
+            pinnacleDropTitle.appendChild(spaceEm);
+            letterDelay += 0.12;
         }
-    }, animationCompletionTime);
-    
-    // Stage 3: Smoothly hide intro overlay and reveal the entire website cleanly
+    });
+
+    // Complete intro at 3.6 seconds (matching Career AI duration)
     setTimeout(() => {
         dismissWelcomeIntro();
         clearTimeout(autoDismissTimer);
-    }, animationCompletionTime + 1800);
+    }, 3600);
 
     function dismissWelcomeIntro() {
         if (!welcomeIntro) return;
-        welcomeIntro.classList.add('hide');
+        welcomeIntro.classList.add('is-complete', 'hide');
         document.body.classList.remove('entry-active');
         document.body.style.overflow = 'auto';
         sessionStorage.setItem('pinnacleIntroPlayed', 'true');
         
         setTimeout(() => {
             welcomeIntro.style.display = 'none';
-        }, 800);
+        }, 700);
     }
 }

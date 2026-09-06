@@ -59,10 +59,13 @@
     start(role) {
       const minutes = role === 'faculty' ? 30 : 25;
       sessionStorage.setItem(KEY, JSON.stringify({ role, expiresAt: Date.now() + minutes * 60 * 1000 }));
+      const warningNotice = document.getElementById('sessionExpiryWarning');
+      if (warningNotice) warningNotice.remove();
       schedule();
+      renderClock();
     },
     active(role) { const s = read(); return Boolean(s && s.role === role && s.expiresAt > Date.now()); },
-    logout() { clear(); }
+    logout() { clear(); renderClock(); }
   };
   document.addEventListener('DOMContentLoaded', () => { schedule(); renderClock(); setInterval(renderClock, 1000); });
 }());
