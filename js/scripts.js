@@ -11,7 +11,40 @@ function toggleTheme() {
         }
     }
 
-// Home Page Background Animations
+// Global Background Animations - Applied to entire website
+function initGlobalAnimations() {
+    // Check if animations already initialized
+    if (document.querySelector('.global-particles')) return;
+
+    // Create global particles container
+    const particlesContainer = document.createElement('div');
+    particlesContainer.className = 'global-particles';
+    document.body.appendChild(particlesContainer);
+
+    // Create falling dots
+    for (let i = 0; i < 30; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'falling-dot';
+        dot.style.left = Math.random() * 100 + '%';
+        dot.style.animationDuration = (Math.random() * 10 + 8) + 's';
+        dot.style.animationDelay = Math.random() * 5 + 's';
+        particlesContainer.appendChild(dot);
+    }
+
+    // Create moving blocks
+    for (let i = 0; i < 5; i++) {
+        const block = document.createElement('div');
+        block.className = 'moving-block';
+        block.style.width = (Math.random() * 80 + 40) + 'px';
+        block.style.height = (Math.random() * 60 + 30) + 'px';
+        block.style.top = Math.random() * 80 + '%';
+        block.style.animationDuration = (Math.random() * 20 + 15) + 's';
+        block.style.animationDelay = Math.random() * 10 + 's';
+        particlesContainer.appendChild(block);
+    }
+}
+
+// Home Page Background Animations (specific to hero section)
 function initHomeAnimations() {
     const hero = document.querySelector('.hero');
     if (!hero) return;
@@ -46,7 +79,20 @@ function initHomeAnimations() {
 
 // Initialize animations when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
+    initGlobalAnimations();
     initHomeAnimations();
+});
+
+// Auto-toggle scroll button direction based on scroll position
+window.addEventListener('scroll', function() {
+    const scrollBtn = document.getElementById('globalScrollBtn');
+    if (scrollBtn) {
+        if (window.scrollY > 100) {
+            scrollBtn.classList.remove('pointing-down');
+        } else {
+            scrollBtn.classList.add('pointing-down');
+        }
+    }
 });
 
 

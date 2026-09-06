@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Faculty Portal | Pinnacle Scholars</title>
     <link rel="stylesheet" href="css/themes.css">
     <link rel="stylesheet" href="css/global.css">
@@ -10,9 +11,18 @@
     <link rel="stylesheet" href="css/faculty-portal.css">
     <link rel="stylesheet" href="css/session-manager.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <script src="js/scripts.js"></script>
     <script src="js/forgot-id.js" defer></script>
     <script src="js/faculty-portal.js"></script>
     <script src="js/session-manager.js"></script>
+    <script>
+        // Initialize global animations for this page
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof initGlobalAnimations === 'function') {
+                initGlobalAnimations();
+            }
+        });
+    </script>
 </head>
 <body>
 
@@ -22,6 +32,14 @@
         <div class="faculty-curved-3"></div>
     </div>
     <canvas id="bg-canvas"></canvas>
+
+    <!-- Floating Scroll Button -->
+    <button class="nav-scroll-btn pointing-down" id="globalScrollBtn" onclick="handleNavigation()" title="Navigate Page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+        </svg>
+    </button>
+
     <!-- Portal Master Interface Content Wrapper -->
     <div class="portal-container" id="authContainer">
         
