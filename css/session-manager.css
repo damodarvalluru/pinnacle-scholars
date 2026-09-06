@@ -5,12 +5,12 @@
 
 #pinnacleSessionClock, .pinnacle-session-clock {
     position: fixed;
-    bottom: 1.5rem;
-    left: 1.5rem;
+    top: 1.5rem;
+    right: 1.5rem;
     background: var(--bg-surface);
-    border: 1px solid var(--border);
+    border: 2px solid var(--border);
     border-radius: var(--radius-md);
-    padding: 0.6rem 1.1rem;
+    padding: 0.8rem 1.2rem;
     box-shadow: var(--shadow-md);
     z-index: 9999;
     display: inline-flex;
@@ -21,11 +21,13 @@
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    max-width: calc(100vw - 3rem);
 }
 
 #pinnacleSessionClock span, .pinnacle-session-clock span {
     font-weight: 500;
     color: var(--text-secondary);
+    white-space: nowrap;
 }
 
 #pinnacleSessionClock strong, .pinnacle-session-clock strong {
@@ -51,6 +53,51 @@
     color: var(--warning);
 }
 
+/* Timer Type Specific Styles */
+.pinnacle-session-clock.timer-portal {
+    border: 2px solid #4FC3F7;
+    box-shadow: 0 0 15px rgba(79, 195, 247, 0.4), 0 0 30px rgba(79, 195, 247, 0.2);
+    animation: glowBlue 2s ease-in-out infinite alternate;
+}
+
+.pinnacle-session-clock.timer-test {
+    border: 2px solid #E57373;
+    box-shadow: 0 0 15px rgba(229, 115, 115, 0.4), 0 0 30px rgba(229, 115, 115, 0.2);
+    animation: glowMaroon 2s ease-in-out infinite alternate;
+}
+
+.pinnacle-session-clock.timer-payment {
+    border: 2px solid #81C784;
+    box-shadow: 0 0 15px rgba(129, 199, 132, 0.4), 0 0 30px rgba(129, 199, 132, 0.2);
+    animation: glowGreen 2s ease-in-out infinite alternate;
+}
+
+.pinnacle-session-clock.timer-result {
+    border: 2px solid #EF5350;
+    box-shadow: 0 0 15px rgba(239, 83, 80, 0.4), 0 0 30px rgba(239, 83, 80, 0.2);
+    animation: glowRed 2s ease-in-out infinite alternate;
+}
+
+@keyframes glowBlue {
+    from { box-shadow: 0 0 15px rgba(79, 195, 247, 0.4), 0 0 30px rgba(79, 195, 247, 0.2); }
+    to { box-shadow: 0 0 20px rgba(79, 195, 247, 0.6), 0 0 40px rgba(79, 195, 247, 0.3); }
+}
+
+@keyframes glowMaroon {
+    from { box-shadow: 0 0 15px rgba(229, 115, 115, 0.4), 0 0 30px rgba(229, 115, 115, 0.2); }
+    to { box-shadow: 0 0 20px rgba(229, 115, 115, 0.6), 0 0 40px rgba(229, 115, 115, 0.3); }
+}
+
+@keyframes glowGreen {
+    from { box-shadow: 0 0 15px rgba(129, 199, 132, 0.4), 0 0 30px rgba(129, 199, 132, 0.2); }
+    to { box-shadow: 0 0 20px rgba(129, 199, 132, 0.6), 0 0 40px rgba(129, 199, 132, 0.3); }
+}
+
+@keyframes glowRed {
+    from { box-shadow: 0 0 15px rgba(239, 83, 80, 0.4), 0 0 30px rgba(239, 83, 80, 0.2); }
+    to { box-shadow: 0 0 20px rgba(239, 83, 80, 0.6), 0 0 40px rgba(239, 83, 80, 0.3); }
+}
+
 /* Session Expiry Warning Alert Banner */
 #sessionExpiryWarning, .session-expiry-warning {
     position: fixed;
@@ -68,9 +115,32 @@
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.3);
     animation: introFadeIn 0.4s ease-out;
+    max-width: calc(100vw - 3rem);
 }
 
 #sessionExpiryWarning strong, .session-expiry-warning strong {
     color: #000000;
     font-weight: 800;
+}
+
+/* Mobile responsive adjustments for timers */
+@media (max-width: 768px) {
+    #pinnacleSessionClock, .pinnacle-session-clock {
+        top: 1rem;
+        right: 1rem;
+        padding: 0.6rem 0.9rem;
+        font-size: 0.8rem;
+        max-width: calc(100vw - 2rem);
+    }
+
+    #pinnacleSessionClock strong, .pinnacle-session-clock strong {
+        font-size: 0.95rem;
+    }
+
+    #sessionExpiryWarning, .session-expiry-warning {
+        top: 1rem;
+        padding: 0.7rem 1.2rem;
+        font-size: 0.85rem;
+        max-width: calc(100vw - 2rem);
+    }
 }

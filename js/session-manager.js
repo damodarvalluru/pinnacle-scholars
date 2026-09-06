@@ -35,8 +35,33 @@
     const remaining = session ? Math.max(0, session.expiresAt - Date.now()) : 25 * 60 * 1000;
     const minutes = Math.floor(remaining / 60000).toString().padStart(2, '0');
     const seconds = Math.floor((remaining % 60000) / 1000).toString().padStart(2, '0');
-    clock.innerHTML = `<span>Secure portal session</span><strong>${minutes}:${seconds}</strong>${session ? '' : '<em>Sign in to begin</em>'}`;
+
+    // Set timer message based on session type
+    let message = 'Secure portal session';
+    if (session) {
+      switch(session.type) {
+        case 'test':
+          message = 'login session will be expired in';
+          break;
+        case 'payment':
+          message = 'payment session expires in';
+          break;
+        case 'result':
+          message = 'session expires in';
+          break;
+        default:
+          message = 'you will be logged out in';
+      }
+    }
+
+    clock.innerHTML = `<span>${message}</span><strong>${minutes}:${seconds}</strong>${session ? '' : '<em>Sign in to begin</em>'}`;
     clock.classList.toggle('is-warning', Boolean(session && remaining <= WARNING_MS));
+
+    // Set timer type class for styling
+    clock.className = 'pinnacle-session-clock';
+    if (session) {
+      clock.classList.add(`timer-${session.type}`);
+    }
   }
   function expire(message) {
     clear();
@@ -56,9 +81,22 @@
     renderClock();
   }
   window.PinnacleSession = {
-    start(role) {
-      const minutes = role === 'faculty' ? 30 : 25;
-      sessionStorage.setItem(KEY, JSON.stringify({ role, expiresAt: Date.now() + minutes * 60 * 1000 }));
+    start(role, type = 'portal') {
+      let minutes;
+      switch(type) {
+        case 'test':
+          minutes = 5; // 5 minutes for test portal
+          break;
+        case 'payment':
+          minutes = 15; // 15 minutes for payment portal
+          break;
+        case 'result':
+          minutes = 3; // 3 minutes for result portal
+          break;
+        default:
+          minutes = 25; // 25 minutes for portal login
+      }
+      sessionStorage.setItem(KEY, JSON.stringify({ role, type, expiresAt: Date.now() + minutes * 60 * 1000 }));
       const warningNotice = document.getElementById('sessionExpiryWarning');
       if (warningNotice) warningNotice.remove();
       schedule();

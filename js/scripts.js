@@ -2,7 +2,7 @@ function toggleTheme() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', targetTheme);
-        
+
         const toggleBtn = document.getElementById('themeToggleBtn');
         if (targetTheme === 'dark') {
             toggleBtn.innerHTML = '☀️ Light Mode';
@@ -10,6 +10,44 @@ function toggleTheme() {
             toggleBtn.innerHTML = '🌙 Dark Mode';
         }
     }
+
+// Home Page Background Animations
+function initHomeAnimations() {
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
+
+    // Create particles container
+    const particlesContainer = document.createElement('div');
+    particlesContainer.className = 'hero-particles';
+    hero.appendChild(particlesContainer);
+
+    // Create falling dots
+    for (let i = 0; i < 30; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'falling-dot';
+        dot.style.left = Math.random() * 100 + '%';
+        dot.style.animationDuration = (Math.random() * 10 + 8) + 's';
+        dot.style.animationDelay = Math.random() * 5 + 's';
+        particlesContainer.appendChild(dot);
+    }
+
+    // Create moving blocks
+    for (let i = 0; i < 5; i++) {
+        const block = document.createElement('div');
+        block.className = 'moving-block';
+        block.style.width = (Math.random() * 80 + 40) + 'px';
+        block.style.height = (Math.random() * 60 + 30) + 'px';
+        block.style.top = Math.random() * 80 + '%';
+        block.style.animationDuration = (Math.random() * 20 + 15) + 's';
+        block.style.animationDelay = Math.random() * 10 + 's';
+        particlesContainer.appendChild(block);
+    }
+}
+
+// Initialize animations when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    initHomeAnimations();
+});
 
 
 function startIntroAnimations(){
@@ -748,6 +786,9 @@ ${examConfig[domain].instructions}
 
         localStorage.setItem("active_student_id", studentId);
         localStorage.setItem("active_student_dob", dob);
+
+        // Start test session timer (5 minutes)
+        if (window.PinnacleSession) PinnacleSession.start('student', 'test');
 
         const status =
             document.getElementById("statusText");

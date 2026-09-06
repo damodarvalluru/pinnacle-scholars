@@ -32,7 +32,7 @@
         }
         const user = data.student;console.log(user);
         activeSessionUserObject = user;
-        if (window.PinnacleSession) PinnacleSession.start('student');
+        if (window.PinnacleSession) PinnacleSession.start('student', 'portal');
         localStorage.setItem("active_student_id",user.student_id);
         localStorage.setItem("active_student_name",user.name);
         const totalFees = Number(user.total_fees || 0);

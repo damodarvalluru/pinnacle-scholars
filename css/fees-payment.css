@@ -1,6 +1,8 @@
 /* ==========================================================================
    PINNACLE SCHOLARS ACADEMY - FEES PAYMENT PAGE (FEES-PAYMENT.HTML) STYLES
    Financial Dashboard Card, Student Details Breakup, Razorpay Payment CTA
+   Warm & Approachable financial UI
+   Background: #FAF9F6, Primary/Text: #212529, Pay Now accent: #1D4ED8
    ========================================================================== */
 
 /* Droplet Animation Canvas Shapes */
@@ -20,25 +22,39 @@ body {
     align-items: center;
     justify-content: center;
     padding: 2rem 1rem;
+    background: #FAF9F6;
+    color: #212529;
 }
 
 .payment-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(29, 78, 216, 0.15);
     border-radius: var(--radius-xl);
     padding: 3rem;
     width: 100%;
     max-width: 620px;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 20px 60px rgba(33, 37, 41, 0.1), 0 0 40px rgba(29, 78, 216, 0.08);
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.payment-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1D4ED8, #3B82F6);
 }
 
 .payment-card h1 {
     font-size: 2.2rem;
     font-weight: 800;
     text-align: center;
-    color: var(--text-primary);
+    color: #212529;
     margin-bottom: 2rem;
     letter-spacing: -0.02em;
 }
@@ -51,7 +67,7 @@ body {
 .input-box label {
     font-size: 0.92rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: #212529;
     margin-bottom: 0.5rem;
     display: block;
 }
@@ -62,17 +78,17 @@ body {
     font-size: 1.05rem;
     font-weight: 600;
     letter-spacing: 1px;
-    background: var(--bg-surface-soft);
-    border: 1.5px solid var(--border);
+    background: rgba(250, 249, 246, 0.8);
+    border: 1.5px solid #DEE2E6;
     border-radius: var(--radius-md);
-    color: var(--text-primary);
+    color: #212529;
     text-transform: uppercase;
 }
 
 .input-box input:focus {
-    border-color: var(--primary-bright);
-    box-shadow: 0 0 0 4px var(--border-glow);
-    background-color: var(--bg-surface);
+    border-color: #1D4ED8;
+    box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.15);
+    background-color: rgba(255, 255, 255, 0.95);
 }
 
 .forgot-id-link {
@@ -83,30 +99,45 @@ body {
 .forgot-id-link a {
     font-size: 0.85rem;
     font-weight: 600;
-    color: var(--primary-bright);
+    color: #1D4ED8;
 }
 
-.fetch-btn, .pay-btn {
+.fetch-btn {
     width: 100%;
     padding: 1rem;
     font-size: 1.05rem;
     font-weight: 700;
-    background: var(--grad-primary);
+    background: linear-gradient(135deg, #1D4ED8 0%, #3B82F6 100%);
     color: #FFFFFF;
     border-radius: var(--radius-md);
     border: none;
     cursor: pointer;
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 14px rgba(29, 78, 216, 0.3);
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.fetch-btn:hover, .pay-btn:hover {
+.fetch-btn:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    box-shadow: 0 6px 20px rgba(29, 78, 216, 0.4);
 }
 
 .pay-btn {
-    background: linear-gradient(135deg, #16A34A 0%, #059669 100%);
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #1D4ED8 0%, #3B82F6 100%);
+    color: #FFFFFF;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(29, 78, 216, 0.3);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.pay-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(29, 78, 216, 0.4);
 }
 
 /* Student Details Dashboard Breakup */
@@ -114,33 +145,33 @@ body {
     display: none;
     margin-top: 2rem;
     padding: 1.75rem;
-    background: var(--bg-surface-soft);
-    border: 1px solid var(--border);
+    background: rgba(250, 249, 246, 0.9);
+    border: 2px solid rgba(29, 78, 216, 0.1);
     border-radius: var(--radius-lg);
 }
 
 .student-details p {
     font-size: 1.02rem;
-    color: var(--text-secondary);
+    color: #495057;
     margin-bottom: 0.75rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px dashed var(--border-subtle);
+    border-bottom: 1px dashed rgba(29, 78, 216, 0.2);
     padding-bottom: 0.6rem;
 }
 
 .student-details p strong {
-    color: var(--text-primary);
+    color: #212529;
 }
 
 .student-details span {
     font-weight: 700;
-    color: var(--primary-bright);
+    color: #1D4ED8;
 }
 
 #sRemain {
-    color: var(--danger);
+    color: #DC3545;
 }
 
 /* Payment Options Container */
@@ -150,7 +181,7 @@ body {
 
 .payment-options label {
     font-weight: 600;
-    color: var(--text-primary);
+    color: #212529;
     margin-bottom: 0.5rem;
     display: block;
 }
@@ -159,11 +190,16 @@ body {
     width: 100%;
     padding: 0.85rem 1.15rem;
     font-size: 1rem;
-    background: var(--bg-surface);
-    border: 1.5px solid var(--border);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1.5px solid #DEE2E6;
     border-radius: var(--radius-md);
-    color: var(--text-primary);
+    color: #212529;
     margin-bottom: 1.25rem;
+}
+
+.payment-options select:focus {
+    border-color: #1D4ED8;
+    box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.15);
 }
 
 .partial-box {
@@ -175,10 +211,15 @@ body {
     width: 100%;
     padding: 0.85rem 1.15rem;
     font-size: 1rem;
-    background: var(--bg-surface);
-    border: 1.5px solid var(--border);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1.5px solid #DEE2E6;
     border-radius: var(--radius-md);
-    color: var(--text-primary);
+    color: #212529;
+}
+
+.partial-box input:focus {
+    border-color: #1D4ED8;
+    box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.15);
 }
 
 #receiptDownloadArea {
@@ -187,14 +228,14 @@ body {
 }
 
 .receipt-download-btn {
-    background: var(--grad-accent);
+    background: linear-gradient(135deg, #1D4ED8 0%, #3B82F6 100%);
     color: #FFFFFF;
     padding: 0.85rem 1.75rem;
     font-weight: 700;
     border-radius: var(--radius-md);
     border: none;
     cursor: pointer;
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 14px rgba(29, 78, 216, 0.3);
 }
 
 .home-link {
@@ -205,9 +246,9 @@ body {
 .home-link a {
     font-size: 0.92rem;
     font-weight: 600;
-    color: var(--text-secondary);
+    color: #495057;
 }
 
 .home-link a:hover {
-    color: var(--primary-bright);
+    color: #1D4ED8;
 }

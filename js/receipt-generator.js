@@ -40,8 +40,86 @@ window.showPaymentReceiptDownload = function (details) {
   let area = document.getElementById('receiptDownloadArea');
   if (!area) return;
   area.style.display = 'block';
-  area.innerHTML = '<button type="button" class="receipt-download-btn">Download Fees Receipt (PDF)</button>';
-  area.querySelector('button').addEventListener('click', () => window.downloadPaymentReceipt(details));
+
+  const amount = Number(details.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const totalPaid = Number(details.totalPaid || details.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const remainingFees = Number(details.remainingFees || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const previousPaid = Number(details.previousPaid || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  area.innerHTML = `
+    <div class="receipt-preview-card">
+      <div class="receipt-header">
+        <div class="receipt-institute-name">Pinnacle Scholars Academy</div>
+        <div class="receipt-title">Official Fee Payment Receipt</div>
+        <div class="receipt-reference">Ref: ${details.reference || `PSA-${details.paymentId || Date.now()}`}</div>
+      </div>
+
+      <div class="receipt-status">PAID / SUCCESS</div>
+
+      <div class="receipt-details">
+        <div class="receipt-detail-row">
+          <span class="receipt-detail-label">Student Name</span>
+          <span class="receipt-detail-value">${details.name || 'Student'}</span>
+        </div>
+        <div class="receipt-detail-row">
+          <span class="receipt-detail-label">Student ID</span>
+          <span class="receipt-detail-value">${details.studentId || 'N/A'}</span>
+        </div>
+        <div class="receipt-detail-row">
+          <span class="receipt-detail-label">Academic Domain</span>
+          <span class="receipt-detail-value">${details.domain || 'N/A'}</span>
+        </div>
+        <div class="receipt-detail-row">
+          <span class="receipt-detail-label">Transaction ID</span>
+          <span class="receipt-detail-value highlight">${details.paymentId || 'N/A'}</span>
+        </div>
+        <div class="receipt-detail-row">
+          <span class="receipt-detail-label">Order ID</span>
+          <span class="receipt-detail-value">${details.orderId || 'N/A'}</span>
+        </div>
+        <div class="receipt-detail-row">
+          <span class="receipt-detail-label">Payment Type</span>
+          <span class="receipt-detail-value">${details.paymentType || 'Fee Payment'}</span>
+        </div>
+        <div class="receipt-detail-row">
+          <span class="receipt-detail-label">Previous Amount Paid</span>
+          <span class="receipt-detail-value">₹${previousPaid}</span>
+        </div>
+        <div class="receipt-detail-row">
+          <span class="receipt-detail-label">Current Payment</span>
+          <span class="receipt-detail-value highlight">₹${amount}</span>
+        </div>
+        <div class="receipt-detail-row">
+          <span class="receipt-detail-label">Total Amount Paid</span>
+          <span class="receipt-detail-value">₹${totalPaid}</span>
+        </div>
+        <div class="receipt-detail-row">
+          <span class="receipt-detail-label">Remaining Fees</span>
+          <span class="receipt-detail-value">₹${remainingFees}</span>
+        </div>
+        <div class="receipt-detail-row">
+          <span class="receipt-detail-label">Date & Time</span>
+          <span class="receipt-detail-value">${details.dateTime || new Date().toLocaleString('en-IN')}</span>
+        </div>
+      </div>
+
+      <div class="receipt-amount-section">
+        <div class="receipt-amount-label">Total Paid Amount</div>
+        <div class="receipt-amount-value"><span class="receipt-amount-currency">₹</span>${totalPaid}</div>
+      </div>
+
+      <div class="receipt-footer">
+        <div class="receipt-footer-text">This system-generated receipt confirms a successful Razorpay verification.</div>
+        <div class="receipt-footer-copyright">&copy; 2026 Pinnacle Scholars Academy, Noida. All Rights Reserved.</div>
+      </div>
+    </div>
+    <button type="button" class="receipt-download-btn">Download Fees Receipt (PDF)</button>
+  `;
+
+  const downloadBtn = area.querySelector('.receipt-download-btn');
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', () => window.downloadPaymentReceipt(details));
+  }
 };
 
 document.addEventListener('DOMContentLoaded', () => {

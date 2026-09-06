@@ -116,7 +116,7 @@ button:hover::after, .btn:hover::after, .cta-btn:hover::after, .portal-btn:hover
 .nav-scroll-btn svg {
     width: 24px;
     height: 24px;
-    fill: currentColor;
+    stroke: currentColor;
     transition: transform var(--transition-smooth);
 }
 

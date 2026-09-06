@@ -153,7 +153,7 @@ btn.disabled = false;
 
             activeFacultySessionObject =
             verifiedUser;
-            if (window.PinnacleSession) PinnacleSession.start('faculty');
+            if (window.PinnacleSession) PinnacleSession.start('faculty', 'portal');
 
             document.getElementById('authContainer')
             .style.display='none';

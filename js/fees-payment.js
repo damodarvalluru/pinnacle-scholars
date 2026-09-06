@@ -54,7 +54,7 @@ fetchBtn.innerText = "Fetch Details";
         }
 
         const student = data.student;
-        if (window.PinnacleSession) PinnacleSession.start('student');
+        if (window.PinnacleSession) PinnacleSession.start('student', 'payment');
 
         currentStudent = {
 

@@ -62,7 +62,7 @@ await fetch(
             return;
         }
 
-        if (window.PinnacleSession) PinnacleSession.start('student');
+        if (window.PinnacleSession) PinnacleSession.start('student', 'result');
         const matchedResult =
             resultData.results[0];
 
