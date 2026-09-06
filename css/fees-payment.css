@@ -1,384 +1,213 @@
-/* ==========================================================
-   PINNACLE SCHOLARS ACADEMY — FEE PAYMENT PORTAL
-   Premium Institutional Design System · Navy & Gold
-   ========================================================== */
+/* ==========================================================================
+   PINNACLE SCHOLARS ACADEMY - FEES PAYMENT PAGE (FEES-PAYMENT.HTML) STYLES
+   Financial Dashboard Card, Student Details Breakup, Razorpay Payment CTA
+   ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
-
-:root{
-    --navy-deep:#04122b;
-    --navy:#061b3a;
-    --gold:#F4C542;
-    --gold-bright:#ffdf8e;
-    --azure:#00A6C7;
-    --emerald:#22c55e;
-    --ink:#eef4fb;
-    --ink-dim:#a9bcd6;
-    --glass:rgba(0,166,199,0.06);
-    --border:rgba(244,197,66,0.22);
+/* Droplet Animation Canvas Shapes */
+.droplet {
+    position: fixed;
+    top: -20px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 80%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+    animation: lineMove linear infinite;
 }
 
-*{margin:0;padding:0;box-sizing:border-box;}
-
-body{
-    font-family:'Inter', -apple-system, 'Segoe UI', sans-serif;
-    min-height:100vh;
-    overflow-x:hidden;
-    color:var(--ink);
-
-    background:
-        radial-gradient(circle at 20% 15%, #101d3f 0%, transparent 45%),
-        radial-gradient(circle at 85% 85%, #0a2454 0%, transparent 50%),
-        linear-gradient(150deg, var(--navy-deep) 0%, var(--navy) 55%, #0a1128 100%);
-    background-size:220% 220%, 220% 220%, 100% 100%;
-    animation:gradientFlow 22s ease infinite;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    position:relative;
-    padding:24px;
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
 }
 
-#receiptDownloadArea{margin-top:18px;text-align:center}.receipt-download-btn{border:1px solid rgba(255,255,255,.45);border-radius:12px;padding:13px 20px;background:linear-gradient(100deg,#0ea5e9,#0B3D91,#14b8a6);background-size:180% 100%;color:#fff;font-weight:800;cursor:pointer;box-shadow:0 10px 24px rgba(37,99,235,.28);transition:transform .2s ease,background-position .4s ease}.receipt-download-btn:hover{transform:translateY(-2px);background-position:100% 0}
-
-@keyframes gradientFlow{
-    0%{background-position:0% 50%, 100% 50%, 0% 0%;}
-    50%{background-position:100% 50%, 0% 50%, 0% 0%;}
-    100%{background-position:0% 50%, 100% 50%, 0% 0%;}
+.payment-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 3rem;
+    width: 100%;
+    max-width: 620px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
 }
 
-/* Aurora glow */
-body::before{
-    content:"";
-    position:fixed;
-    inset:-20%;
-    background:
-        radial-gradient(circle at 18% 22%, rgba(59,130,246,0.22), transparent 24%),
-        radial-gradient(circle at 82% 30%, rgba(232,193,101,0.16), transparent 24%),
-        radial-gradient(circle at 50% 88%, rgba(124,58,237,0.16), transparent 26%);
-    filter:blur(95px);
-    animation:floatingLights 20s ease-in-out infinite alternate;
-    z-index:0;
+.payment-card h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    text-align: center;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
 }
 
-@keyframes floatingLights{
-    0%{transform:translate(0,0) scale(1);}
-    100%{transform:translate(-45px,-30px) scale(1.14);}
+.input-box {
+    margin-bottom: 1.5rem;
+    position: relative;
 }
 
-/* Fine gold grid */
-body > .payment-card ~ *{ }
-body::after{
-    content:"";
-    position:fixed;
-    inset:0;
-    background-image:
-        linear-gradient(rgba(232,193,101,0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(232,193,101,0.045) 1px, transparent 1px);
-    background-size:44px 44px;
-    z-index:0;
-    mask-image:radial-gradient(circle at 50% 40%, black, transparent 75%);
+.input-box label {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    display: block;
 }
 
-/* WATER DROPLETS — kept, restyled as falling gold-lit motes */
-/* FIX: was position:absolute — these animate from translateY(-100px) to
-   translateY(110vh), and absolutely-positioned elements that extend past
-   the viewport DO enlarge the document's scrollable area, which is what
-   produced the unwanted scrollbar. position:fixed keeps the identical
-   animation/visuals but excludes them from that calculation. */
-.droplet{
-    position:fixed;
-    width:12px;
-    height:12px;
-    background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.55), rgba(232,193,101,0.12) 70%);
-    border-radius:50%;
-    backdrop-filter:blur(3px);
-    box-shadow:0 0 10px rgba(232,193,101,0.25);
-    animation:drop linear infinite;
-    z-index:1;
+.input-box input {
+    width: 100%;
+    padding: 0.95rem 1.15rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background: var(--bg-surface-soft);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    text-transform: uppercase;
 }
 
-@keyframes drop{
-    from{ transform:translateY(-100px); opacity:0; }
-    10%{ opacity:0.9; }
-    to{ transform:translateY(110vh); opacity:0.15; }
+.input-box input:focus {
+    border-color: var(--primary-bright);
+    box-shadow: 0 0 0 4px var(--border-glow);
+    background-color: var(--bg-surface);
 }
 
-html{ scrollbar-width:none; -ms-overflow-style:none; } /* Firefox / IE-Edge */
-::-webkit-scrollbar{width:0; height:0; background:transparent;} /* Chrome/Safari/Opera — scrollbar fully hidden */
-
-/* ==========================================================
-   CARD
-   ========================================================== */
-
-.payment-card{
-    width:460px;
-    max-width:95%;
-
-    background:linear-gradient(165deg, rgba(255,255,255,0.09), rgba(255,255,255,0.045));
-    border:1px solid var(--border);
-    backdrop-filter:blur(24px);
-    -webkit-backdrop-filter:blur(24px);
-    border-radius:26px;
-    padding:40px 38px;
-
-    color:var(--ink);
-    position:relative;
-    z-index:10;
-    overflow:hidden;
-
-    box-shadow:
-        0 26px 60px rgba(0,0,0,0.5),
-        0 0 45px rgba(232,193,101,0.10);
-
-    animation:cardFloat 0.85s cubic-bezier(0.16,1,0.3,1);
+.forgot-id-link {
+    text-align: right;
+    margin-top: 0.4rem;
 }
 
-.payment-card::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    border-radius:26px;
-    padding:1.5px;
-    background:conic-gradient(from 0deg, var(--gold), transparent 25%, transparent 60%, var(--azure), transparent 90%, var(--gold));
-    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite:xor;
-    mask-composite:exclude;
-    animation:rotateBorder 7s linear infinite;
-    opacity:0.75;
-    pointer-events:none;
+.forgot-id-link a {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary-bright);
 }
 
-@keyframes rotateBorder{to{transform:rotate(360deg);}}
-
-@keyframes cardFloat{
-    from{ opacity:0; transform:translateY(40px) scale(0.95); }
-    to{ opacity:1; transform:translateY(0) scale(1); }
+.fetch-btn, .pay-btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    background: var(--grad-primary);
+    color: #FFFFFF;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.payment-card h1{
-    text-align:center;
-    margin-bottom:8px;
-    font-family:'Playfair Display', serif;
-    font-size:1.85rem;
-    font-weight:800;
-    color:var(--gold);
-    text-shadow:0 0 22px rgba(232,193,101,0.3);
-    position:relative;
-    padding-bottom:16px;
+.fetch-btn:hover, .pay-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
 
-.payment-card h1::after{
-    content:"💳  Secure Institutional Gateway";
-    display:block;
-    font-family:'Inter',sans-serif;
-    font-size:0.7rem;
-    font-weight:600;
-    letter-spacing:1.5px;
-    text-transform:uppercase;
-    color:var(--ink-dim);
-    text-shadow:none;
-    margin-top:10px;
+.pay-btn {
+    background: linear-gradient(135deg, #16A34A 0%, #059669 100%);
 }
 
-.input-box{ margin-bottom:20px; }
-
-.input-box label{
-    display:block;
-    margin-bottom:9px;
-    color:var(--ink-dim);
-    font-size:0.8rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:1px;
+/* Student Details Dashboard Breakup */
+.student-details {
+    display: none;
+    margin-top: 2rem;
+    padding: 1.75rem;
+    background: var(--bg-surface-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
 }
 
-.input-box input{
-    width:100%;
-    padding:15px 16px;
-    border:1px solid rgba(255,255,255,0.09);
-    outline:none;
-    border-radius:14px;
-    background:rgba(255,255,255,0.05);
-    color:var(--ink);
-    font-size:1rem;
-    font-family:'Inter',sans-serif;
-    transition:all 0.3s ease;
+.student-details p {
+    font-size: 1.02rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed var(--border-subtle);
+    padding-bottom: 0.6rem;
 }
 
-.input-box input:focus{
-    background:rgba(255,255,255,0.09);
-    border-color:var(--gold);
-    box-shadow:0 0 0 4px rgba(232,193,101,0.12), 0 0 22px rgba(232,193,101,0.16);
+.student-details p strong {
+    color: var(--text-primary);
 }
 
-.fetch-btn,
-.pay-btn{
-    width:100%;
-    padding:15px;
-    border:none;
-    border-radius:14px;
-    font-size:1rem;
-    font-weight:800;
-    letter-spacing:0.3px;
-    cursor:pointer;
-    position:relative;
-    overflow:hidden;
-    transition:all 0.3s ease;
+.student-details span {
+    font-weight: 700;
+    color: var(--primary-bright);
 }
 
-.fetch-btn::before,
-.pay-btn::before{
-    content:"";
-    position:absolute;
-    top:0; left:-120%;
-    width:55%; height:100%;
-    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
-    transform:skewX(-20deg);
-    transition:left 0.6s ease;
+#sRemain {
+    color: var(--danger);
 }
 
-.fetch-btn:hover::before,
-.pay-btn:hover::before{ left:130%; }
-
-.fetch-btn{
-    background:linear-gradient(135deg, #93c5fd, var(--azure) 55%, #1d4ed8);
-    color:#08122b;
-    box-shadow:0 12px 26px rgba(59,130,246,0.28);
+/* Payment Options Container */
+.payment-options {
+    margin-top: 1.5rem;
 }
 
-.fetch-btn:hover{
-    transform:translateY(-3px);
-    box-shadow:0 18px 38px rgba(59,130,246,0.4);
+.payment-options label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    display: block;
 }
 
-.pay-btn{
-    background:linear-gradient(135deg, #86efac, var(--emerald) 55%, #15803d);
-    color:#052e16;
-    margin-top:16px;
-    box-shadow:0 12px 26px rgba(34,197,94,0.28);
+.payment-options select {
+    width: 100%;
+    padding: 0.85rem 1.15rem;
+    font-size: 1rem;
+    background: var(--bg-surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    margin-bottom: 1.25rem;
 }
 
-.pay-btn:hover{
-    transform:translateY(-3px);
-    box-shadow:0 18px 38px rgba(34,197,94,0.4);
+.partial-box {
+    display: none;
+    margin-bottom: 1.25rem;
 }
 
-.student-details{
-    margin-top:26px;
-    background:rgba(255,255,255,0.04);
-    border:1px solid rgba(255,255,255,0.07);
-    padding:22px 20px;
-    border-radius:18px;
-    display:none;
-    animation:fadeUp 0.6s ease;
+.partial-box input {
+    width: 100%;
+    padding: 0.85rem 1.15rem;
+    font-size: 1rem;
+    background: var(--bg-surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
 }
 
-@keyframes fadeUp{
-    from{ opacity:0; transform:translateY(14px); }
-    to{ opacity:1; transform:translateY(0); }
+#receiptDownloadArea {
+    margin-top: 1.5rem;
+    text-align: center;
 }
 
-.student-details p{
-    margin-bottom:13px;
-    color:var(--ink-dim);
-    font-size:0.95rem;
-    display:flex;
-    justify-content:space-between;
-    border-bottom:1px dashed rgba(255,255,255,0.08);
-    padding-bottom:8px;
+.receipt-download-btn {
+    background: var(--grad-accent);
+    color: #FFFFFF;
+    padding: 0.85rem 1.75rem;
+    font-weight: 700;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
 }
 
-.student-details p strong{
-    color:var(--ink);
-    font-weight:600;
+.home-link {
+    text-align: center;
+    margin-top: 2rem;
 }
 
-.student-details p span{
-    color:var(--gold-bright);
-    font-weight:700;
+.home-link a {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-secondary);
 }
 
-.payment-options{ margin-top:22px; }
-
-.payment-options label{
-    display:block;
-    margin-bottom:8px;
-    color:var(--ink-dim);
-    font-size:0.8rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:1px;
-}
-
-select{
-    width:100%;
-    padding:13px 14px;
-    border:1px solid rgba(255,255,255,0.09);
-    border-radius:12px;
-    margin-top:6px;
-    background:rgba(255,255,255,0.05);
-    color:var(--ink);
-    font-family:'Inter',sans-serif;
-    font-size:0.95rem;
-    transition:all 0.3s ease;
-}
-
-select:focus{
-    outline:none;
-    border-color:var(--gold);
-    box-shadow:0 0 0 4px rgba(232,193,101,0.12);
-}
-
-.partial-box{ margin-top:16px; display:none; }
-
-.partial-box input{
-    width:100%;
-    padding:13px 14px;
-    border:1px solid rgba(255,255,255,0.09);
-    border-radius:12px;
-    background:rgba(255,255,255,0.05);
-    color:var(--ink);
-    font-family:'Inter',sans-serif;
-    transition:all 0.3s ease;
-}
-
-.partial-box input:focus{
-    outline:none;
-    border-color:var(--gold);
-    box-shadow:0 0 0 4px rgba(232,193,101,0.12);
-}
-
-.home-link{
-    text-align:center;
-    margin-top:24px;
-}
-
-/* Forgot ID uses the exact same link styling as "Back To Home" below,
-   just with a tighter top margin since it sits directly under the
-   Student ID field instead of at the bottom of the card. */
-.home-link.forgot-id-link{
-    margin-top:8px;
-}
-
-.home-link a{
-    color:var(--gold);
-    text-decoration:none;
-    font-size:0.9rem;
-    font-weight:600;
-    transition:all 0.3s ease;
-}
-
-.home-link a:hover{
-    color:var(--gold-bright);
-    text-shadow:0 0 12px rgba(232,193,101,0.5);
-}
-
-/* ==========================================================
-   RESPONSIVE
-   ========================================================== */
-@media(max-width:600px){
-    .payment-card{ padding:30px 24px; }
-    .payment-card h1{ font-size:1.5rem; }
+.home-link a:hover {
+    color: var(--primary-bright);
 }

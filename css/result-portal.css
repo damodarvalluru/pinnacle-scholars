@@ -1,516 +1,250 @@
- :root {
-            /* ==========================================================
-               RESULT PORTAL — "ACADEMIC NAVY & GOLD"
-               A new premium palette exclusive to this portal: deep wine/
-               burgundy as the primary identity color, cool platinum-silver
-               as the secondary, with a thin gold-foil hairline reserved
-               for certificate-style accents only.
-               Distinct from Main (indigo/fuchsia), Fees Payment
-               (navy/gold/azure/emerald), Faculty (violet/teal/amber),
-               Student Portal (rose/cyan/lime) and Enrollment
-               (emerald/rose-gold). Variable NAMES kept unchanged.
-               ========================================================== */
-            --text-color: #10233F;
-            --accent-color: #0B3D91; /* royal academic blue — unified identity */
-            --accent-platinum: #8fa3c4;
-            --accent-foil: #F4C542; /* thin gold hairline for certificate-seal accents */
-            --card-bg-start: rgba(255, 255, 255, 0.96);
-            --card-bg-end: rgba(245, 248, 252, 0.9);
-            --card-border: rgba(11, 61, 145, 0.2);
-            --input-bg: rgba(255, 255, 255, 0.94);
-            --input-border: #c7d4e6;
-            --button-gradient-start: #0B3D91;
-            --button-gradient-end: #061B3A;
-        }
+/* ==========================================================================
+   PINNACLE SCHOLARS ACADEMY - RESULT PORTAL (RESULT-PORTAL.HTML) STYLES
+   Academic Analytics Interface, Math Formulas Watermarks & Scorecard Overlay
+   ========================================================================== */
 
-       body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    flex-direction: column; /* Organizes elements cleanly from top to bottom */
-    justify-content: space-between; /* Pushes the central node middle and footer down */
-    align-items: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #0b1329; 
-    position: relative;
+/* Background Decorative Academic Assets */
+.bg-objects {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
     overflow: hidden;
-    box-sizing: border-box;
-    padding: 20px 0; /* Creates breathing room at top and bottom margins */
 }
 
-        /* Professional Academic Background Canvas */
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            z-index: -3;
-            background: 
-                radial-gradient(circle at 70% 30%, rgba(30, 41, 59, 0.6) 0%, #0f172a 70%),
-                radial-gradient(circle at 20% 80%, rgba(159, 34, 71, 0.08) 0%, transparent 40%);
-        }
-
-        /* Abstract Mathematical Grid & Constellations Overlay */
-        body::after {
-            content: "";
-            position: fixed;
-            inset: -100px;
-            z-index: -2;
-            background-image:
-                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-            opacity: 0.7;
-        }
-
-        /* Background Graphics Layer (Formulas, Vectors, and Analytics) */
-        .bg-objects {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        .math-formula {
-            position: absolute;
-            font-family: 'Times New Roman', Times, serif;
-            font-style: italic;
-            color: rgba(255, 255, 255, 0.05);
-            user-select: none;
-        }
-        .math-1 { top: 12%; left: 8%; font-size: 1.5rem; }
-        .math-2 { bottom: 15%; left: 10%; font-size: 1.4rem; }
-        .math-3 { top: 20%; right: 12%; font-size: 1.6rem; }
-        .math-4 { bottom: 25%; right: 15%; font-size: 1.3rem; }
-
-        .geo-object {
-            position: absolute;
-            opacity: 0.08;
-            stroke: #fff;
-            fill: none;
-            stroke-width: 1;
-        }
-        .cone { top: 25%; left: 6%; width: 120px; height: 120px; }
-        .sphere { bottom: 10%; left: 25%; width: 90px; height: 90px; }
-        .analytics { bottom: 18%; right: 5%; width: 180px; height: 120px; }
-        .compass { top: 15%; right: 8%; width: 100px; height: 100px; opacity: 0.15; }
-
-        /* Unique Core Animation: Fluid Orbital Glow behind the card */
-        .portal-glow-ring {
-            position: absolute;
-            width: 520px;
-            height: 520px;
-            border-radius: 50%;
-            background: transparent;
-            border: 2px dashed rgba(159, 34, 71, 0.25);
-            z-index: 1;
-            pointer-events: none;
-            animation: orbitalRotate 35s linear infinite;
-        }
-
-        .portal-glow-ring::before {
-            content: "";
-            position: absolute;
-            top: -6px;
-            left: 50%;
-            width: 12px;
-            height: 12px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            box-shadow: 0 0 15px var(--accent-color), 0 0 30px var(--accent-color);
-        }
-
-        /* The Premium Frosted Card Structure */
-        .card {
-            background: linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end));
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 45px 40px;
-            border-radius: 24px;
-            box-shadow: 
-                0 20px 50px rgba(0, 0, 0, 0.4),
-                inset 0 0 0 1px var(--card-border);
-            width: 420px;
-            max-width: 92vw; /* prevents clipping/overflow on narrow mobile screens */
-            box-sizing: border-box;
-            text-align: center;
-            position: relative;
-            z-index: 10;
-            
-            /* Professional Entry Animation: Assembles securely from depth */
-            animation: cardSecureEntry 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        /* Premium upgrade: soft burgundy/gold-foil edge glow on the search
-           card, echoing the seal styling used on the result popup, so the
-           two read as one consistent premium system. Kept as an added
-           box-shadow layer rather than a new pseudo-element so it can't
-           collide with the existing ::before "⚛" / ::after "🧭" corner
-           icons below. */
-        .card{
-            box-shadow:
-                0 20px 50px rgba(0, 0, 0, 0.4),
-                inset 0 0 0 1px var(--card-border),
-                0 0 0 1px rgba(205,168,106,0.25),
-                0 0 40px rgba(159,34,71,0.12);
-        }
-
-        /* Academic Astrolabe Accent Icons in Corners */
-        .card::before {
-            content: "⚛";
-            position: absolute;
-            top: 20px;
-            left: 24px;
-            font-size: 1.6rem;
-            color: rgba(15, 23, 42, 0.2);
-            font-weight: normal;
-        }
-
-        .card::after {
-            content: "🧭";
-            position: absolute;
-            top: 20px;
-            right: 24px;
-            font-size: 1.4rem;
-            color: rgba(15, 23, 42, 0.2);
-        }
-
-        h2 {
-            color: #0f172a;
-            font-size: 2.1rem;
-            font-weight: 800;
-            margin: 0 0 4px 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .subtitle {
-            color: #a9bcd6;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 0 0 25px 0;
-        }
-
-        .info-text {
-            color: #475569;
-            font-size: 0.95rem;
-            margin-bottom: 25px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        label {
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: #334155;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: block;
-            margin-bottom: 6px;
-            padding-left: 2px;
-        }
-
-        input {
-            width: 100%;
-            padding: 14px 16px;
-            background: var(--input-bg);
-            border: 1.5px solid var(--input-border);
-            border-radius: 12px;
-            box-sizing: border-box;
-            font-size: 0.95rem;
-            color: #0f172a;
-            font-weight: 500;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        input:focus {
-            border-color: var(--accent-color);
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(159, 34, 71, 0.15);
-            outline: none;
-        }
-
-        /* Elegant View Button matching the metallic gold styling in image */
-        .btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #0B3D91 0%, #0B3D91 55%, #061B3A 100%);
-            color: white;
-            border: none;
-            border-radius: 50px; /* Pillow oval styling matches preview perfectly */
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 8px 20px rgba(159, 34, 71, 0.35);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            margin-top: 10px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 26px rgba(159, 34, 71, 0.45);
-            filter: brightness(1.05);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .back {
-            display: inline-block;
-            margin-top: 22px;
-            color: #64748b;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: color 0.2s ease;
-        }
-
-        .back:hover {
-            color: var(--accent-color);
-        }
-
-        /* High-End Decorative Ring Accents Inside Card Base */
-        .card-footer-decor {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            opacity: 0.15;
-            font-size: 1.2rem;
-        }
-
-        /* Animation Keyframe Parameters */
-        @keyframes cardSecureEntry {
-            0% {
-                transform: scale(0.92) translateY(30px);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1) translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes orbitalRotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        /* Keeps the central card node completely floating in the sweet spot */
-.card-wrapper {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.geo-object {
+    position: absolute;
+    stroke: var(--border-glow);
+    fill: none;
+    opacity: 0.25;
 }
 
-/* Cleaner layout metrics for your footer copyright string */
-footer {
-    width: 100%;
-    z-index: 10;
-    text-align: center;
+.geo-object.cone {
+    top: 10%;
+    left: 8%;
+    width: 140px;
+    height: 140px;
+}
+
+.geo-object.sphere {
+    bottom: 12%;
+    right: 8%;
+    width: 160px;
+    height: 160px;
+}
+
+.geo-object.compass {
+    top: 15%;
+    right: 12%;
+    width: 120px;
+    height: 120px;
+}
+
+.geo-object.analytics {
+    bottom: 15%;
+    left: 10%;
+    width: 220px;
+    height: 120px;
+    stroke: var(--primary-bright);
+}
+
+.math-formula {
+    position: absolute;
+    font-family: 'Times New Roman', serif;
+    font-style: italic;
+    color: var(--text-muted);
+    opacity: 0.18;
+    font-size: 1.3rem;
+    user-select: none;
+}
+
+.math-1 { top: 25%; left: 18%; }
+.math-2 { top: 65%; left: 15%; }
+.math-3 { top: 30%; right: 20%; }
+.math-4 { bottom: 25%; right: 22%; }
+
+.portal-glow-ring {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+    z-index: -1;
     pointer-events: none;
 }
 
-footer p {
-    margin: 0;
-    color: white; /* Translucent bright silver text prevents blinding white glare */
-    font-size: x-large !important; /* Standard technical UI sizing fits the premium design style */
-    letter-spacing: 0.5px;
+.card-wrapper {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
 }
 
-/* RESULT POPUP */
-
-#resultPopupOverlay{
-
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.75);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    z-index:999999;
-
-    backdrop-filter:blur(10px);
-
-    animation:fadeIn 0.4s ease;
+.card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 3rem;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    position: relative;
 }
 
-#resultPopupBox{
-
-    position:relative;
-    width:90%;
-    max-width:520px;
-
-    background:
-    linear-gradient(
-        135deg,
-        rgba(15,23,42,0.95),
-        rgba(30,41,59,0.92)
-    );
-
-    border:1px solid rgba(201,201,212,0.18);
-    border-radius:24px;
-
-    padding:35px;
-
-    color:white;
-
-    box-shadow:
-    0 20px 60px rgba(0,0,0,0.5),
-    0 0 50px rgba(159,34,71,0.16);
-
-    overflow:hidden;
-
-    animation:popupEntry 0.5s ease;
+.card h2 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
 }
 
-/* Thin rotating burgundy / platinum / gold-foil frame — premium card polish */
-#resultPopupBox::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    border-radius:24px;
-    padding:1.5px;
-    background:conic-gradient(from 0deg, #0B3D91, transparent 30%, transparent 60%, #a9bcd6, transparent 90%, #0B3D91);
-    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite:xor;
-    mask-composite:exclude;
-    animation:rpFrameSpin 9s linear infinite;
-    opacity:0.65;
-    pointer-events:none;
+.subtitle {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary-bright);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
 }
 
-@keyframes rpFrameSpin{ to{ transform:rotate(360deg); } }
-
-.popup-glow{
-
-    position:absolute;
-
-    width:260px;
-    height:260px;
-
-    background:
-    radial-gradient(
-        circle,
-        rgba(159,34,71,0.25),
-        transparent
-    );
-
-    top:-100px;
-    right:-100px;
-
-    pointer-events:none;
+.info-text {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
 }
 
-#resultPopupBox h1{
-
-    margin-top:0;
-
-    text-align:center;
-
-    color:#0B3D91;
-
-    margin-bottom:20px;
+.form-group {
+    text-align: left;
+    margin-bottom: 1.25rem;
 }
 
-.popup-content{
-
-    color:#e2e8f0;
-
-    font-size:15px;
+.form-group label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+    display: block;
 }
 
-#resultPopupBox button{
-
-    width:100%;
-
-    margin-top:25px;
-
-    padding:15px;
-
-    border:none;
-
-    border-radius:14px;
-
-    background:
-    linear-gradient(
-        135deg,
-        #0B3D91,
-        #0B3D91
-    );
-
-    color:white;
-
-    font-size:16px;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-    transition:0.3s;
+.form-group input {
+    width: 100%;
+    padding: 0.9rem 1.15rem;
+    font-size: 1rem;
+    background: var(--bg-surface-soft);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
 }
 
-#resultPopupBox button:hover{
-
-    transform:translateY(-2px);
-
-    box-shadow:
-    0 10px 25px rgba(159,34,71,0.3);
+.form-group input:focus {
+    border-color: var(--primary-bright);
+    box-shadow: 0 0 0 4px var(--border-glow);
+    background: var(--bg-surface);
 }
 
-/* Download Result certificate button — platinum/foil variant so it reads
-   as a distinct secondary action above the burgundy Close button. */
-#resultPopupBox .download-result-btn{
-    background:linear-gradient(135deg, #e2e2ea, #a9bcd6 55%, #F4C542);
-    color:#0b2454;
-    margin-top:22px;
-    box-shadow:0 8px 20px rgba(201,201,212,0.25);
+.card .btn {
+    width: 100%;
+    padding: 0.95rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    background: var(--grad-primary);
+    color: #FFFFFF;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    margin-top: 1rem;
 }
 
-#resultPopupBox .download-result-btn:hover{
-    box-shadow:0 12px 26px rgba(205,168,106,0.4);
-    filter:brightness(1.04);
+.card .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
 
-@keyframes popupEntry{
-
-    from{
-
-        transform:
-        scale(0.9)
-        translateY(30px);
-
-        opacity:0;
-    }
-
-    to{
-
-        transform:
-        scale(1)
-        translateY(0);
-
-        opacity:1;
-    }
+.back {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-secondary);
 }
 
-@keyframes fadeIn{
+.back:hover {
+    color: var(--primary-bright);
+}
 
-    from{
-        opacity:0;
-    }
+.card-footer-decor {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    font-size: 1.4rem;
+    opacity: 0.6;
+}
 
-    to{
-        opacity:1;
-    }
+/* Result Modal Scorecard Overlay (Injected dynamically by JS) */
+.result-overlay-container, #resultOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    background: rgba(7, 17, 31, 0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.scorecard-box {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 3rem;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+    color: var(--text-primary);
+}
+
+.scorecard-header {
+    text-align: center;
+    margin-bottom: 2rem;
+
+}
+
+.scorecard-header h2 {
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.score-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.score-item {
+    background: var(--bg-surface-soft);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    text-align: center;
+}
+
+.score-item span {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.score-item strong {
+    font-size: 1.4rem;
+    color: var(--primary-bright);
 }

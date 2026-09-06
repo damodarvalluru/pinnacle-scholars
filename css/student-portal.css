@@ -1,510 +1,179 @@
-/* ==========================================================
-   PINNACLE SCHOLARS ACADEMY — STUDENT PORTAL
-   "Departure Lounge" Design System · Rose / Cyan / Lime
-   Distinct from Faculty (violet/teal/amber, Space Grotesk)
-   and Fees Payment (navy/gold/azure/emerald, Playfair).
-   ========================================================== */
+/* ==========================================================================
+   PINNACLE SCHOLARS ACADEMY - STUDENT PORTAL (STUDENT-PORTAL.HTML) STYLES
+   EdTech Dashboard Layout, Student Login Form, Fee Summary & Status Badges
+   ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
-
-:root{
-    --navy-deep:#04122b;   /* unified academic navy base */
-    --navy:#061b3a;
-    --navy-soft:#0b2454;
-    --gold:#F4C542;        /* soft gold — primary accent */
-    --gold-bright:#ffdf8e;
-    --gold-dim:rgba(244,197,66,0.28);
-    --azure:#00A6C7;       /* cyan/teal — secondary accent */
-    --violet:#0B3D91;      /* royal blue — kept name, repurposed */
-    --success:#34d399;     /* emerald — tertiary/success accent */
-    --ink:#eef4fb;
-    --ink-dim:rgba(238,244,251,0.72);
-    --glass:rgba(0,166,199,0.055);
-    --glass-strong:rgba(0,166,199,0.09);
-    --border:rgba(244,197,66,0.22);
-    --radius-lg:26px;
-    --radius-md:16px;
+#portalGeometryCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.3;
 }
 
-*{margin:0;padding:0;box-sizing:border-box;}
-
-html{scroll-behavior:smooth; scrollbar-width:thin; scrollbar-color:var(--gold) var(--navy-deep);}
-
-body{
-    font-family:'Inter',-apple-system,'Segoe UI',sans-serif;
-    min-height:100vh;
-    overflow-x:hidden;
-    position:relative;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    color:var(--ink);
-
-    background:
-        radial-gradient(circle at 15% 10%, #0b2454 0%, transparent 45%),
-        radial-gradient(circle at 85% 90%, #0d1a2e 0%, transparent 50%),
-        linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 45%, #04122b 100%);
-
-    background-size:220% 220%, 220% 220%, 100% 100%;
-    animation:gradientFlow 22s ease infinite;
+.login-container {
+    min-height: calc(100vh - 100px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
 }
 
-/* Slim, on-brand scrollbar (kept visible but minimal — unlike fees-payment, this
-   portal's brief did not ask for it to be hidden) */
-::-webkit-scrollbar{width:8px;}
-::-webkit-scrollbar-track{background:var(--navy-deep);}
-::-webkit-scrollbar-thumb{background:linear-gradient(var(--gold),#072a63);border-radius:10px;}
-
-/* Aurora glow layer — rose/cyan/lime, distinct hues + path from other portals */
-body::before{
-    content:"";
-    position:fixed;
-    inset:-20%;
-    background:
-        radial-gradient(circle at 18% 22%, rgba(251,113,133,0.20), transparent 24%),
-        radial-gradient(circle at 82% 28%, rgba(34,211,238,0.18), transparent 24%),
-        radial-gradient(circle at 50% 85%, rgba(163,230,53,0.10), transparent 26%),
-        radial-gradient(circle at 8% 92%, rgba(167,139,250,0.10), transparent 22%);
-    filter:blur(95px);
-    animation:floatingLights 24s ease-in-out infinite alternate;
-    z-index:-3;
+.portal-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 3rem;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
 }
 
-/* Fine rose-flecked diagonal grid (different orientation from Faculty's square pan) */
-body::after{
-    content:"";
-    position:fixed;
-    inset:0;
-    background-image:
-        repeating-linear-gradient(45deg, rgba(251,113,133,0.045) 0 1px, transparent 1px 46px),
-        repeating-linear-gradient(-45deg, rgba(34,211,238,0.035) 0 1px, transparent 1px 46px);
-    animation:gridDrift 36s linear infinite;
-    z-index:-2;
-    mask-image:radial-gradient(circle at 50% 30%, black, transparent 75%);
+.portal-card h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    text-align: center;
+    letter-spacing: -0.02em;
 }
 
-/* Drifting 3D geometry canvas (owned by student-portal.js — structurally untouched,
-   only its particle colors were retuned to this portal's palette) */
-.portal-particles,
-#portalGeometryCanvas{
-    position:fixed;
-    inset:0;
-    width:100vw;
-    height:100vh;
-    pointer-events:none;
-    z-index:-1;
+.portal-card hr {
+    border: 0;
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 1rem 0;
 }
 
-@keyframes gradientFlow{
-    0%{background-position:0% 50%, 100% 50%, 0% 0%;}
-    50%{background-position:100% 50%, 0% 50%, 0% 0%;}
-    100%{background-position:0% 50%, 100% 50%, 0% 0%;}
+.portal-card input {
+    width: 100%;
+    padding: 0.95rem 1.15rem;
+    font-size: 1rem;
+    background-color: var(--bg-surface-soft);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    margin-bottom: 1.25rem;
+    outline: none;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-@keyframes floatingLights{
-    0%{transform:translate(0,0) scale(1) rotate(0deg);}
-    100%{transform:translate(-55px,-30px) scale(1.16) rotate(-8deg);}
+.portal-card input:focus {
+    border-color: var(--primary-bright);
+    box-shadow: 0 0 0 4px var(--border-glow);
+    background-color: var(--bg-surface);
 }
 
-@keyframes gridDrift{
-    0%{background-position:0 0, 0 0;}
-    100%{background-position:130px 130px, -130px 130px;}
+#studentLoginBtn {
+    width: 100%;
+    padding: 0.95rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    background: var(--grad-primary);
+    color: #FFFFFF;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-/* ==========================================================
-   CINEMATIC ENTRANCE — "The Briefcase Arrival"
-   Plays once on page load, then removes itself. Pure CSS
-   transforms/opacity (GPU-friendly), skipped entirely under
-   prefers-reduced-motion. Does not delay or block interaction
-   — the real login card is present and clickable underneath
-   the whole time; the overlay is purely decorative and
-   pointer-events:none from the start.
-   ========================================================== */
-
-.briefcase-intro{
-    position:fixed;
-    inset:0;
-    z-index:40;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    pointer-events:none;
-    background:radial-gradient(circle at 50% 40%, rgba(23,10,28,0.7), rgba(11,5,15,0.94));
-    animation: introCurtain 2.6s ease forwards;
+#studentLoginBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
 
-.briefcase-scene{
-    position:relative;
-    width:220px;
-    height:260px;
+/* Student Dashboard Layout */
+.dashboard {
+    display: none;
+    max-width: 960px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
 }
 
-.businessman{
-    position:absolute;
-    top:0; left:50%;
-    transform:translate(-50%,-40px);
-    font-size:64px;
-    opacity:0;
-    filter:drop-shadow(0 8px 18px rgba(0,0,0,0.5));
-    animation: manAppear 0.5s ease forwards 0.1s;
+.dashboard h1 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
 }
 
-.briefcase{
-    position:absolute;
-    top:70px; left:50%;
-    font-size:46px;
-    transform:translate(-50%,-10px) scale(0.9) rotate(-6deg);
-    opacity:0;
-    animation: caseDrop 1.05s cubic-bezier(0.34,1.4,0.44,1) forwards 0.55s;
-    filter:drop-shadow(0 0 0 transparent);
+.dashboard h1 span {
+    color: var(--primary-bright);
 }
 
-.emerge-glow{
-    position:absolute;
-    top:150px; left:50%;
-    width:10px; height:10px;
-    border-radius:50%;
-    transform:translate(-50%,-50%);
-    background:radial-gradient(circle, rgba(251,113,133,0.9), rgba(34,211,238,0.5) 45%, transparent 70%);
-    opacity:0;
-    animation: glowBurst 0.8s ease forwards 1.55s;
+.info-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2.25rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
 }
 
-@keyframes manAppear{
-    to{ opacity:0.92; transform:translate(-50%,0); }
+.info-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
 }
 
-@keyframes caseDrop{
-    0%{ transform:translate(-50%,-10px) scale(0.9) rotate(-6deg); opacity:0; }
-    12%{ opacity:1; }
-    55%{ transform:translate(-50%,86px) scale(1.05) rotate(4deg); }
-    72%{ transform:translate(-50%,72px) scale(0.97) rotate(-2deg); }
-    86%{ transform:translate(-50%,80px) scale(1.02) rotate(1deg); }
-    100%{ transform:translate(-50%,78px) scale(1) rotate(0deg); opacity:1; }
+.info-card p {
+    font-size: 1.02rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-@keyframes glowBurst{
-    0%{ opacity:0; transform:translate(-50%,-50%) scale(0.2); }
-    40%{ opacity:1; transform:translate(-50%,-50%) scale(3.2); }
-    100%{ opacity:0; transform:translate(-50%,-50%) scale(5.5); }
+.info-card p strong {
+    color: var(--text-primary);
 }
 
-@keyframes introCurtain{
-    0%,58%{ opacity:1; }
-    100%{ opacity:0; }
+.info-card p span {
+    font-weight: 700;
+    color: var(--text-primary);
 }
 
-/* Once the overlay's opacity animation ends it is inert (opacity 0,
-   pointer-events:none already set) — student-portal.js adds
-   .briefcase-intro--done after 'animationend' purely to set
-   display:none and stop it painting. */
-.briefcase-intro--done{ display:none; }
-
-@media (prefers-reduced-motion: reduce){
-    .briefcase-intro{ display:none; }
+#dispId, #dispDomain {
+    color: var(--primary-bright);
 }
 
-/* ==========================================================
-   LOGIN
-   ========================================================== */
-
-.login-container{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    flex:1;
-    padding:24px;
-    animation:fadeIn 0.9s ease;
+.fee-status {
+    padding: 0.3rem 0.85rem;
+    border-radius: 50px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: rgba(245, 158, 11, 0.12);
+    color: var(--warning);
+    border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
-.portal-card{
-    width:420px;
-    max-width:100%;
-    padding:48px 42px;
-
-    background:linear-gradient(165deg, var(--glass-strong), var(--glass));
-    border:1px solid var(--border);
-    backdrop-filter:blur(26px);
-    -webkit-backdrop-filter:blur(26px);
-    border-radius:var(--radius-lg);
-
-    box-shadow:
-        0 25px 60px rgba(0,0,0,0.55),
-        0 0 0 1px rgba(255,255,255,0.02) inset,
-        0 0 45px rgba(251,113,133,0.10);
-
-    position:relative;
-    overflow:hidden;
-    /* Emerges from the briefcase landing point once the case has "opened" */
-    animation: cardEmerge 0.55s cubic-bezier(0.16,1,0.3,1) both;
-    transition:transform 0.4s ease, box-shadow 0.4s ease;
+.fee-status.settled {
+    background: rgba(22, 163, 74, 0.12);
+    color: var(--success);
+    border: 1px solid rgba(22, 163, 74, 0.3);
 }
 
-@keyframes cardEmerge{
-    0%{ opacity:0; transform:translateY(70px) scale(0.28); filter:blur(3px); }
-    65%{ opacity:1; }
-    100%{ opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
+#portalPaymentButton {
+    background: linear-gradient(135deg, #16A34A 0%, #059669 100%) !important;
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    padding: 0.85rem 2rem !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-md) !important;
+    margin-top: 1rem !important;
 }
 
-@media (prefers-reduced-motion: reduce){
-    .portal-card{ animation:cardFloat 0.6s ease both; }
-}
-
-/* Rotating rose/cyan edge sheen */
-.portal-card::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    border-radius:var(--radius-lg);
-    padding:1.5px;
-    background:conic-gradient(from 0deg, var(--gold), transparent 25%, transparent 60%, var(--azure), transparent 90%, var(--gold));
-    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite:xor;
-    mask-composite:exclude;
-    pointer-events:none;
-    animation:rotateBorder 7s linear infinite;
-    opacity:0.75;
-}
-
-/* Student emblem above heading — distinct from Faculty's graduation-cap icon */
-.portal-card::after{
-    content:"";
-    display:block;
-    position:relative;
-    text-align:center;
-    font-size:32px;
-    margin:-6px auto 6px;
-    filter:drop-shadow(0 0 12px var(--gold-dim));
-}
-
-@keyframes rotateBorder{
-    to{transform:rotate(360deg);}
-}
-
-.portal-card:hover{
-    transform:translateY(-6px);
-    box-shadow:
-        0 34px 70px rgba(0,0,0,0.6),
-        0 0 55px rgba(251,113,133,0.18);
-}
-
-@keyframes cardFloat{
-    from{opacity:0; transform:translateY(44px) scale(0.94);}
-    to{opacity:1; transform:translateY(0) scale(1);}
-}
-
-h1,h2,h3{
-    font-family:'Manrope', sans-serif;
-    font-weight:800;
-    color:var(--ink) !important;
-    letter-spacing:0.2px;
-}
-
-h2{
-    font-weight:800;
-    position:relative;
-    padding-bottom:14px;
-}
-
-h2::after{
-    content:"";
-    position:absolute;
-    left:50%;
-    bottom:0;
-    transform:translateX(-50%);
-    width:64px;
-    height:3px;
-    border-radius:3px;
-    background:linear-gradient(90deg, transparent, var(--gold), transparent);
-}
-
-hr{
-    border:none;
-    height:1px;
-    background:linear-gradient(90deg, transparent, var(--border), transparent);
-    margin:18px 0;
-}
-
-input{
-    width:100%;
-    padding:15px 16px;
-    margin-bottom:18px;
-    border:1px solid rgba(255,255,255,0.09);
-    outline:none;
-    border-radius:14px;
-    background:rgba(255,255,255,0.05);
-    color:var(--ink);
-    font-size:15px;
-    font-family:'Inter',sans-serif;
-    transition:all 0.35s ease;
-}
-
-input::placeholder{color:rgba(247,240,242,0.48);}
-
-input:focus{
-    background:rgba(255,255,255,0.09);
-    border:1px solid var(--gold);
-    box-shadow:0 0 0 4px rgba(251,113,133,0.14), 0 0 24px rgba(251,113,133,0.18);
-}
-
-/* ==========================================================
-   BUTTONS
-   ========================================================== */
-
-.btn{
-    width:100%;
-    padding:15px;
-    border:none;
-    border-radius:14px;
-    font-weight:700;
-    font-family:'Manrope', sans-serif;
-    font-size:15px;
-    letter-spacing:0.3px;
-    cursor:pointer;
-    color:#061B3A;
-    position:relative;
-    overflow:hidden;
-    isolation:isolate;
-
-    background:linear-gradient(135deg, var(--gold-bright), var(--gold) 55%, #072a63);
-    background-size:200% 200%;
-    animation:buttonGradient 6s ease infinite;
-
-    box-shadow:0 12px 28px rgba(251,113,133,0.3);
-    transition:all 0.35s ease;
-}
-
-/* Shimmer sweep on hover */
-.btn::before{
-    content:"";
-    position:absolute;
-    top:0; left:-120%;
-    width:60%;
-    height:100%;
-    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent);
-    transform:skewX(-20deg);
-    transition:left 0.6s ease;
-    z-index:1;
-}
-
-.btn:hover::before{left:130%;}
-
-.btn:hover{
-    transform:translateY(-3px);
-    box-shadow:0 18px 38px rgba(251,113,133,0.4), 0 0 28px rgba(34,211,238,0.22);
-}
-
-.btn:active{transform:translateY(-1px) scale(0.99);}
-
-@keyframes buttonGradient{
-    0%{background-position:0% 50%;}
-    100%{background-position:100% 50%;}
-}
-
-/* Home / secondary buttons injected inline in HTML */
-button{transition:all 0.3s ease; font-family:'Inter',sans-serif;}
-button:hover{transform:translateY(-2px);}
-
-/* ==========================================================
-   DASHBOARD
-   ========================================================== */
-
-.dashboard{
-    display:none;
-    padding:56px 8%;
-    animation:fadeIn 0.9s ease;
-}
-
-.dashboard h1{
-    font-size:2.1rem;
-    margin-bottom:6px;
-}
-
-.dashboard h1 span{
-    color:var(--gold);
-    text-shadow:0 0 18px rgba(251,113,133,0.4);
-}
-
-.info-card{
-    background:linear-gradient(160deg, var(--glass-strong), var(--glass));
-    border:1px solid var(--border);
-    border-left:4px solid var(--gold);
-    backdrop-filter:blur(22px);
-    border-radius:var(--radius-md);
-    padding:30px 32px;
-    margin-bottom:26px;
-    box-shadow:0 16px 40px rgba(0,0,0,0.35);
-    transition:all 0.4s ease;
-    animation:fadeUp 0.7s ease;
-    position:relative;
-    overflow:hidden;
-}
-
-.info-card::before{
-    content:"";
-    position:absolute;
-    top:-40%; right:-15%;
-    width:220px; height:220px;
-    background:radial-gradient(circle, rgba(251,113,133,0.14), transparent 70%);
-    pointer-events:none;
-}
-
-.info-card:hover{
-    transform:translateY(-5px);
-    border-left-color:var(--azure);
-    box-shadow:0 24px 55px rgba(0,0,0,0.45), 0 0 30px rgba(34,211,238,0.18);
-}
-
-.info-card h3{
-    font-size:1.15rem;
-    margin-bottom:14px;
-}
-
-.info-card p{
-    color:var(--ink-dim);
-    margin:11px 0;
-    font-size:0.98rem;
-    line-height:1.55;
-}
-
-.info-card strong{color:var(--ink);}
-
-.fee-status{
-    display:inline-block;
-    color:var(--gold-bright);
-    font-weight:800;
-    letter-spacing:0.4px;
-    text-shadow:0 0 12px rgba(251,113,133,0.4);
-    padding:4px 12px;
-    border-radius:20px;
-    background:rgba(251,113,133,0.10);
-    border:1px solid var(--gold-dim);
-}
-
-a{
-    color:#00A6C7 !important;
-    text-decoration:none;
-    transition:all 0.3s ease;
-}
-
-a:hover{
-    color:var(--gold) !important;
-    text-shadow:0 0 12px rgba(251,113,133,0.55);
-}
-
-@keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
-@keyframes fadeUp{from{opacity:0; transform:translateY(24px);} to{opacity:1; transform:translateY(0);}}
-
-/* ==========================================================
-   RESPONSIVE
-   ========================================================== */
-
-@media(max-width:768px){
-    .portal-card{width:100%; padding:34px 26px;}
-    .dashboard{padding:34px 5%;}
-    .dashboard h1{font-size:1.6rem;}
-    .info-card{padding:24px;}
-    .briefcase-scene{ width:170px; height:210px; transform:scale(0.85); }
-    .businessman{ font-size:52px; }
-    .briefcase{ font-size:38px; }
+#portalPaymentButton:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: var(--shadow-lg), var(--shadow-glow) !important;
 }

@@ -13,16 +13,13 @@ function toggleTheme() {
 
 
 function startIntroAnimations(){
+    if (typeof initPinnacleLetterDropIntro === 'function') {
+        return; // Handled by celestial-intro.js
+    }
     const intro = document.getElementById("welcomeIntro");
-    const title = intro && intro.querySelector('.intro-title');
-    if (!intro || !title) return;
-    document.body.classList.add('entry-active');
-    const label = title.textContent.trim().toUpperCase();
-    title.innerHTML = Array.from(label).map((letter, index) =>
-        `<span class="intro-letter" style="animation-delay:${index * 0.055}s">${letter === ' ' ? '&nbsp;' : letter}</span>`
-    ).join('');
-    intro.classList.add('premium-letter-intro');
-    setTimeout(() => { intro.classList.add('hide'); document.body.classList.remove('entry-active'); document.body.style.overflow = 'auto'; }, 3200);
+    if (intro) {
+        setTimeout(() => { intro.classList.add('hide'); document.body.classList.remove('entry-active'); document.body.style.overflow = 'auto'; }, 3200);
+    }
 }
 
 function navigateTo(target) {

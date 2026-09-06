@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerAI - Discover Your Career. Build Your Skills. Get Hired.</title>
+    <meta name="description" content="Professional AI-Powered Career Platform featuring live job matching, dynamic skill assessments, interactive coding playground, resume builder & ATS samples, and CareerAI assistant.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Full-screen opening experience (removed after the first completed intro) -->
+    <div class="career-intro" id="career-intro" aria-label="Career AI opening experience" aria-live="polite">
+        <div class="intro-grid"></div><div class="intro-orb intro-orb-one"></div><div class="intro-orb intro-orb-two"></div>
+        <div class="intro-network"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="intro-copy"><span class="intro-kicker">INTELLIGENCE FOR AMBITIOUS CAREERS</span><h1 aria-label="Career AI"><span>C</span><span>a</span><span>r</span><span>e</span><span>e</span><span>r</span><em></em><span>A</span><span>I</span></h1><p>Match. Learn. Advance.</p></div>
+    </div>
+
+    <!-- Ambient floating background shapes (decorative) -->
+    <div class="floating-shape shape-a" aria-hidden="true"></div>
+    <div class="floating-shape shape-b" aria-hidden="true"></div>
+    <div class="floating-shape shape-c" aria-hidden="true"></div>
+
+    <!-- STICKY HEADER NAVBAR -->
+    <header class="header">
+        <div class="container nav-container">
+            <!-- BRAND LOGO WITH LETTER DROP ANIMATION -->
+            <a href="#home" class="logo">
+                <div class="logo-icon">⚡</div>
+                <div class="brand-text" id="brand-letter-container">
+                    <span class="brand-letter">C</span>
+                    <span class="brand-letter">a</span>
+                    <span class="brand-letter">r</span>
+                    <span class="brand-letter">e</span>
+                    <span class="brand-letter">e</span>
+                    <span class="brand-letter">r</span>
+                    <span class="brand-letter text-cyan">A</span>
+                    <span class="brand-letter text-cyan">I</span>
+                </div>
+            </a>
+
+            <!-- SPA NAVIGATION MENU -->
+            <nav>
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="../index.html" class="nav-link text-cyan" style="font-weight:700;">← Back to Pinnacle Academy</a></li>
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#dashboard" class="nav-link">Dashboard</a></li>
+                    <li><a href="#jobs" class="nav-link">Explore Jobs</a></li>
+                    <li><a href="#internships" class="nav-link">Internships</a></li>
+                    <li><a href="#courses" class="nav-link">Courses</a></li>
+                    <li><a href="#assessment" class="nav-link">Skill Assessment</a></li>
+                    <li><a href="#interview" class="nav-link">AI Interview</a></li>
+                    <li><a href="#resume-builder" class="nav-link">Resume Builder</a></li>
+                    <li><a href="#resume-samples" class="nav-link">Resume Samples</a></li>
+                    <li>
+                        <a href="#notifications" class="nav-link">
+                            Notifications <span class="badge badge-indigo" id="notif-badge-count" style="display:none; padding:0.15rem 0.5rem; font-size:0.7rem;">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="#jobs" class="btn btn-primary btn-sm">Get Started</a>
+            </div>
+
+            <button class="hamburger" id="hamburger-btn" aria-label="Toggle navigation menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- ===================================================================
+             VIEW 1: HOME PAGE
+             =================================================================== -->
+        <div class="view-container" id="view-home">
+            
+            <!-- HERO SECTION -->
+            <section class="hero-section" id="hero">
+                <canvas id="hero-canvas"></canvas>
+                <div class="container hero-grid">
+                    <div class="hero-content">
+                        <span class="badge badge-cyan">✨ Next-Gen Career Intelligence Platform</span>
+                        <h1 class="hero-title">Your <span class="text-gradient">AI-Powered</span> Career Starts Here.</h1>
+                        <p class="hero-subtext">
+                            Discover the right jobs, identify your skill gaps, learn what matters, practice coding & interviews, and build a career that matches your potential.
+                        </p>
+                        <div class="hero-btns">
+                            <a href="#jobs" class="btn btn-primary">Explore Jobs →</a>
+                            <a href="#assessment" class="btn btn-secondary">Find My Career Path</a>
+                        </div>
+                    </div>
+
+                    <div class="hero-visual">
+                        <div class="ai-card-mockup">
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:0.8rem; margin-bottom:1rem;">
+                                <div style="display:flex; align-items:center; gap:0.5rem;">
+                                    <span>✨</span>
+                                    <span style="font-weight:700; font-size:0.95rem;">Live AI Match Engine</span>
+                                </div>
+                                <span class="badge badge-success">Engine Active</span>
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:0.8rem;">
+                                <div style="background:rgba(255,255,255,0.03); padding:0.8rem; border-radius:10px;">
+                                    <div style="font-size:0.75rem; color:var(--text-muted);">Candidate Match Index</div>
+                                    <div class="text-gradient" style="font-weight:800; font-size:1.3rem;">94% Suitability Rating</div>
+                                </div>
+                                <div style="background:rgba(255,255,255,0.03); padding:0.8rem; border-radius:10px;">
+                                    <div style="font-size:0.75rem; color:var(--text-muted);">High Demand Skills</div>
+                                    <div style="font-size:0.9rem; font-weight:600;">Python • AWS • Machine Learning</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Candidate profile controls keep recommendations grounded in the live job dataset. -->
+            <section class="section profile-onboarding" aria-labelledby="profile-heading">
+                <div class="container">
+                    <div class="profile-panel">
+                        <div class="profile-panel-heading"><span class="badge badge-indigo">YOUR CAREER SIGNAL</span><h2 id="profile-heading">Tune your recommendations</h2><p>Choose multiple interests and skills, or add your own. Your choices update both job displays.</p></div>
+                        <div class="profile-fields">
+                            <label class="form-label" for="candidate-name">Name<input id="candidate-name" class="input-text" type="text" placeholder="e.g. Alex Morgan" autocomplete="name"></label>
+                            <label class="form-label" for="profile-level-select">Skill Level
+                                <select id="profile-level-select" class="select-text">
+                                    <option value="Beginner">Beginner</option>
+                                    <option value="Intermediate" selected>Intermediate</option>
+                                    <option value="Advanced">Advanced</option>
+                                </select>
+                            </label>
+                            <div><span class="form-label">Interests</span><div class="chip-list" id="interest-chips"></div><div class="custom-entry"><input id="custom-interest" class="input-text" type="text" placeholder="Add a custom interest"><button class="btn btn-secondary btn-sm" type="button" onclick="addCustomProfileItem('interest')">Add</button></div></div>
+                            <div><span class="form-label">Skills</span><div class="chip-list" id="skill-chips"></div><div class="custom-entry"><input id="custom-skill" class="input-text" type="text" placeholder="Add a custom skill"><button class="btn btn-secondary btn-sm" type="button" onclick="addCustomProfileItem('skill')">Add</button></div></div>
+                        </div>
+                        <div class="profile-actions"><span id="profile-summary" class="text-muted">Select skills and interests to personalise your matches.</span><button class="btn btn-primary" type="button" onclick="applyProfileRecommendations()">Refresh matches <span>→</span></button></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ABOUT CAREERAI -->
+            <section class="section" style="background: rgba(13, 27, 42, 0.4);">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-subtitle">Empowering Global Careers</span>
+                        <h2 class="section-title">About CareerAI</h2>
+                        <p class="section-desc">CareerAI bridges the gap between educational preparation and real-world employment through intelligent data matching and skill verification.</p>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:2rem;">
+                        <div class="toolkit-card">
+                            <span class="badge badge-cyan">What It Is</span>
+                            <h3 style="font-family:var(--font-heading); margin:0.8rem 0 0.4rem;">Smart Career Intelligence</h3>
+                            <p class="text-muted" style="font-size:0.9rem;">An integrated suite combining live job discovery, skill assessment, code compilation, and AI assistant mentorship.</p>
+                        </div>
+                        <div class="toolkit-card">
+                            <span class="badge badge-indigo">Who It Is For</span>
+                            <h3 style="font-family:var(--font-heading); margin:0.8rem 0 0.4rem;">Students & Professionals</h3>
+                            <p class="text-muted" style="font-size:0.9rem;">Designed for engineering graduates, freshers, experienced developers, and public sector applicants.</p>
+                        </div>
+                        <div class="toolkit-card">
+                            <span class="badge badge-success">How AI Helps</span>
+                            <h3 style="font-family:var(--font-heading); margin:0.8rem 0 0.4rem;">Algorithmic Precision</h3>
+                            <p class="text-muted" style="font-size:0.9rem;">Quantifies skill overlap, identifies missing domain competencies, and suggests certified upskilling resources.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- HOW CAREERAI WORKS -->
+            <section class="section">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-subtitle">Execution Blueprint</span>
+                        <h2 class="section-title">How CareerAI Works</h2>
+                        <p class="section-desc">Your 6-step journey from onboarding to securing your target job offer.</p>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1.2rem;">
+                        <div class="select-card">
+                            <div style="font-size:1.8rem; margin-bottom:0.4rem;">1. 👤</div>
+                            <div class="select-card-title">Create Profile</div>
+                            <div class="select-card-desc">Enter degree & experience level.</div>
+                        </div>
+                        <div class="select-card">
+                            <div style="font-size:1.8rem; margin-bottom:0.4rem;">2. ⚙️</div>
+                            <div class="select-card-title">Enter Skills</div>
+                            <div class="select-card-desc">Select current competencies.</div>
+                        </div>
+                        <div class="select-card">
+                            <div style="font-size:1.8rem; margin-bottom:0.4rem;">3. 🧠</div>
+                            <div class="select-card-title">Skill Assessment</div>
+                            <div class="select-card-desc">Complete dynamic quizzes & coding tests.</div>
+                        </div>
+                        <div class="select-card">
+                            <div style="font-size:1.8rem; margin-bottom:0.4rem;">4. ✨</div>
+                            <div class="select-card-title">AI Analysis</div>
+                            <div class="select-card-desc">Calculate weighted suitability.</div>
+                        </div>
+                        <div class="select-card">
+                            <div style="font-size:1.8rem; margin-bottom:0.4rem;">5. 🚀</div>
+                            <div class="select-card-title">Improve Skills</div>
+                            <div class="select-card-desc">Access certified free courses.</div>
+                        </div>
+                        <div class="select-card">
+                            <div style="font-size:1.8rem; margin-bottom:0.4rem;">6. 💼</div>
+                            <div class="select-card-title">Apply For Jobs</div>
+                            <div class="select-card-desc">Redirect to verified portals.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TOP CAREER OPPORTUNITIES (DEFAULT JOBS ON HOME PAGE) -->
+            <section class="section" style="background: rgba(13, 27, 42, 0.4);">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-subtitle">Live Jobs Feed</span>
+                        <h2 class="section-title">Top Career Opportunities</h2>
+                        <p class="section-desc">Current high-opportunity roles verified from live tech databases.</p>
+                    </div>
+
+                    <div class="jobs-grid" id="home-featured-jobs-container">
+                        <!-- Populated by JavaScript -->
+                    </div>
+
+                    <div style="text-align:center; margin-top:2.5rem;">
+                        <a href="#jobs" class="btn btn-primary">View All Jobs →</a>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- ===================================================================
+             VIEW 2: DASHBOARD
+             =================================================================== -->
+        <div class="view-container" id="view-dashboard" style="display:none;">
+            <section class="section">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-subtitle">Personal Analytics</span>
+                        <h2 class="section-title">Candidate Career Dashboard</h2>
+                    </div>
+
+                    <div id="dashboard-results-container">
+                        <!-- Rendered by js/app.js -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===================================================================
+             VIEW 3: EXPLORE JOBS (INTERNAL DEDICATED VIEW)
+             =================================================================== -->
+        <div class="view-container" id="view-jobs" style="display:none;">
+            <section class="section">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-subtitle">Verified Job Search</span>
+                        <h2 class="section-title">Explore Live Jobs</h2>
+                        <p class="section-desc">Filter live verified openings across Private and Government sectors.</p>
+                    </div>
+
+                    <!-- SEARCH & FILTER BAR -->
+                    <div style="background:var(--bg-card); border:1px solid var(--glass-border); padding:1.5rem; border-radius:var(--radius-lg); margin-bottom:2rem; display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">
+                        <input type="text" id="job-search-input" class="input-text" placeholder="Search title, skills, or company..." oninput="filterJobsList()">
+                        <select id="job-filter-sector" class="select-text" onchange="filterJobsList()">
+                            <option value="All">All Sectors</option>
+                            <option value="Private">Private Sector</option>
+                            <option value="Government">Government Sector</option>
+                        </select>
+                        <select id="job-filter-worktype" class="select-text" onchange="filterJobsList()">
+                            <option value="All">All Work Types</option>
+                            <option value="Remote">Remote</option>
+                            <option value="Hybrid">Hybrid</option>
+                            <option value="On-site">On-site</option>
+                        </select>
+                        <select id="job-filter-level" class="select-text" onchange="filterJobsList()">
+                            <option value="All">All Experience Levels</option>
+                            <option value="Beginner">Beginner / Fresher</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced / Expert</option>
+                        </select>
+                    </div>
+
+                    <div class="jobs-grid" id="explore-jobs-grid">
+                        <!-- Rendered by js/app.js -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===================================================================
+             VIEW: INTERNSHIPS
+             =================================================================== -->
+        <div class="view-container" id="view-internships" style="display:none;">
+            <section class="section">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-subtitle">Live Internship Feed</span>
+                        <h2 class="section-title">Internships Matched To You</h2>
+                        <p class="section-desc">Curated opportunities across Private & Government sectors, refreshed on demand and matched to your skills.</p>
+                    </div>
+
+                    <div style="background:var(--bg-card); border:1px solid var(--glass-border); padding:1.5rem; border-radius:var(--radius-lg); margin-bottom:1.2rem; display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">
+                        <input type="text" id="internship-search-input" class="input-text" placeholder="Search title, org, or skill..." oninput="filterInternshipsList()">
+                        <select id="internship-filter-type" class="select-text" onchange="filterInternshipsList()">
+                            <option value="All">All Work Types</option>
+                            <option value="Remote">Remote</option>
+                            <option value="Hybrid">Hybrid</option>
+                            <option value="On-site">On-site</option>
+                        </select>
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.6rem;">
+                        <span id="internships-sync-label" class="text-muted" style="font-size:0.82rem;">Last synced: just now</span>
+                        <button class="btn btn-secondary btn-sm" id="internships-refresh-btn" onclick="refreshInternshipsData()">↻ Refresh Listings</button>
+                    </div>
+
+                    <div class="jobs-grid" id="internships-grid">
+                        <!-- Rendered by js/internships.js -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===================================================================
+             VIEW: COURSES
+             =================================================================== -->
+        <div class="view-container" id="view-courses" style="display:none;">
+            <section class="section">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-subtitle">Certified Learning Resources</span>
+                        <h2 class="section-title">Free & Paid Courses</h2>
+                        <p class="section-desc">Skill-matched courses to close the gaps between you and your target roles.</p>
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; flex-wrap:wrap; gap:0.8rem;">
+                        <div style="display:flex; gap:0.5rem;">
+                            <button class="btn btn-secondary btn-sm courses-tab-btn active" data-tab="All" onclick="setCoursesTab('All')">All</button>
+                            <button class="btn btn-secondary btn-sm courses-tab-btn" data-tab="Free" onclick="setCoursesTab('Free')">Free</button>
+                            <button class="btn btn-secondary btn-sm courses-tab-btn" data-tab="Paid" onclick="setCoursesTab('Paid')">Paid</button>
+                        </div>
+                        <input type="text" id="course-search-input" class="input-text" style="max-width:280px;" placeholder="Search courses or platforms..." oninput="filterCoursesList()">
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.6rem;">
+                        <span id="courses-sync-label" class="text-muted" style="font-size:0.82rem;">Last synced: just now</span>
+                        <button class="btn btn-secondary btn-sm" id="courses-refresh-btn" onclick="refreshCoursesData()">↻ Refresh Courses</button>
+                    </div>
+
+                    <div class="jobs-grid" id="courses-grid">
+                        <!-- Rendered by js/courses.js -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===================================================================
+             VIEW 4: SKILL ASSESSMENT & CODING PLAYGROUND
+             =================================================================== -->
+        <div class="view-container" id="view-assessment" style="display:none;">
+            <section class="section">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-subtitle">Technical Benchmark</span>
+                        <h2 class="section-title">Skill Assessment & Coding Test</h2>
+                        <p class="section-desc">Adaptive questions and live code compilation testing.</p>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:2rem;">
+                        <!-- ADAPTIVE QUESTIONS CARD -->
+                        <div class="toolkit-card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem; flex-wrap:wrap; gap:0.6rem;">
+                                <span class="badge badge-cyan">Adaptive Assessment</span>
+                                <select id="assessment-level-select" class="select-text" style="width:auto; padding:0.4rem 0.8rem; font-size:0.85rem;" onchange="changeAssessmentLevel(this.value)">
+                                    <option value="Beginner">Beginner</option>
+                                    <option value="Intermediate" selected>Intermediate</option>
+                                    <option value="Advanced">Advanced</option>
+                                </select>
+                            </div>
+                            <h3 style="font-family:var(--font-heading); margin:0.6rem 0 1rem;">Domain Knowledge Evaluation — 7 MCQs + 3 Coding</h3>
+                            
+                            <div class="quiz-card" id="adaptive-question-card">
+                                <!-- Rendered by js/assessment.js -->
+                            </div>
+                        </div>
+
+                        <!-- CODING PLAYGROUND CARD -->
+                        <div class="toolkit-card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                                <span class="badge badge-indigo">Coding Playground</span>
+                                <select id="code-lang-select" class="select-text" style="padding:0.4rem 0.8rem; font-size:0.85rem; width:auto;">
+                                    <option value="javascript">JavaScript (ES6)</option>
+                                    <option value="python">Python 3</option>
+                                    <option value="cpp">C++ 17</option>
+                                    <option value="java">Java 11</option>
+                                </select>
+                            </div>
+
+                            <div style="margin-bottom:1rem;">
+                                <h4 style="font-family:var(--font-heading); font-weight:700;">Problem: Two Sum Target Pair</h4>
+                                <p style="font-size:0.88rem; color:var(--text-muted);">Find indices of two numbers that add up to target.</p>
+                            </div>
+
+                            <div class="code-editor-box" style="margin-bottom:1rem;">
+                                <textarea id="code-editor-textarea" class="code-textarea"></textarea>
+                            </div>
+
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                                <button class="btn btn-primary btn-sm" onclick="runCodeExecution()">Run Code & Submit ▶</button>
+                                <span class="badge badge-cyan" id="code-status-badge">Ready</span>
+                            </div>
+
+                            <div style="background:#040A14; padding:0.8rem; border-radius:8px; border:1px solid rgba(255,255,255,0.08);">
+                                <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.3rem;">Console Execution Output:</div>
+                                <pre id="code-console-output" style="color:var(--primary); font-size:0.82rem; font-family:monospace; white-space:pre-wrap;">Press "Run Code" to compile...</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===================================================================
+             VIEW: AI INTERVIEW
+             =================================================================== -->
+        <div class="view-container" id="view-interview" style="display:none;">
+            <section class="section">
+                <div class="container" style="max-width:760px;">
+                    <div class="section-header">
+                        <span class="section-subtitle">Practice Makes Confident</span>
+                        <h2 class="section-title">AI Interview Practice</h2>
+                        <p class="section-desc">Get at least 7 tailored questions based on your level, skills, and interests — with progression, answers, and a completion summary.</p>
+                    </div>
+
+                    <div id="interview-container">
+                        <!-- Rendered by js/interview.js -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===================================================================
+             VIEW 5: RESUME BUILDER
+             =================================================================== -->
+        <div class="view-container" id="view-resume-builder" style="display:none;">
+            <section class="section">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-subtitle">Resume Generator</span>
+                        <h2 class="section-title">Interactive Resume Builder</h2>
+                        <p class="section-desc">Construct an ATS-friendly resume and export in plain text or PDF format.</p>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1.1fr 0.9fr; gap:2rem;">
+                        <!-- FORM INPUTS -->
+                        <div class="profile-card">
+                            <h3 style="font-family:var(--font-heading); margin-bottom:1.2rem;">Candidate Information</h3>
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" id="rb-name" class="input-text" value="Alex Morgan">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Professional Title</label>
+                                <input type="text" id="rb-title" class="input-text" value="Software Engineer / AI Enthusiast">
+                            </div>
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" id="rb-email" class="input-text" value="alex.morgan@email.com">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Phone</label>
+                                    <input type="text" id="rb-phone" class="input-text" value="+1 (555) 019-2834">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Technical Skills (Comma separated)</label>
+                                <input type="text" id="rb-skills" class="input-text" value="Python, JavaScript, React, SQL, Git, AWS">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Education & Degree</label>
+                                <input type="text" id="rb-education" class="input-text" value="B.Tech in Computer Science & Engineering — GPA 3.8 / 4.0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Projects</label>
+                                <textarea id="rb-projects" class="input-text" style="height:80px;">CareerAI Platform — Built responsive career guidance tool using JS and Chart.js</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Experience & Internships</label>
+                                <textarea id="rb-experience" class="input-text" style="height:80px;">Software Engineering Intern — NexusTech AI Labs (Worked on ML pipelines)</textarea>
+                            </div>
+                            <button class="btn btn-primary" onclick="downloadBuiltResume()">Download ATS Resume (.TXT) ⬇</button>
+                        </div>
+
+                        <!-- LIVE PREVIEW PANEL -->
+                        <div class="toolkit-card" style="background:#091424;">
+                            <span class="badge badge-success">Live ATS Preview</span>
+                            <div style="margin-top:1rem; padding:1.5rem; background:#0D1B2A; border-radius:10px; border:1px solid rgba(255,255,255,0.08);">
+                                <h2 id="prev-name" style="font-family:var(--font-heading); color:var(--primary);">Alex Morgan</h2>
+                                <div id="prev-title" style="font-weight:600; font-size:0.95rem; margin-bottom:0.4rem;">Software Engineer</div>
+                                <div id="prev-contact" style="font-size:0.8rem; color:var(--text-muted); border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:0.8rem; margin-bottom:1rem;">alex@email.com • +1 555-019</div>
+
+                                <h4 style="font-size:0.85rem; color:var(--primary); text-transform:uppercase;">Technical Skills</h4>
+                                <div id="prev-skills" style="margin-bottom:1rem;"></div>
+
+                                <h4 style="font-size:0.85rem; color:var(--primary); text-transform:uppercase;">Education</h4>
+                                <div id="prev-edu" style="font-size:0.88rem; margin-bottom:1rem;"></div>
+
+                                <h4 style="font-size:0.85rem; color:var(--primary); text-transform:uppercase;">Projects</h4>
+                                <div id="prev-proj" style="font-size:0.88rem; margin-bottom:1rem;"></div>
+
+                                <h4 style="font-size:0.85rem; color:var(--primary); text-transform:uppercase;">Work Experience</h4>
+                                <div id="prev-exp" style="font-size:0.88rem;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===================================================================
+             VIEW 6: RESUME SAMPLES
+             =================================================================== -->
+        <div class="view-container" id="view-resume-samples" style="display:none;">
+            <section class="section">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-subtitle">Verified Templates</span>
+                        <h2 class="section-title">ATS Resume Samples</h2>
+                        <p class="section-desc">Download field-tested ATS compliant resume samples across major technical domains.</p>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:1.8rem;" id="resume-samples-container">
+                        <!-- Rendered by js/resume.js -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===================================================================
+             VIEW 7: NOTIFICATIONS CENTER
+             =================================================================== -->
+        <div class="view-container" id="view-notifications" style="display:none;">
+            <section class="section">
+                <div class="container" style="max-width:800px;">
+                    <div class="section-header">
+                        <span class="section-subtitle">Alerts & Deadlines</span>
+                        <h2 class="section-title">Notifications Center</h2>
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between; margin-bottom:1.5rem;">
+                        <button class="btn btn-secondary btn-sm" onclick="markAllNotificationsRead()">Mark All as Read</button>
+                        <button class="btn btn-secondary btn-sm" onclick="clearAllNotifications()">Clear All</button>
+                    </div>
+
+                    <div id="notifications-list-container">
+                        <!-- Rendered by js/notifications.js -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===================================================================
+             VIEW 8: PROFILE & SETTINGS
+             =================================================================== -->
+        <div class="view-container" id="view-profile" style="display:none;">
+            <section class="section">
+                <div class="container" style="max-width:600px;">
+                    <div class="profile-card" style="text-align:center;">
+                        <span class="badge badge-cyan">Candidate Settings</span>
+                        <h2 style="font-family:var(--font-heading); margin:0.8rem 0 0.4rem;">User Profile</h2>
+                        <p class="text-muted" style="font-size:0.9rem; margin-bottom:2rem;">Manage stored career parameters and preferences.</p>
+
+                        <button class="btn btn-secondary" onclick="resetProfile()" style="width:100%;">↺ Reset Profile & Local State</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- FLOATING CHATBOT FAB & WINDOW -->
+    <div class="chatbot-fab" onclick="toggleChatbotWindow()" title="CareerAI Assistant">
+        ⚡
+        <span class="badge badge-danger" id="chatbot-badge" style="position:absolute; top:-6px; right:-6px; padding:0.15rem 0.4rem; font-size:0.6rem;">1</span>
+    </div>
+
+    <div class="chatbot-window" id="chatbot-window">
+        <div class="chat-header">
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+                <span>⚡</span>
+                <span style="font-weight:700; font-family:var(--font-heading);">CareerAI Assistant</span>
+            </div>
+            <button style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;" onclick="toggleChatbotWindow()">&times;</button>
+        </div>
+
+        <div class="chat-messages" id="chatbot-messages">
+            <div class="chat-msg ai-msg">
+                <div class="msg-bubble">Hello! I am your <strong>CareerAI Assistant</strong>. How can I guide your career journey today?</div>
+                <div class="msg-time">Just now</div>
+            </div>
+        </div>
+
+        <div style="padding:0.5rem 0.8rem; background:rgba(0,0,0,0.2); display:flex; gap:0.4rem; overflow-x:auto;">
+            <button class="badge badge-cyan" style="cursor:pointer;" onclick="sendChatbotMessage('Which jobs match my skills?')">Matching Jobs?</button>
+            <button class="badge badge-indigo" style="cursor:pointer;" onclick="sendChatbotMessage('How can I improve my resume?')">Resume Tips?</button>
+        </div>
+
+        <div class="chat-input-bar">
+            <input type="text" id="chatbot-input" class="input-text" placeholder="Ask AI a question..." onkeypress="if(event.key==='Enter') sendChatbotMessage()">
+            <button class="btn btn-primary btn-sm" onclick="sendChatbotMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- LEAVE WEBSITE EXIT INTENT MODAL -->
+    <div class="exit-modal-backdrop" id="exit-modal">
+        <div class="modal-content" style="text-align:center;">
+            <span class="badge badge-cyan" style="margin-bottom:0.8rem;">Before You Go...</span>
+            <h2 class="text-gradient" style="font-family:var(--font-heading); font-size:1.8rem; margin-bottom:0.8rem;">Your next career opportunity could be one click away.</h2>
+            <p class="text-muted" style="font-size:0.95rem; margin-bottom:1.8rem;">Don't miss out on matched live jobs, skill gap analysis, and certified free courses.</p>
+            <div style="display:flex; gap:1rem; justify-content:center;">
+                <button class="btn btn-primary" onclick="closeExitModal()">Continue Exploring →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW JOB DETAILS MODAL -->
+    <div class="modal-backdrop" id="job-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeJobModal()">&times;</button>
+            <div id="modal-body-content"></div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#home" class="logo">
+                        <div class="logo-icon">⚡</div>
+                        <span>Career<span class="text-cyan">AI</span></span>
+                    </a>
+                    <p class="text-muted" style="font-size:0.9rem; margin-top:0.5rem;">"Discover Your Career. Build Your Skills. Get Hired."</p>
+                </div>
+                <div>
+                    <h4 class="footer-title">Platform</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#jobs">Explore Jobs</a></li>
+                        <li><a href="#internships">Internships</a></li>
+                        <li><a href="#assessment">Skill Assessment</a></li>
+                        <li><a href="#resume-builder">Resume Builder</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="#courses">Courses</a></li>
+                        <li><a href="#interview">AI Interview</a></li>
+                        <li><a href="#resume-samples">ATS Samples</a></li>
+                        <li><a href="#notifications">Notifications</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div style="border-top:1px solid rgba(255,255,255,0.05); padding-top:1.5rem; text-align:center; font-size:0.85rem; color:var(--text-muted);">
+                © 2026 CareerAI. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS MODULES -->
+    <script src="js/jobs.js"></script>
+    <script src="js/courses.js"></script>
+    <script src="js/internships.js"></script>
+    <script src="js/assessment.js"></script>
+    <script src="js/resume.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/interview.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

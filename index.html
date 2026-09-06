@@ -5,9 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pinnacle Scholars Academy | Noida</title>
     
-    <link rel="stylesheet" href="css/main.css"> 
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/premium-fx.css">
+    <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="css/contact-form.css">
-    
+    <link rel="stylesheet" href="css/test.css">
+    <link rel="stylesheet" href="css/session-manager.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -16,7 +23,6 @@
     <script src="js/contact-form.js" defer></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/premium-fx.css">
 </head>
 <body>
 
@@ -24,61 +30,23 @@
 WELCOME INTRO SCREEN
 ========================= -->
 
+<!-- =========================
+WELCOME INTRO SCREEN (LETTER DROP)
+========================= -->
 <div id="welcomeIntro">
-    <div class="intro-flash"></div>
-   <div class="netflix-bars">
-
-    <div class="n-bar"></div>
-    <div class="n-bar"></div>
-    <div class="n-bar"></div>
-    <div class="n-bar"></div>
-    <div class="n-bar"></div>
-    <div class="n-bar"></div>
-    <div class="n-bar"></div>
-    <div class="n-bar"></div>
-
-</div>
-<!-- =========================================
-PPT OPENING DOORS
-========================================= -->
-<div class="ppt-doors">
-    <div class="ppt-door left-ppt-door"></div>
-    <div class="ppt-door right-ppt-door"></div>
-</div>
-    <!-- CENTER CONTENT -->
-    <div class="intro-content">
-
-        <div class="intro-glow"></div>
-
-         <div class="constellation-overlay"></div>
-
-        <div class="shooting-star"></div>
-
-        <h1 class="intro-title">
-            Pinnacle Scholars Academy
-        </h1>
-
-        <div id="constellationMessage" class="intro-message">
-
-    <span>Dear ladies and gentlemen,</span>
-
-    <span>Welcome to Noida's Pinnacle Scholars Academy.</span>
-
-    <span>Where excellence meets innovation,</span>
-
-    <span>dreams become achievements,</span>
-
-    <span>and future leaders are created.</span>
-
-    <span>Empowering students with knowledge,</span>
-
-    <span>discipline, and confidence.</span>
-
-    <span>We are delighted to welcome you.</span>
-
-</div>
+    <div class="intro-bg-effects">
+        <div class="intro-orb orb-1"></div>
+        <div class="intro-orb orb-2"></div>
+        <div class="intro-grid-pattern"></div>
     </div>
-
+    
+    <div class="pinnacle-drop-stage">
+        <div class="drop-welcome-text">WELCOME TO</div>
+        <h1 class="intro-title" id="pinnacleDropTitle" aria-label="PINNACLE SCHOLARS ACADEMY">
+            <!-- Dynamically populated by celestial-intro.js letter by letter -->
+        </h1>
+        <div class="drop-tagline" id="pinnacleDropTagline">NOIDA'S PREMIER ACADEMIC ACADEMY</div>
+    </div>
 </div>
 
 <!-- Floating Dual-Direction Circular Navigation Toggle -->
@@ -115,6 +83,7 @@ PPT OPENING DOORS
         <a href="#portals">Portals</a>
         <a href="enrollment.html">Enroll</a>
         <a href="#take-test">Take Test</a>
+        <a href="career-ai/index.html" class="nav-link-career-ai">⚡ AI Career Enhancement</a>
         <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">☀️ Light Mode</button>
 </nav>
 </header>
@@ -122,37 +91,39 @@ PPT OPENING DOORS
 <!-- LIVE MOVING NOTICE SECTION -->
 <div class="notice-ticker-container">
     <div class="notice-ticker-title">📢 LATEST UPDATES</div>
-    <div class="notice-ticker-track">
-        
-        <span class="ticker-item">
-            🚀 <strong>PLACEMENT DRIVE :</strong> Tech Solutions registration ends soon. 
-            <a href="https://github.com" target="_blank" class="ticker-link">Apply via Matrix Portal →</a>
-        </span>
-        
-        <span class="ticker-item">
-            &#128220; <strong>ACADEMIC PROSPECTUS :</strong> Academic Prospectus has been officially finalized. 
-            <a onclick="downloadBrochure()" target="_blank" class="ticker-link">Download PDF & also can Pay the Fee →</a>
-        </span>
+    <div class="notice-ticker-viewport">
+        <div class="notice-ticker-track">
+            
+            <span class="ticker-item">
+                🚀 <strong>PLACEMENT DRIVE :</strong> Tech Solutions registration ends soon. 
+                <a href="https://github.com" target="_blank" class="ticker-link">Apply via Matrix Portal →</a>
+            </span>
+            
+            <span class="ticker-item">
+                &#128220; <strong>ACADEMIC PROSPECTUS :</strong> Academic Prospectus has been officially finalized. 
+                <a onclick="downloadBrochure()" target="_blank" class="ticker-link">Download PDF & also can Pay the Fee →</a>
+            </span>
 
-        <span class="ticker-item">
-            &#128214;  <strong>ACADEMIC ENROLLMENT :</strong> Academic Enrollment Ends soon. 
-            <a href="#" onclick="window.location.href='enrollment.html'" target="_blank" class="ticker-link">Enroll via portal →</a>
-        </span>
-        
-        <span class="ticker-item">
-            💳 <strong>FEE REMINDER:</strong> Complete pending tuition balances to maintain live class links. 
-            <a href="#" onclick="window.location.href='fees-payment.html'" target="_blank" class="ticker-link">Pay Fast via Razorpay →</a>
-        </span>
-        
-        <span class="ticker-item">
-            🎓 <strong>RESULTS :</strong> Students can check their Monthly test results at anytime. 
-            <a href="#" onclick="navigateTo('results')" class="ticker-link">Check Result →</a>
-        </span>
+            <span class="ticker-item">
+                &#128214;  <strong>ACADEMIC ENROLLMENT :</strong> Academic Enrollment Ends soon. 
+                <a href="#" onclick="window.location.href='enrollment.html'" target="_blank" class="ticker-link">Enroll via portal →</a>
+            </span>
+            
+            <span class="ticker-item">
+                💳 <strong>FEE REMINDER:</strong> Complete pending tuition balances to maintain live class links. 
+                <a href="#" onclick="window.location.href='fees-payment.html'" target="_blank" class="ticker-link">Pay Fast via Razorpay →</a>
+            </span>
+            
+            <span class="ticker-item">
+                🎓 <strong>RESULTS :</strong> Students can check their Monthly test results at anytime. 
+                <a href="#" onclick="navigateTo('results')" class="ticker-link">Check Result →</a>
+            </span>
 
-        <span class="ticker-item">
-             <strong> *** IMPORTANT NOTE :</strong> Students can pay the partial fees via fees payment portals only , 
-             as Full Fees will be collected at student portal. ***         
-        </span>
+            <span class="ticker-item">
+                 <strong> *** IMPORTANT NOTE :</strong> Students can pay the partial fees via fees payment portals only , 
+                 as Full Fees will be collected at student portal. ***         
+            </span>
+        </div>
     </div>
 </div>
 
@@ -180,6 +151,7 @@ PPT OPENING DOORS
     <div class="hero-btns" data-aos="zoom-in" data-aos-delay="600">
         <button onclick="navigateTo('student')" class="cta-btn">Student Portal</button>
         <button onclick="navigateTo('faculty')" class="cta-btn" style="background: var(--secondary);">Faculty Portal</button>
+        <button onclick="window.location.href='career-ai/index.html'" class="cta-btn career-ai-hero-btn">⚡ AI Career Enhancement (GATE)</button>
         <button onclick="location.href='#faculty-directory-section'" class="cta-btn" style="background: #805ad5;">Faculty Directory</button>
         <button onclick="window.location.href='fees-payment.html'" class="cta-btn" style="background: #38a169;">Pay Fees</button>
     </div>
@@ -350,6 +322,7 @@ PPT OPENING DOORS
     <button class="portal-btn" onclick="navigateTo('student')">Student Login</button>
     <button class="portal-btn" style="background: var(--secondary);" onclick="navigateTo('faculty')">Faculty Login</button>
     <button class="portal-btn" style="background: var(--accent);" onclick="navigateTo('results')">Check Results</button>
+    <button class="portal-btn" style="background: linear-gradient(135deg, #7c3aed, #06b6d4);" onclick="window.location.href='career-ai/index.html'">⚡ GATE AI Career Portal</button>
 </div>
 </section>
 

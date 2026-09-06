@@ -1,365 +1,146 @@
-/* ==========================================================
-   CONTACT FORM — "EMBER & STEEL"
-   A brand-new premium palette exclusive to this section: warm
-   tangerine-ember as the primary identity color against a warm
-   graphite-charcoal backdrop, with cool neutral steel-gray as
-   the secondary tone and ivory text for warmth.
-   Distinct from every other section/portal already in the
-   project: Main (indigo/fuchsia), Fees Payment
-   (navy/gold/azure/emerald), Enrollment (rose-gold/amethyst),
-   Faculty (violet/teal/amber), Student Portal (rose/cyan/lime),
-   Result Portal (burgundy/platinum/gold-foil) and the Brochure
-   Vault (bronze/ice-blue/charcoal).
-   ========================================================== */
-:root{
-    --cf-bg-deep:#04122b;
-    --cf-bg-mid:#061b3a;
-    --cf-ink:#eef4fb;
-    --cf-ink-dim:#a9bcd6;
-    --cf-primary:#F4C542;      /* soft gold — unified accent */
-    --cf-primary-deep:#0B3D91;
-    --cf-primary-bright:#ffdf8e;
-    --cf-secondary:#00A6C7;    /* cyan/teal counterweight */
-    --cf-glass:rgba(0,166,199,0.05);
-    --cf-glass-strong:rgba(0,166,199,0.09);
-    --cf-border:rgba(244,197,66,0.28);
-    --cf-success:#34d399;
-    --cf-error:#f87171;
+/* ==========================================================================
+   PINNACLE SCHOLARS ACADEMY - CONTACT FORM STYLES
+   Modern Form Layout, Glowing Inputs, Status Badges & Submit Interactions
+   ========================================================================== */
+
+.contact-section {
+    position: relative;
+    padding: 5rem 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
-.contact-section{
-    position:relative;
-    padding:70px 20px;
-    overflow:hidden;
-    background:
-        radial-gradient(circle at 15% 20%, rgba(251,122,60,0.14), transparent 42%),
-        radial-gradient(circle at 85% 80%, rgba(148,163,184,0.10), transparent 45%),
-        linear-gradient(160deg, var(--cf-bg-deep) 0%, var(--cf-bg-mid) 60%, #0b2454 100%);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
+.contact-heading {
+    text-align: center;
+    max-width: 650px;
+    margin: 0 auto 3rem auto;
 }
 
-/* Slow-morphing liquid "blob" orbs behind the card — purely decorative,
-   GPU-cheap. This is a deliberately different animation technique from
-   the ember-drift used previously (and from every other float/rotate/
-   pulse loop on the site): instead of translating position, the shape's
-   own border-radius corners morph continuously like a lava-lamp blob,
-   combined with a slow independent rotation. Nothing else on the site
-   uses a border-radius morph, so this reads as genuinely new motion. */
-.contact-orb{
-    position:absolute;
-    filter:blur(60px);
-    pointer-events:none;
-    opacity:0.55;
-    animation:cfBlobMorph 13s ease-in-out infinite;
-}
-.contact-orb.orb-1{
-    width:280px;height:280px;
-    background:radial-gradient(circle, rgba(251,122,60,0.35), transparent 70%);
-    top:-60px; left:-60px;
-}
-.contact-orb.orb-2{
-    width:320px;height:320px;
-    background:radial-gradient(circle, rgba(148,163,184,0.22), transparent 70%);
-    bottom:-90px; right:-70px;
-    animation-name:cfBlobMorphReverse;
-    animation-duration:17s;
-    animation-delay:1.5s;
+.contact-heading h2 {
+    font-size: 2.4rem;
+    margin-bottom: 0.75rem;
 }
 
-@keyframes cfBlobMorph{
-    0%,100%{
-        border-radius:42% 58% 65% 35% / 45% 40% 60% 55%;
-        transform:rotate(0deg) scale(1);
-    }
-    25%{
-        border-radius:65% 35% 40% 60% / 55% 65% 35% 45%;
-        transform:rotate(9deg) scale(1.07);
-    }
-    50%{
-        border-radius:35% 65% 55% 45% / 40% 50% 50% 60%;
-        transform:rotate(-7deg) scale(0.95);
-    }
-    75%{
-        border-radius:58% 42% 45% 55% / 60% 35% 65% 40%;
-        transform:rotate(5deg) scale(1.04);
-    }
+.contact-heading p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
 }
 
-@keyframes cfBlobMorphReverse{
-    0%,100%{
-        border-radius:55% 45% 38% 62% / 50% 60% 40% 50%;
-        transform:rotate(0deg) scale(1);
-    }
-    30%{
-        border-radius:38% 62% 60% 40% / 65% 35% 55% 45%;
-        transform:rotate(-10deg) scale(1.05);
-    }
-    60%{
-        border-radius:62% 38% 45% 55% / 35% 55% 45% 65%;
-        transform:rotate(6deg) scale(0.93);
-    }
-    85%{
-        border-radius:48% 52% 55% 45% / 55% 45% 60% 40%;
-        transform:rotate(-4deg) scale(1.02);
-    }
+.contact-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 3rem;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
 }
 
-.contact-heading{
-    position:relative;
-    z-index:2;
-    text-align:center;
-    margin-bottom:38px;
-    max-width:640px;
+.contact-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
 }
 
-.contact-heading h2{
-    font-size:2.1rem;
-    font-weight:800;
-    color:var(--cf-ink);
-    letter-spacing:0.5px;
-    margin-bottom:10px;
-    text-shadow:0 0 24px rgba(251,122,60,0.25);
+.contact-field {
+    display: flex;
+    flex-direction: column;
 }
 
-.contact-heading p{
-    color:var(--cf-ink-dim);
-    font-size:1rem;
-    line-height:1.6;
+.contact-field.full-width {
+    grid-column: 1 / -1;
 }
 
-.contact-card{
-    position:relative;
-    z-index:2;
-    width:100%;
-    max-width:720px;
-    background:linear-gradient(160deg, var(--cf-glass-strong), var(--cf-glass));
-    border:1px solid var(--cf-border);
-    border-radius:26px;
-    padding:40px 36px;
-    backdrop-filter:blur(22px);
-    -webkit-backdrop-filter:blur(22px);
-    box-shadow:
-        0 30px 70px rgba(0,0,0,0.5),
-        0 0 60px rgba(251,122,60,0.08);
-    animation:cfCardRise 0.8s cubic-bezier(0.16,1,0.3,1);
-}
-
-@keyframes cfCardRise{
-    from{ opacity:0; transform:translateY(34px) scale(0.97); }
-    to{ opacity:1; transform:translateY(0) scale(1); }
-}
-
-/* Living "aura" frame around the card. Previously this was a
-   conic-gradient ring spun with rotate(360deg) — the exact same
-   "rotating square" trick used elsewhere on the site (e.g. the
-   faculty success modal's border), just recolored. This version
-   uses a completely different technique: the ring never rotates
-   at all. Instead its opacity, brightness and hue breathe in and
-   out together, so the frame feels alive without ever spinning —
-   genuinely distinct motion, not just a different palette. */
-.contact-card::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    border-radius:26px;
-    padding:1.5px;
-    background:conic-gradient(from 120deg, var(--cf-primary), transparent 30%, transparent 62%, var(--cf-secondary), transparent 92%, var(--cf-primary));
-    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite:xor;
-    mask-composite:exclude;
-    opacity:0.4;
-    pointer-events:none;
-    animation:cfAuraBreathe 4.5s ease-in-out infinite;
-}
-
-@keyframes cfAuraBreathe{
-    0%,100%{ opacity:0.32; filter:hue-rotate(0deg) brightness(1);    }
-    50%{     opacity:0.8;  filter:hue-rotate(28deg) brightness(1.3); }
-}
-
-.contact-form-grid{
-    position:relative;
-    z-index:1;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px 18px;
-}
-
-.contact-field{
-    position:relative;
-    display:flex;
-    flex-direction:column;
-}
-
-.contact-field.full-width{
-    grid-column:1 / -1;
-}
-
-.contact-field label{
-    font-size:0.76rem;
-    font-weight:700;
-    letter-spacing:1px;
-    text-transform:uppercase;
-    color:var(--cf-ink-dim);
-    margin-bottom:8px;
+.contact-field label {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
 }
 
 .contact-field input,
-.contact-field textarea{
-    width:100%;
-    padding:14px 16px;
-    background:rgba(255,255,255,0.045);
-    border:1px solid rgba(255,255,255,0.09);
-    border-radius:14px;
-    color:var(--cf-ink);
-    font-family:inherit;
-    font-size:0.95rem;
-    outline:none;
-    transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
-}
-
-.contact-field textarea{
-    resize:vertical;
-    min-height:110px;
-    line-height:1.6;
-}
-
-.contact-field input::placeholder,
-.contact-field textarea::placeholder{
-    color:rgba(198,191,178,0.45);
+.contact-field textarea {
+    background-color: var(--bg-surface-soft);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.9rem 1.15rem;
+    font-size: 0.98rem;
+    color: var(--text-primary);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
 }
 
 .contact-field input:focus,
-.contact-field textarea:focus{
-    background:rgba(255,255,255,0.075);
-    border-color:var(--cf-primary);
-    box-shadow:0 0 0 4px rgba(251,122,60,0.14), 0 0 24px rgba(251,122,60,0.16);
+.contact-field textarea:focus {
+    border-color: var(--primary-bright);
+    box-shadow: 0 0 0 4px var(--border-glow);
+    background-color: var(--bg-surface);
 }
 
-/* Gentle glow ring that appears on focus, for a premium tactile feel */
-.contact-field input:focus + .cf-focus-glow,
-.contact-field textarea:focus + .cf-focus-glow{
-    opacity:1;
+.contact-submit-btn {
+    grid-column: 1 / -1;
+    background: var(--grad-primary);
+    color: #FFFFFF;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 1rem 2rem;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    margin-top: 0.5rem;
 }
 
-.contact-submit-btn{
-    grid-column:1 / -1;
-    margin-top:8px;
-    width:100%;
-    padding:16px;
-    border:none;
-    border-radius:50px;
-    background:linear-gradient(135deg, var(--cf-primary-bright), var(--cf-primary) 55%, var(--cf-primary-deep));
-    color:#04122b;
-    font-weight:800;
-    font-size:1rem;
-    letter-spacing:0.5px;
-    text-transform:uppercase;
-    cursor:pointer;
-    position:relative;
-    overflow:hidden;
-    box-shadow:0 14px 30px rgba(251,122,60,0.35);
-    transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+.contact-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
 
-.contact-submit-btn::before{
-    content:"";
-    position:absolute;
-    top:0; left:-120%;
-    width:55%; height:100%;
-    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent);
-    transform:skewX(-20deg);
-    transition:left 0.6s ease;
+.contact-status {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-weight: 600;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: var(--radius-md);
+    display: none;
 }
 
-.contact-submit-btn:hover::before{ left:130%; }
-
-.contact-submit-btn:hover{
-    transform:translateY(-3px);
-    box-shadow:0 20px 42px rgba(251,122,60,0.48);
+.contact-status.success {
+    display: block;
+    background: rgba(22, 163, 74, 0.12);
+    color: var(--success);
+    border: 1px solid rgba(22, 163, 74, 0.3);
 }
 
-.contact-submit-btn:disabled{
-    opacity:0.65;
-    cursor:not-allowed;
-    transform:none;
+.contact-status.error {
+    display: block;
+    background: rgba(220, 38, 38, 0.12);
+    color: var(--danger);
+    border: 1px solid rgba(220, 38, 38, 0.3);
 }
 
-.contact-status{
-    grid-column:1 / -1;
-    text-align:center;
-    font-size:0.9rem;
-    font-weight:600;
-    padding:12px 16px;
-    border-radius:12px;
-    display:none;
+/* Background Glowing Orbs */
+.contact-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    pointer-events: none;
+    z-index: -1;
 }
 
-.contact-status.show{ display:block; animation:cfFadeIn 0.4s ease; }
-
-.contact-status.success{
-    background:rgba(74,222,128,0.12);
-    border:1px solid rgba(74,222,128,0.35);
-    color:var(--cf-success);
+.contact-orb.orb-1 {
+    top: -50px;
+    left: -50px;
+    width: 250px;
+    height: 250px;
+    background: rgba(37, 99, 235, 0.12);
 }
 
-.contact-status.error{
-    background:rgba(248,113,113,0.12);
-    border:1px solid rgba(248,113,113,0.35);
-    color:var(--cf-error);
-}
-
-@keyframes cfFadeIn{
-    from{ opacity:0; transform:translateY(-6px); }
-    to{ opacity:1; transform:translateY(0); }
-}
-
-@media(max-width:640px){
-    .contact-form-grid{ grid-template-columns:1fr; }
-    .contact-card{ padding:30px 22px; }
-    .contact-heading h2{ font-size:1.6rem; }
-}
-
-/* ==========================================================
-   LIGHT MODE — CONTACT SECTION
-   Previously this section kept its always-dark "Ember & Steel"
-   background even when the site's Light Mode toggle was on,
-   so it looked out of place next to every other section that
-   does switch. Re-pointing the same --cf-* custom properties
-   (scoped to this section only) means every rule above that
-   already consumes them via var(...) — card, inputs, text,
-   labels, borders — updates automatically, with colors chosen
-   for clear AA contrast on a bright surface.
-   ========================================================== */
-[data-theme="light"] .contact-section{
-    --cf-bg-deep:#eaf1fa;
-    --cf-bg-mid:#fce9bf;
-    --cf-ink:#0b2454;
-    --cf-ink-dim:#7f93b3;
-    --cf-glass:rgba(255,255,255,0.55);
-    --cf-glass-strong:rgba(255,255,255,0.85);
-    --cf-border:rgba(217,83,28,0.25);
-    background:
-        radial-gradient(circle at 15% 20%, rgba(251,122,60,0.12), transparent 42%),
-        radial-gradient(circle at 85% 80%, rgba(148,163,184,0.12), transparent 45%),
-        linear-gradient(160deg, #eaf1fa 0%, #fce9bf 60%, #eaf1fa 100%);
-}
-
-[data-theme="light"] .contact-field input,
-[data-theme="light"] .contact-field textarea{
-    background:rgba(255,255,255,0.75);
-    border:1px solid rgba(217,83,28,0.22);
-    color:#0b2454;
-}
-
-[data-theme="light"] .contact-field input::placeholder,
-[data-theme="light"] .contact-field textarea::placeholder{
-    color:rgba(107,86,67,0.55);
-}
-
-[data-theme="light"] .contact-field input:focus,
-[data-theme="light"] .contact-field textarea:focus{
-    background:rgba(255,255,255,0.95);
+.contact-orb.orb-2 {
+    bottom: -50px;
+    right: -50px;
+    width: 250px;
+    height: 250px;
+    background: rgba(0, 168, 232, 0.12);
 }

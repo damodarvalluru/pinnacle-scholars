@@ -4,14 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Portal | Pinnacle Scholars</title>
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/premium-fx.css">
     <link rel="stylesheet" href="css/student-portal.css">
     <link rel="stylesheet" href="css/session-manager.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
     <script src="js/forgot-id.js" defer></script>
     <script src="js/student-portal.js"></script>
     <script src="js/session-manager.js"></script>
     <script src="js/receipt-generator.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
-    <link rel="stylesheet" href="css/premium-fx.css">
 </head>
 <body>
     <canvas id="portalGeometryCanvas"></canvas>
@@ -23,7 +28,10 @@
             <button id="studentLoginBtn" class="btn" type="submit">Login to Dashboard</button>
             <p style="text-align:center; margin-bottom: 0; margin-top: 15px;"><a href="#" onclick="forgotStudentId(); return false;" style="color: #2b6cb0; text-decoration: none;">Forgot ID?</a></p>
             <p style="text-align:center; margin-bottom: 0; margin-top: 15px;"><a href="enrollment.html" style="color: #2b6cb0; text-decoration: none;">Not enrolled? Register here</a></p>
-            <p style="text-align:center; margin-bottom: 0; margin-top: 15px;"><button onclick="window.location.href='index.html'" style="background: #1a365d;color: white;border: none;padding: 6px 12px;border-radius: 4px;font-weight: bold;cursor: pointer;">🏠 Home</button></p>
+            <p style="text-align:center; margin-bottom: 0; margin-top: 15px;">
+                <button onclick="window.location.href='index.html'" style="background: #1a365d;color: white;border: none;padding: 6px 12px;border-radius: 4px;font-weight: bold;cursor: pointer;">🏠 Home</button>
+                <button onclick="window.location.href='career-ai/index.html'" style="background: linear-gradient(135deg, #7c3aed, #06b6d4);color: white;border: none;padding: 6px 12px;border-radius: 4px;font-weight: bold;cursor: pointer; margin-left: 8px;">⚡ AI Career Enhancement</button>
+            </p>
         </form>
     </div>
 
@@ -34,6 +42,7 @@
             <h3 style="margin-top: 0; color: #1a365d;">Current Enrollment Status</h3>
             <p><strong>Enrollment ID:</strong> <span id="dispId"></span></p>
             <p><strong>Selected Coaching Domain:</strong> <span id="dispDomain"></span></p>
+            <button class="btn" style="background: linear-gradient(135deg, #7c3aed, #06b6d4); width: auto; padding: 8px 20px; margin-top: 10px;" onclick="window.location.href='career-ai/index.html'">⚡ Launch GATE AI Career Enhancement</button>
         </div>
 
         <div class="info-card">
