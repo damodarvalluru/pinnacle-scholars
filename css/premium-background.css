@@ -1,0 +1,182 @@
+/* ==========================================================================
+   PINNACLE SCHOLARS ACADEMY - PREMIUM STUDENT PORTAL BACKGROUND
+   Neon Tunnel Light Trail Animation - Deep Black/Navy Background
+   Blue, Cyan, Green, Magenta Light Trails → Central Vanishing Point
+   Continuous Forward-Flow Effect
+   ========================================================================== */
+
+/* Main Background Container */
+.premium-portal-background {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background: 
+        radial-gradient(circle at 50% 50%, #0a0e27 0%, #050a14 100%),
+        linear-gradient(135deg, #050a14 0%, #0d1323 50%, #050a14 100%);
+    z-index: -100;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Static Base Background Layer - Image Reference */
+.premium-background-base {
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(circle at 50% 50%, rgba(0, 168, 232, 0.1) 0%, transparent 70%),
+        radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 50% 50%, rgba(30, 58, 138, 0.12) 0%, transparent 50%);
+    z-index: -99;
+}
+
+/* Central Vanishing Point Glow */
+.premium-vanishing-point {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, rgba(0, 168, 232, 0.15) 30%, transparent 70%);
+    border-radius: 50%;
+    z-index: -98;
+    animation: vanishingPointPulse 4s ease-in-out infinite;
+}
+
+@keyframes vanishingPointPulse {
+    0%, 100% { 
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+    }
+    50% { 
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 1;
+    }
+}
+
+/* Neon Light Trail Container */
+.premium-tunnel-container {
+    position: absolute;
+    inset: 0;
+    z-index: -97;
+    pointer-events: none;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+/* Individual Neon Light Trails */
+.premium-neon-trail {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transform-origin: center center;
+}
+
+/* Blue/Cyan Dominant Trails */
+.premium-neon-trail.blue {
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.8), #00d4ff);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.6), 0 0 40px rgba(0, 168, 232, 0.4);
+}
+
+.premium-neon-trail.cyan {
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.8), #00ffff);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), 0 0 40px rgba(0, 212, 255, 0.4);
+}
+
+/* Green Accent Trails */
+.premium-neon-trail.green {
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.8), #00ff88);
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.6), 0 0 40px rgba(0, 255, 136, 0.4);
+}
+
+/* Magenta Accent Trails */
+.premium-neon-trail.magenta {
+    background: linear-gradient(90deg, transparent, rgba(255, 0, 255, 0.8), #ff00ff);
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.6), 0 0 40px rgba(255, 0, 255, 0.4);
+}
+
+/* Traveling Shine/Glow Effect */
+.premium-shine-effect {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    opacity: 0;
+    animation: shineTravel 3s linear infinite;
+}
+
+@keyframes shineTravel {
+    0% { transform: translateX(-100%); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateX(100%); opacity: 0; }
+}
+
+/* Bright Pulse Effect */
+.premium-bright-pulse {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+    opacity: 0;
+    animation: brightPulse 2s ease-in-out infinite;
+}
+
+@keyframes brightPulse {
+    0%, 100% { opacity: 0; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Subtle Light Streaks */
+.premium-light-streak {
+    position: absolute;
+    width: 3px;
+    height: 40px;
+    background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.8), transparent);
+    border-radius: 2px;
+    z-index: -96;
+    pointer-events: none;
+    opacity: 0;
+}
+
+/* Dark Center Zone for Text Readability */
+.premium-readability-zone {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: 70%;
+    background: radial-gradient(circle, rgba(5, 10, 20, 0.9) 0%, transparent 70%);
+    z-index: -95;
+    pointer-events: none;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .premium-readability-zone {
+        width: 85%;
+        height: 75%;
+    }
+
+    .premium-vanishing-point {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .premium-readability-zone {
+        width: 95%;
+        height: 85%;
+    }
+
+    .premium-vanishing-point {
+        width: 120px;
+        height: 120px;
+    }
+}

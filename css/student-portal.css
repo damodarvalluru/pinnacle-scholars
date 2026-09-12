@@ -2,13 +2,15 @@
    PINNACLE SCHOLARS ACADEMY - STUDENT PORTAL (STUDENT-PORTAL.HTML) STYLES
    EdTech Dashboard Layout, Student Login Form, Fee Summary & Status Badges
    Light Slate Gray + Cool Blue combination with curved lines
+   Reference Image Background Integration
    ========================================================================== */
 
 body {
-    background: linear-gradient(135deg, #64748B 0%, #94A3B8 50%, #475569 100%);
+    background: transparent;
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
+    color: #1a1a2e;
 }
 
 #portalGeometryCanvas {
@@ -19,16 +21,50 @@ body {
     height: 100vh;
     z-index: -1;
     pointer-events: none;
-    opacity: 0.3;
+    opacity: 0.15;
 }
 
 /* Animated curved color regions */
 .student-portal-bg {
     position: fixed;
     inset: 0;
-    z-index: -2;
+    z-index: 0;
     overflow: hidden;
     pointer-events: none;
+    opacity: 0.2;
+}
+
+/* Student Portal Button Effects - Reference Image Theme */
+.student-portal button::after,
+.student-portal .btn::after,
+.student-portal .portal-btn::after {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0, 212, 255, 0.5) 50%,
+        transparent 100%
+    );
+}
+
+.student-portal button:hover,
+.student-portal .btn:hover,
+.student-portal .portal-btn:hover {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4), 0 0 40px rgba(0, 168, 232, 0.2);
+    border-color: rgba(0, 212, 255, 0.6);
+}
+
+/* Student Portal Form Inputs - Reference Image Theme */
+.student-portal input:focus,
+.student-portal select:focus,
+.student-portal textarea:focus {
+    border-color: rgba(0, 212, 255, 0.6);
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.25), 0 0 25px rgba(0, 168, 232, 0.15);
+    outline: none;
+}
+
+/* Student Portal Status Badges - Reference Image Theme */
+.student-portal .status-badge {
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.25);
 }
 
 .curved-region-1 {
@@ -88,17 +124,17 @@ body {
 }
 
 .portal-card {
-    background: rgba(255, 255, 255, 0.95);
-    border: 2px solid rgba(59, 130, 246, 0.3);
+    background: rgba(255, 255, 255, 0.96);
+    border: 2px solid rgba(0, 212, 255, 0.3);
     border-radius: var(--radius-xl);
     padding: 3rem;
     width: 100%;
     max-width: 480px;
-    box-shadow: 0 20px 60px rgba(71, 85, 105, 0.3), 0 0 40px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(0, 212, 255, 0.2);
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
 }
 
 .portal-card::before {
@@ -181,23 +217,23 @@ body {
 .dashboard h1 {
     font-size: 2.4rem;
     font-weight: 800;
-    color: #1E3A8A;
+    color: #1e3a8a;
     margin-bottom: 2rem;
 }
 
 .dashboard h1 span {
-    color: #3B82F6;
+    color: #3b82f6;
 }
 
 .info-card {
-    background: rgba(255, 255, 255, 0.95);
-    border: 2px solid rgba(59, 130, 246, 0.2);
+    background: rgba(255, 255, 255, 0.96);
+    border: 2px solid rgba(0, 212, 255, 0.25);
     border-radius: var(--radius-lg);
     padding: 2.25rem;
     margin-bottom: 2rem;
-    box-shadow: 0 15px 45px rgba(71, 85, 105, 0.25);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.3), 0 0 30px rgba(0, 212, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
 }
 
 .info-card::before {

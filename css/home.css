@@ -395,6 +395,154 @@ header {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    background-color: #030711;
+    background-image: radial-gradient(ellipse 90% 70% at 50% 55%, rgba(56, 189, 248, 0.16) 0%, rgba(21, 87, 192, 0.10) 22%, rgba(7, 17, 31, 0.65) 46%, #030711 72%);
+    isolation: isolate;
+}
+
+/* ===== COSMIC WARP BACKGROUND (animated stars + shooting light rays) ===== */
+
+/* Layer 1: far starfield — small, slow-drifting, softly twinkling */
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: -10%;
+    z-index: -5;
+    pointer-events: none;
+    background-image:
+        radial-gradient(1.6px 1.6px at 8% 15%, #ffffff, transparent 60%),
+        radial-gradient(1.2px 1.2px at 22% 62%, #cfe8ff, transparent 60%),
+        radial-gradient(1.4px 1.4px at 38% 28%, #ffffff, transparent 60%),
+        radial-gradient(1px 1px at 55% 78%, #ffffff, transparent 60%),
+        radial-gradient(1.5px 1.5px at 68% 12%, #bfe3ff, transparent 60%),
+        radial-gradient(1px 1px at 82% 55%, #ffffff, transparent 60%),
+        radial-gradient(1.3px 1.3px at 92% 30%, #ffffff, transparent 60%),
+        radial-gradient(1.2px 1.2px at 12% 88%, #cfe8ff, transparent 60%);
+    background-repeat: repeat;
+    background-size: 260px 260px;
+    background-position: 0 0;
+    opacity: 0.75;
+    animation: cosmicStarDrift 90s linear infinite, cosmicTwinkleSoft 6s ease-in-out infinite alternate;
+}
+
+/* Layer 2: near starfield — bigger, faster drift, brighter twinkle (parallax) */
+.hero::after {
+    content: '';
+    position: absolute;
+    inset: -10%;
+    z-index: -4;
+    pointer-events: none;
+    background-image:
+        radial-gradient(2px 2px at 15% 40%, #ffffff, transparent 65%),
+        radial-gradient(2.2px 2.2px at 44% 18%, #e6f4ff, transparent 65%),
+        radial-gradient(1.8px 1.8px at 65% 68%, #ffffff, transparent 65%),
+        radial-gradient(2px 2px at 78% 25%, #bfe3ff, transparent 65%),
+        radial-gradient(1.6px 1.6px at 30% 85%, #ffffff, transparent 65%),
+        radial-gradient(2.4px 2.4px at 90% 75%, #ffffff, transparent 65%);
+    background-repeat: repeat;
+    background-size: 420px 420px;
+    background-position: 0 0;
+    opacity: 0.55;
+    animation: cosmicStarDriftFast 55s linear infinite, cosmicTwinkleBright 4s ease-in-out infinite alternate;
+}
+
+/* Layer 3: radiating shine rays + expanding rings + core flare, all converging
+   on the same vanishing point used in the reference image */
+.hero-grid {
+    position: absolute;
+    inset: -20%;
+    z-index: -3;
+    pointer-events: none;
+    background-image: repeating-conic-gradient(from 0deg at 50% 58%,
+        rgba(226, 244, 255, 0.16) 0deg 0.6deg,
+        transparent 0.6deg 5deg,
+        rgba(96, 165, 250, 0.14) 5deg 5.6deg,
+        transparent 5.6deg 11deg);
+    -webkit-mask-image: radial-gradient(ellipse 75% 42% at 50% 58%, #000 35%, transparent 78%);
+            mask-image: radial-gradient(ellipse 75% 42% at 50% 58%, #000 35%, transparent 78%);
+    opacity: 0.9;
+    transform-origin: 50% 58%;
+    animation: cosmicRaySway 26s ease-in-out infinite;
+    will-change: transform;
+}
+
+html[data-theme="dark"] .hero-grid,
+.hero-grid {
+    background-color: transparent;
+}
+
+/* concentric rings shooting outward from the flare, like light speeding past */
+.hero-grid::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-radial-gradient(circle at 50% 58%,
+        rgba(191, 227, 255, 0.35) 0px,
+        rgba(191, 227, 255, 0.35) 1.5px,
+        transparent 1.5px,
+        transparent 46px);
+    transform-origin: 50% 58%;
+    animation: cosmicRingBlast 4.5s linear infinite;
+    pointer-events: none;
+}
+
+/* the bright core of the star the rays and rings emanate from */
+.hero-grid::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 50% 58%,
+        #ffffff 0%,
+        #d5edff 6%,
+        rgba(147, 213, 255, 0.85) 14%,
+        rgba(56, 189, 248, 0.35) 26%,
+        transparent 46%);
+    animation: cosmicFlarePulse 5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes cosmicStarDrift {
+    from { background-position: 0 0; }
+    to   { background-position: -520px -420px; }
+}
+
+@keyframes cosmicStarDriftFast {
+    from { background-position: 0 0; }
+    to   { background-position: -640px -560px; }
+}
+
+@keyframes cosmicTwinkleSoft {
+    0%   { opacity: 0.5; }
+    50%  { opacity: 0.85; }
+    100% { opacity: 0.6; }
+}
+
+@keyframes cosmicTwinkleBright {
+    0%   { opacity: 0.4; }
+    50%  { opacity: 0.8; }
+    100% { opacity: 0.5; }
+}
+
+@keyframes cosmicRaySway {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50%      { transform: rotate(2.5deg) scale(1.04); }
+}
+
+@keyframes cosmicRingBlast {
+    0%   { transform: scale(0.35); opacity: 0.9; }
+    100% { transform: scale(2.1); opacity: 0; }
+}
+
+@keyframes cosmicFlarePulse {
+    0%, 100% { transform: scale(1); opacity: 0.85; filter: brightness(1); }
+    50%      { transform: scale(1.18); opacity: 1; filter: brightness(1.25); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero::before, .hero::after,
+    .hero-grid, .hero-grid::before, .hero-grid::after {
+        animation: none !important;
+    }
 }
 
 /* Home Page Background Animations */
@@ -452,22 +600,6 @@ header {
     100% {
         transform: translateX(100vw) translateY(0) rotate(360deg);
     }
-}
-
-.hero-grid {
-    position: absolute;
-    inset: 0;
-    background-size: 40px 40px;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
-    z-index: -1;
-    opacity: 0.5;
-    pointer-events: none;
-}
-
-html[data-theme="dark"] .hero-grid {
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
 
 .hero h1 {

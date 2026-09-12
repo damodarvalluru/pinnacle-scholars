@@ -13,6 +13,10 @@ function toggleTheme() {
 
 // Global Background Animations - Applied to entire website
 function initGlobalAnimations() {
+    // Skip global animations on student portal and faculty portal - they have custom backgrounds
+    if (window.location.pathname.includes('student-portal')) return;
+    if (window.location.pathname.includes('faculty-portal')) return;
+    
     // Check if animations already initialized
     if (document.querySelector('.global-particles')) return;
 
