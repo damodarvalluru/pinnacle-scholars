@@ -945,398 +945,100 @@ data.test;
 
 //show test interface
 async function showTestInterface(testObject) {
-
     let parsedQuestions = [];
-
-    try{
-
-        if(typeof testObject.questions === "string"){
-
-            parsedQuestions =
-                JSON.parse(testObject.questions);
-
-        }else{
-
-            parsedQuestions = testObject.questions;
-        }
-
-    }catch(err){
-
-        alert("Question paper invalid");
-
+    try {
+        parsedQuestions = typeof testObject.questions === "string" ? JSON.parse(testObject.questions) : testObject.questions;
+    } catch (err) {
         console.error(err);
-
+        alert("Question paper invalid");
         return;
     }
-
-    if(parsedQuestions.length === 0){
-
+    if (!parsedQuestions || parsedQuestions.length === 0) {
         alert("No questions available");
-
         return;
     }
 
-    let htmlQuestions = "";
-
-    parsedQuestions.forEach((q,index)=>{
-
-        const subject =
-            q.subject || "GENERAL";
-
-        htmlQuestions += `
-
-        <div class="question-card">
-
-            <div class="question-top">
-
-                <span class="subject-badge">
-                    ${subject}
-                </span>
-
-                <span class="question-number">
-                    Q${index + 1}
-                </span>
-
+    const questions = parsedQuestions.map((q, index) => `
+        <article class="question-card" id="question-${index + 1}" data-question="${index}">
+            <div class="question-top"><span class="subject-badge">${q.subject || "GENERAL"}</span><span class="question-number">Question ${index + 1} of ${parsedQuestions.length}</span></div>
+            <h3 class="question-title">${q.question}</h3>
+            <div class="options-box">${q.type === "numerical" ? `
+                <input type="number" name="q${index}" placeholder="Enter your numerical answer" class="numerical-input" aria-label="Answer for question ${index + 1}">` :
+                q.options.map((opt, optIndex) => `<label class="option-label"><input type="radio" name="q${index}" value="${opt}"><span class="option-key">${String.fromCharCode(65 + optIndex)}</span><span>${opt}</span></label>`).join("")}
             </div>
-
-            <h3 class="question-title">
-                ${q.question}
-            </h3>
-
-            <div class="options-box">
-
-                ${q.type === "numerical" ? `
-
-                    <input
-                        type="number"
-                        name="q${index}"
-                        placeholder="Enter Numerical Answer"
-                        class="numerical-input"
-                    >
-
-                ` : `
-
-                    ${q.options.map(opt=>`
-
-                        <label class="option-label">
-
-                            <input
-                                type="radio"
-                                name="q${index}"
-                                value="${opt}"
-                            >
-
-                            ${opt}
-
-                        </label>
-
-                    `).join("")}
-
-                `}
-
-            </div>
-
-        </div>
-        `;
-    });
+        </article>`).join("");
 
     const wrapper = document.createElement("div");
-
     wrapper.id = "jeeTestInterface";
-
     wrapper.innerHTML = `
-
-    <style>
-
-        #jeeTestInterface{
-
-            position:fixed;
-            inset:0;
-            overflow:auto;
-            background:#07111d;
-            z-index:999999;
-            font-family:'Segoe UI',sans-serif;
-        }
-
-        .test-header{
-
-            position:sticky;
-            top:0;
-            z-index:999;
-            background:#0d1f33;
-            padding:18px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            border-bottom:1px solid rgba(255,255,255,0.08);
-        }
-
-        .test-header h1{
-            color:white;
-            margin:0;
-        }
-
-        .submit-btn{
-
-            background:linear-gradient(90deg,#00d9ff,#0077ff);
-            border:none;
-            padding:14px 25px;
-            border-radius:10px;
-            color:white;
-            cursor:pointer;
-            font-weight:bold;
-        }
-
-        .questions-container{
-
-            max-width:1100px;
-            margin:auto;
-            padding:30px;
-        }
-
-        .question-card{
-
-            background:#10253d;
-            margin-bottom:28px;
-            border-radius:18px;
-            padding:25px;
-            border:1px solid rgba(255,255,255,0.08);
-        }
-
-        .question-top{
-
-            display:flex;
-            justify-content:space-between;
-            margin-bottom:15px;
-        }
-
-        .subject-badge{
-
-            background:#00d9ff22;
-            color:#7cecff;
-            padding:6px 12px;
-            border-radius:30px;
-            font-size:14px;
-        }
-
-        .question-number{
-
-            color:#ffffff;
-            font-weight:bold;
-        }
-
-        .question-title{
-
-            color:white;
-            line-height:1.7;
-            margin-bottom:18px;
-        }
-
-        .option-label{
-
-            display:block;
-            padding:14px;
-            margin-bottom:12px;
-            border-radius:12px;
-            background:#18324f;
-            color:white;
-            cursor:pointer;
-            transition:0.3s;
-        }
-
-        .option-label:hover{
-
-            background:#214467;
-        }
-
-        .numerical-input{
-
-            width:100%;
-            padding:15px;
-            border:none;
-            border-radius:10px;
-            background:#18324f;
-            color:white;
-            outline:none;
-        }
-
-    </style>
-
-    <div class="test-header">
-
-        <div>
-    <h1>${testObject.title}</h1>
-    <div id="testTimer"
-         style="
-            color:#00d9ff;
-            font-weight:bold;
-            margin-top:5px;
-         ">
-         03:00:00
-    </div>
-</div>
-
-        <button class="submit-btn" id="submitTestBtn">
-            Submit Test
-        </button>
-
-    </div>
-
-    <div class="questions-container">
-
-        ${htmlQuestions}
-
-    </div>
-    `;
-
+        <header class="test-header">
+            <div class="test-heading"><span class="exam-kicker">Pinnacle Scholars Academy · Secure Assessment</span><h1>${testObject.title}</h1></div>
+            <div class="test-actions"><div class="test-timer" aria-label="Time remaining">⌛ <span id="testTimer">03:00:00</span></div><button class="submit-btn" id="submitTestBtn">✓ Submit test</button></div>
+        </header>
+        <main class="test-layout">
+            <section class="questions-container">${questions}</section>
+            <aside class="question-navigator" aria-label="Question navigator">
+                <div class="navigator-heading"><div><span class="exam-kicker">Progress</span><h2>Question navigator</h2></div><span id="answeredCount">0 / ${parsedQuestions.length}</span></div>
+                <div class="navigator-legend"><span><i class="nav-current"></i>Current</span><span><i class="nav-answered"></i>Answered</span><span><i class="nav-unanswered"></i>Unanswered</span></div>
+                <div class="question-grid">${parsedQuestions.map((_, index) => `<button type="button" class="question-nav-btn ${index === 0 ? "is-current" : ""}" data-target="${index + 1}" aria-label="Go to question ${index + 1}">${index + 1}</button>`).join("")}</div>
+            </aside>
+        </main>`;
     document.body.appendChild(wrapper);
-    window.onbeforeunload = function () {
-    return "Your test is still in progress.";
-};
-let timeLeft = 180 * 60;
 
-const timer = setInterval(() => {
-
-    const hrs =
-        Math.floor(timeLeft / 3600);
-
-    const mins =
-        Math.floor((timeLeft % 3600) / 60);
-
-    const secs =
-        timeLeft % 60;
-
-    document.getElementById(
-        "testTimer"
-    ).innerHTML =
-    `${String(hrs).padStart(2,'0')}:${
-        String(mins).padStart(2,'0')
-    }:${
-        String(secs).padStart(2,'0')
-    }`;
-
-    if(timeLeft <= 0){
-
-        clearInterval(timer);
-
-        document
-        .getElementById("submitTestBtn")
-        .click();
-    }
-
-    timeLeft--;
-
-},1000);
-// SUBMIT
-    document
-    .getElementById("submitTestBtn")
-    .addEventListener("click", async function(){
-        const submitBtn =
-document.getElementById(
-    "submitTestBtn"
-);
-
-submitBtn.disabled = true;
-
-submitBtn.innerHTML =
-"Submitting...";
-        let score = 0;
-
-        parsedQuestions.forEach((q,index)=>{
-
-            let selected;
-
-            if(q.type === "numerical"){
-
-                selected =
-                    document.querySelector(
-                        `input[name="q${index}"]`
-                    )?.value;
-
-            }else{
-
-                selected =
-                    document.querySelector(
-                        `input[name="q${index}"]:checked`
-                    )?.value;
-            }
-
-            if(selected){
-
-                if(String(selected).trim() === String(q.answer).trim()){
-
-                    score += 4;
-
-                }else{
-
-                    if(q.type !== "numerical"){
-
-                        score -= 1;
-                    }
-                }
-            }
-
+    const navigatorButtons = [...wrapper.querySelectorAll(".question-nav-btn")];
+    const updateNavigator = () => {
+        let answered = 0;
+        parsedQuestions.forEach((_, index) => {
+            const hasAnswer = !!wrapper.querySelector(`input[name="q${index}"]:checked, input[name="q${index}"][type="number"]:not(:placeholder-shown)`);
+            const button = navigatorButtons[index];
+            button.classList.toggle("is-answered", hasAnswer);
+            if (hasAnswer) answered++;
         });
-        // SAVE RESULT
-        try{
+        wrapper.querySelector("#answeredCount").textContent = `${answered} / ${parsedQuestions.length}`;
+    };
+    wrapper.querySelectorAll("input").forEach(input => input.addEventListener("input", updateNavigator));
+    wrapper.querySelectorAll('input[type="radio"]').forEach(input => input.addEventListener("change", updateNavigator));
+    navigatorButtons.forEach(button => button.addEventListener("click", () => {
+        const target = wrapper.querySelector(`#question-${button.dataset.target}`);
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        navigatorButtons.forEach(item => item.classList.toggle("is-current", item === button));
+    }));
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+        if (entry.isIntersecting) navigatorButtons.forEach(button => button.classList.toggle("is-current", Number(button.dataset.target) === Number(entry.target.dataset.question) + 1));
+    }), { root: wrapper, threshold: 0.5 });
+    wrapper.querySelectorAll(".question-card").forEach(card => observer.observe(card));
+
+    window.onbeforeunload = () => "Your test is still in progress.";
+    let timeLeft = 180 * 60;
+    const timer = setInterval(() => {
+        const hrs = Math.floor(timeLeft / 3600), mins = Math.floor((timeLeft % 3600) / 60), secs = timeLeft % 60;
+        wrapper.querySelector("#testTimer").textContent = `${String(hrs).padStart(2,"0")}:${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
+        if (timeLeft-- <= 0) { clearInterval(timer); wrapper.querySelector("#submitTestBtn").click(); }
+    }, 1000);
+
+    wrapper.querySelector("#submitTestBtn").addEventListener("click", async function () {
+        const submitBtn = this;
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Submitting…";
+        let score = 0;
+        parsedQuestions.forEach((q, index) => {
+            const selected = q.type === "numerical" ? wrapper.querySelector(`input[name="q${index}"]`)?.value : wrapper.querySelector(`input[name="q${index}"]:checked`)?.value;
+            if (selected) score += String(selected).trim() === String(q.answer).trim() ? 4 : (q.type !== "numerical" ? -1 : 0);
+        });
+        try {
             const totalMarks = parsedQuestions.length * 4;
-    const saveResponse =
-    await fetch(
-
-    "https://pinnacle-backend-5i7n.onrender.com/api/tests/submit-result",
-
-    {
-        method:"POST",
-
-        headers:{
-            "Content-Type":"application/json"
-        },
-
-        body:JSON.stringify({
-
-            student_id:
-            localStorage.getItem("active_student_id"),
-
-            student_name:
-            localStorage.getItem("active_student_name"),
-
-            test_id:
-            testObject.test_id,
-
-            score,
-
-            total_marks: totalMarks
-        })
-    });
-
-    const saveData =
-    await saveResponse.json();
-
-    if(!saveData.success){
-
-        throw new Error(
-            "Result save failed"
-        );
-    }
-    clearInterval(timer);
-    window.onbeforeunload = null;
-    alert(
-        `Test Submitted Successfully\n\nScore : ${score}`
-    );
-
-    location.reload();
-
-}
-catch(err){
-    submitBtn.disabled = false;
-
-submitBtn.innerHTML =
-"Submit Test";
-    console.error(err);
-    alert(
-        "Database save failed.\nContact administrator."
-    );
-}
+            const saveResponse = await fetch("https://pinnacle-backend-5i7n.onrender.com/api/tests/submit-result", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ student_id: localStorage.getItem("active_student_id"), student_name: localStorage.getItem("active_student_name"), test_id: testObject.test_id, score, total_marks: totalMarks }) });
+            const saveData = await saveResponse.json();
+            if (!saveData.success) throw new Error("Result save failed");
+            clearInterval(timer);
+            window.onbeforeunload = null;
+            wrapper.innerHTML = `<section class="submission-confirmation"><div class="success-seal">✓</div><span class="exam-kicker">Assessment submitted</span><h1>Thank you for completing your test.</h1><p>Your submission has been securely recorded.</p><strong>Check results via portal</strong><a class="submit-btn" href="result-portal.html">Open Result Portal</a></section>`;
+        } catch (err) {
+            console.error(err);
+            submitBtn.disabled = false;
+            submitBtn.textContent = "✓ Submit test";
+            alert("Database save failed.\nContact administrator.");
+        }
     });
 }
 

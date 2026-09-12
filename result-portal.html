@@ -57,7 +57,7 @@
     <!-- Central Interactive Node -->
     <!-- Central Interactive Node Wrapper -->
     <div class="card-wrapper">
-        <div class="card">
+        <form class="card" id="resultPortalForm" onsubmit="checkResult(); return false;">
             <h2>Result Portal</h2>
             <div class="subtitle">Pinnacle Academy</div>
             <p class="info-text">Enter your details to view your scorecard.</p>
@@ -75,7 +75,7 @@
             </div>
             <p style="text-align:center; margin: 6px 0 0;"><a href="#" class="back" onclick="forgotStudentId(); return false;" style="display:inline;">Forgot ID?</a></p>
             <!-- Interactive Trigger Execution -->
-            <button class="btn" onclick="checkResult()">Search Result</button>
+            <button class="btn" type="submit">Search Result</button>
             
             <br>
             <a href="index.html" class="back">← Return Home</a>
@@ -84,12 +84,12 @@
                 <span>⚛</span>
                 <span>🧭</span>
             </div>
-        </div>
+        </form>
     </div>
 
     <!-- Correctly Structured Bottom Anchored Footer Block -->
     <footer>
-        <p>&copy; 2026 Pinnacle Scholars Academy, Noida. Empowering Futures.</p>
+        <p>© 2026 Pinnacle Scholars Academy, Noida. Empowering Futures.</p>
     </footer>
     <!-- Functional Local Storage Query Scripts -->
 </body>

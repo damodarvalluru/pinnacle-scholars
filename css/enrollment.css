@@ -3,12 +3,14 @@
    Digital Admission Container, Styled Controls, Success Box & Unique ID Badge
    ========================================================================== */
 
+body { overflow: hidden; }
+
 .page-center-envelope {
     min-height: calc(100vh - 80px);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 3rem 1.5rem;
+    padding: 1rem 1.5rem;
 }
 
 .enroll-container {
@@ -23,7 +25,8 @@
     padding: 3rem;
     box-shadow: var(--shadow-lg);
     position: relative;
-    overflow: hidden;
+    overflow: auto;
+    max-height: calc(100vh - 2rem);
 }
 
 .enroll-card h2 {

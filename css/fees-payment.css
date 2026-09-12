@@ -21,7 +21,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
+    padding: 1rem;
+    overflow: hidden;
     background: #FAF9F6;
     color: #212529;
 }
@@ -35,7 +36,8 @@ body {
     max-width: 620px;
     box-shadow: 0 20px 60px rgba(33, 37, 41, 0.1), 0 0 40px rgba(29, 78, 216, 0.08);
     position: relative;
-    overflow: hidden;
+    overflow: auto;
+    max-height: calc(100vh - 2rem);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
