@@ -1,0 +1,126 @@
+/* ==========================================================================
+   PINNACLE SCHOLARS ACADEMY - PREMIUM PORTAL ACTIONS
+   Scoped visual treatment only; click handlers and navigation remain unchanged.
+   ========================================================================== */
+
+.student-portal .btn,
+.student-portal .portal-btn,
+.faculty-portal .btn,
+.faculty-portal .portal-btn,
+.result-portal .btn,
+.enroll-card .btn-submit,
+.enroll-card .btn-portal-shortcut,
+.enroll-card .btn-home,
+.enroll-card .portal-link,
+.payment-card .fetch-btn,
+.payment-card .pay-btn,
+.payment-card .receipt-download-btn,
+#portals .portal-btn,
+.hero-btns .cta-btn {
+    position: relative;
+    isolation: isolate;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 14px !important;
+    background-image: linear-gradient(135deg, var(--portal-start, #2563eb), var(--portal-end, #7c3aed)) !important;
+    box-shadow:
+        0 12px 28px rgba(37, 99, 235, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.01em;
+    transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease !important;
+}
+
+.student-portal .btn::before,
+.student-portal .portal-btn::before,
+.faculty-portal .btn::before,
+.faculty-portal .portal-btn::before,
+.result-portal .btn::before,
+.enroll-card .btn-submit::before,
+.enroll-card .btn-portal-shortcut::before,
+.enroll-card .btn-home::before,
+.enroll-card .portal-link::before,
+.payment-card .fetch-btn::before,
+.payment-card .pay-btn::before,
+.payment-card .receipt-download-btn::before {
+    position: relative;
+    z-index: 1;
+    margin-right: 0.5rem;
+    font-size: 1.05em;
+}
+
+.student-portal .btn::before,
+.student-portal .portal-btn::before { content: "↗"; }
+.faculty-portal .btn::before,
+.faculty-portal .portal-btn::before { content: "✦"; }
+.result-portal .btn::before { content: "⌕"; }
+.enroll-card .btn-submit::before { content: "✓"; }
+.enroll-card .btn-portal-shortcut::before { content: "🔑"; }
+.enroll-card .btn-home::before { content: "⌂"; }
+.enroll-card .portal-link::before { content: "→"; }
+.payment-card .fetch-btn::before { content: "⌕"; }
+.payment-card .pay-btn::before { content: "₹"; }
+.payment-card .receipt-download-btn::before { content: "⇩"; }
+
+.student-portal .btn:hover,
+.student-portal .portal-btn:hover,
+.faculty-portal .btn:hover,
+.faculty-portal .portal-btn:hover,
+.result-portal .btn:hover,
+.enroll-card .btn-submit:hover,
+.enroll-card .btn-portal-shortcut:hover,
+.enroll-card .btn-home:hover,
+.enroll-card .portal-link:hover,
+.payment-card .fetch-btn:hover,
+.payment-card .pay-btn:hover,
+.payment-card .receipt-download-btn:hover,
+#portals .portal-btn:hover,
+.hero-btns .cta-btn:hover {
+    filter: saturate(1.18) brightness(1.06);
+    transform: translateY(-3px);
+    box-shadow:
+        0 18px 36px rgba(37, 99, 235, 0.28),
+        0 0 24px rgba(56, 189, 248, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.student-portal #studentLoginBtn,
+.student-portal #portalPaymentButton { --portal-start: #0f766e; --portal-end: #0ea5e9; }
+.faculty-portal #facultyLoginBtn,
+.faculty-portal #generateFacultyBtn { --portal-start: #6d28d9; --portal-end: #0891b2; }
+.enroll-card .btn-submit { --portal-start: #1d4ed8; --portal-end: #7c3aed; }
+.enroll-card .btn-portal-shortcut { --portal-start: #0f766e; --portal-end: #0ea5e9; }
+.enroll-card .btn-home { --portal-start: #334155; --portal-end: #64748b; }
+.result-portal .btn { --portal-start: #7c3aed; --portal-end: #0ea5e9; }
+.payment-card .fetch-btn { --portal-start: #1d4ed8; --portal-end: #2563eb; }
+.payment-card .pay-btn { --portal-start: #047857; --portal-end: #0f766e; }
+.payment-card .receipt-download-btn { --portal-start: #7c3aed; --portal-end: #0891b2; }
+
+/* Forgot ID must remain a normal hyperlink, never a button.
+   Exempt .home-btn-link so the faculty portal Home button keeps its
+   clearly visible gradient box even inside <p> wrappers. */
+.forgot-id-link a,
+.student-portal p a:not(.home-btn-link),
+.faculty-portal p a:not(.home-btn-link) {
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+}
+
+@media (max-width: 560px) {
+    .student-portal .btn,
+    .student-portal .portal-btn,
+    .faculty-portal .btn,
+    .faculty-portal .portal-btn,
+    .result-portal .btn,
+    .enroll-card .btn-submit,
+    .enroll-card .btn-portal-shortcut,
+    .enroll-card .btn-home,
+    .enroll-card .portal-link,
+    .payment-card .fetch-btn,
+    .payment-card .pay-btn,
+    .payment-card .receipt-download-btn {
+        width: 100%;
+    }
+}

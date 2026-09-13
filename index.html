@@ -13,9 +13,11 @@
     <link rel="stylesheet" href="css/contact-form.css">
     <link rel="stylesheet" href="css/test.css">
     <link rel="stylesheet" href="css/session-manager.css">
+    <link rel="stylesheet" href="css/portal-premium.css">
     <link rel="stylesheet" href="css/responsive.css">
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
@@ -24,6 +26,10 @@
     <script src="js/contact-form.js" defer></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        window.addEventListener('load', () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' }));
+    </script>
 </head>
 <body>
 
@@ -47,10 +53,11 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
 <!-- Floating Dual-Direction Circular Navigation Toggle -->
 <button class="nav-scroll-btn pointing-down" id="globalScrollBtn" onclick="handleNavigation()" title="Navigate Page">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+        <path d="M5 12h14M13 6l6 6-6 6"/>
     </svg>
 </button>
 
+<div class="site-topbar">
 <header>
     <!-- UNIQUE BRAND HEADER CONTAINER WITH FALLING STAR ENGINE EFFECT -->
 <div class="brand-header-wrapper">
@@ -96,7 +103,7 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
             
             <span class="ticker-item">
                 &#128220; <strong>ACADEMIC PROSPECTUS :</strong> Academic Prospectus has been officially finalized. 
-                <a onclick="downloadBrochure()" target="_blank" class="ticker-link">Download PDF & also can Pay the Fee →</a>
+                <a onclick="downloadBrochure()" class="ticker-link">Download Academic Brochure →</a>
             </span>
 
             <span class="ticker-item">
@@ -121,21 +128,31 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
         </div>
     </div>
 </div>
+</div>
 
-<section class="hero" id="brouchure-section">
+<section class="hero master-your-mind" id="brouchure-section" aria-label="Master Your Mind">
+    <video class="master-your-mind-video" autoplay muted playsinline preload="metadata"
+        poster="https://assets.mixkit.co/videos/8802/8802-thumb-720-0.jpg"
+        aria-hidden="true">
+        <source src="https://assets.mixkit.co/videos/8802/8802-720.mp4" type="video/mp4">
+    </video>
+    <div class="master-your-mind-overlay"></div>
+    <audio id="masterMindAudio" loop preload="auto">
+        <source src="https://assets.mixkit.co/music/441/441.mp3" type="audio/mpeg">
+    </audio>
     <div class="hero-grid"></div>
     <!-- Professional Floating Hero Orb -->
 <div class="hero-brochure-orb"
      data-aos="zoom-in-left"
      data-aos-delay="700"
      onclick="downloadBrochure()"
-     title="Download Academic Prospectus">
+     title="Download Academic Brochure">
 
     <div class="hero-brochure-core">
         <div class="icon">🎓</div>
         <div class="title">
             DOWNLOAD<br>
-            PROSPECTUS<br>
+            ACADEMIC BROCHURE<br>
             2026
         </div>
     </div>

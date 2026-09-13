@@ -81,10 +81,88 @@ function initHomeAnimations() {
     }
 }
 
+// Homepage media: ambient music auto-starts silently on load, then
+// unmutes as soon as the browser considers the page "active" — either
+// via user interaction (click / key / touch) or a timer-based retry.
+// Browsers still ultimately require at least a brief interaction before
+// audible playback is allowed, so the track becomes audible the instant
+// the visitor first touches the page (scroll, click, key, touch).
+function initMasterYourMindMedia() {
+    const audio = document.getElementById('masterMindAudio');
+    const video = document.querySelector('.master-your-mind-video');
+
+    if (audio) {
+        let audiblyPlaying = false;
+        const VOLUME = 0.75;
+
+        const setAudible = () => {
+            audio.muted = false;
+            audio.volume = VOLUME;
+        };
+
+        const tryUnmute = () => {
+            if (audiblyPlaying) return;
+            try {
+                setAudible();
+                const p = audio.play();
+                if (p) {
+                    p.then(() => { audiblyPlaying = true; }).catch(() => {});
+                } else {
+                    audiblyPlaying = true;
+                }
+            } catch (_) {
+                /* not ready yet – try again later */
+            }
+        };
+
+        // 1. Start playback muted (always allowed by every browser).
+        audio.muted = true;
+        audio.volume = VOLUME;
+        audio.play().catch(() => {});
+
+        // 2. Immediately start trying to unmute every 200 ms for the
+        //    first 8 seconds — most browsers quietly allow this once the
+        //    media pipeline is primed.
+        let retries = 0;
+        const retryInterval = setInterval(() => {
+            tryUnmute();
+            retries++;
+            if (retries >= 40 || audiblyPlaying) clearInterval(retryInterval);
+        }, 200);
+
+        // 3. Also catch the very first real user interaction — any pointer
+        //    event, key press, or touch that reaches the document counts
+        //    as a user gesture and unlocks audible playback instantly.
+        const gestureHandler = () => {
+            tryUnmute();
+            clearInterval(retryInterval);
+        };
+        window.addEventListener('pointerdown', gestureHandler, { once: true, passive: true });
+        window.addEventListener('keydown',     gestureHandler, { once: true, passive: true });
+        window.addEventListener('touchstart',  gestureHandler, { once: true, passive: true });
+        window.addEventListener('click',       gestureHandler, { once: true, passive: true });
+    }
+
+    if (video) {
+        const clips = [
+            'https://assets.mixkit.co/videos/8802/8802-720.mp4',
+            'https://assets.mixkit.co/videos/9006/9006-720.mp4',
+            'https://assets.mixkit.co/videos/21589/21589-720.mp4'
+        ];
+        let clipIndex = 0;
+        video.addEventListener('ended', () => {
+            clipIndex = (clipIndex + 1) % clips.length;
+            video.src = clips[clipIndex];
+            video.play().catch(() => {});
+        });
+    }
+}
+
 // Initialize animations when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     initGlobalAnimations();
     initHomeAnimations();
+    initMasterYourMindMedia();
 });
 
 // Auto-toggle scroll button direction based on scroll position
@@ -1251,7 +1329,7 @@ function downloadBrochure() {
         <div class="no-print vault-toolbar">
 
             <span style="color: #8a5f2f; font-weight: 600;">
-                📄 Prospectus Core Viewer Active
+                 📄 Academic Brochure Ready
             </span>
 
             <div style="display: flex; gap: 8px;">
@@ -1268,7 +1346,7 @@ function downloadBrochure() {
                     onclick="printProspectus()"
                     class="vault-btn vault-btn-print">
 
-                    🖨️ Print / Download Syllabus
+                     🖨️ Download A4 Academic Brochure
 
                 </button>
 
@@ -1558,6 +1636,10 @@ function downloadBrochure() {
 
     modal.classList.add('vault-open');
     modal.style.display = 'flex';
+
+    // The brochure action is a direct A4 print/download flow. It never calls
+    // a payment function or opens the fees gateway.
+    window.setTimeout(() => printProspectus(), 60);
 }
 
 function printProspectus(){
@@ -1567,19 +1649,86 @@ function printProspectus(){
             "printableProspectusArea"
         );
 
+    // Prefer a real browser download when html2pdf is available. The
+    // temporary presentation changes are restored immediately afterwards, so
+    // the on-screen brochure viewer remains unchanged.
+    if (content && typeof window.html2pdf === 'function') {
+        const toolbar = content.querySelector('.no-print');
+        const previous = {
+            toolbarDisplay: toolbar ? toolbar.style.display : '',
+            maxHeight: content.style.maxHeight,
+            overflow: content.style.overflow,
+            width: content.style.width
+        };
+        if (toolbar) toolbar.style.display = 'none';
+        content.style.maxHeight = 'none';
+        content.style.overflow = 'visible';
+        content.style.width = '190mm';
+
+        window.html2pdf()
+            .set({
+                margin: 0,
+                filename: 'Pinnacle-Academic-Brochure-2026.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                pagebreak: { mode: ['css', 'legacy'] },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            })
+            .from(content)
+            .save()
+            .finally(() => {
+                if (toolbar) toolbar.style.display = previous.toolbarDisplay;
+                content.style.maxHeight = previous.maxHeight;
+                content.style.overflow = previous.overflow;
+                content.style.width = previous.width;
+            });
+        return;
+    }
+
     const printWindow =
         window.open('', '_blank');
 
     printWindow.document.write(`
         <html>
         <head>
-            <title>Pinnacle Prospectus</title>
+             <title>Pinnacle Academic Brochure</title>
 
             <style>
 
+                @page{
+                    size:A4;
+                    margin:0;
+                }
+
+                *{
+                    box-sizing:border-box;
+                }
+
+                html, body{
+                    width:210mm;
+                    min-height:297mm;
+                    margin:0;
+                    background:#eef2f7;
+                }
+
                 body{
-                    font-family:Arial,sans-serif;
-                    padding:20px;
+                    font-family:'Segoe UI',Arial,sans-serif;
+                    padding:10mm;
+                    color:#2d3748;
+                }
+
+                #printableProspectusArea{
+                    width:190mm !important;
+                    min-height:277mm;
+                    max-width:none !important;
+                    max-height:none !important;
+                    overflow:visible !important;
+                    margin:0 auto !important;
+                    padding:10mm !important;
+                    border:1px solid #cbd5e1;
+                    border-radius:0 !important;
+                    background:#fff !important;
+                    box-shadow:0 4mm 12mm rgba(15,23,42,.12);
                 }
 
                 img{
@@ -1587,12 +1736,12 @@ function printProspectus(){
                 }
 
                 .no-print{
-                    display:none;
+                    display:none !important;
                 }
 
-                @page{
-                    size:A4;
-                    margin:10mm;
+                .pdf-page-break{
+                    break-before:page;
+                    page-break-before:always;
                 }
 
             </style>
@@ -1725,8 +1874,6 @@ const timer = setInterval(()=>{count += increment;
     });
 
 }
-
-        handleNavigation();
 
     updateVisitorCount();
     });

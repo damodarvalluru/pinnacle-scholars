@@ -226,7 +226,7 @@
     }
 
     .notice-ticker-container {
-        top: 5.2rem;
+        top: auto;
         width: calc(100% - 1rem);
         margin-top: 0.65rem;
     }
@@ -348,7 +348,7 @@
     }
 
     .notice-ticker-container {
-        top: 4.6rem;
+        top: auto;
         padding: 0.25rem 0.4rem;
     }
 

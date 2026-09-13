@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/student-portal.css">
     <link rel="stylesheet" href="css/session-manager.css">
     <link rel="stylesheet" href="css/receipt.css">
+    <link rel="stylesheet" href="css/portal-premium.css">
     <link rel="stylesheet" href="css/responsive.css">
 
     <script src="js/scripts.js"></script>
@@ -42,7 +43,7 @@
     <!-- Floating Scroll Button -->
     <button class="nav-scroll-btn pointing-down" id="globalScrollBtn" onclick="handleNavigation()" title="Navigate Page">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            <path d="M5 12h14M13 6l6 6-6 6"/>
         </svg>
     </button>
 
@@ -55,8 +56,8 @@
             <p style="text-align:center; margin-bottom: 0; margin-top: 15px;"><a href="#" onclick="forgotStudentId(); return false;" style="color: #2b6cb0; text-decoration: none;">Forgot ID?</a></p>
             <p style="text-align:center; margin-bottom: 0; margin-top: 15px;"><a href="enrollment.html" style="color: #2b6cb0; text-decoration: none;">Not enrolled? Register here</a></p>
             <p style="text-align:center; margin-bottom: 0; margin-top: 15px;">
-                <button onclick="window.location.href='index.html'" style="background: #1a365d;color: white;border: none;padding: 6px 12px;border-radius: 4px;font-weight: bold;cursor: pointer;">🏠 Home</button>
-                <button onclick="window.location.href='career-ai/index.html'" style="background: linear-gradient(135deg, #7c3aed, #06b6d4);color: white;border: none;padding: 6px 12px;border-radius: 4px;font-weight: bold;cursor: pointer; margin-left: 8px;">⚡ AI Career Enhancement</button>
+                <button class="btn" onclick="window.location.href='index.html'" style="padding: 6px 12px; width: auto;">🏠 Home</button>
+                <button class="btn" onclick="window.location.href='career-ai/index.html'" style="padding: 6px 12px; width: auto; margin-left: 8px;">⚡ AI Career Enhancement</button>
             </p>
         </form>
     </div>
@@ -83,7 +84,7 @@
             <button id="portalPaymentButton" class="btn" style="background: #38a169; width: auto; padding: 10px 25px; margin-top: 10px;" onclick="executeStudentPortalPayment()">Pay Online Now</button>
         </div>
 
-        <button onclick="PinnacleSession.logout(); location.reload()" style="background:#cbd5e0; color: #2d3748; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer; font-weight: 600;">Logout Session</button>
+        <button class="btn" onclick="PinnacleSession.logout(); location.reload()" style="padding: 10px 20px; width: auto;">Logout Session</button>
     </div>
 <footer style="position: relative; z-index: 5; padding: 20px 0; width: 100%;">
     <p style="text-align: center; color: white; font-size: x-large; letter-spacing: 0.5px;">

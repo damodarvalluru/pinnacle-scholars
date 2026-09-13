@@ -194,8 +194,8 @@
 
 /* 2. BRAND HEADER & FLOATING NAVIGATION */
 header {
-    position: sticky;
-    top: 0;
+    position: relative;
+    top: auto;
     margin: 0 auto;
     width: calc(100% - 3rem);
     max-width: 1240px;
@@ -327,10 +327,35 @@ header {
     align-items: center;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    position: sticky;
-    top: 6.25rem;
+    position: relative;
+    top: auto;
     z-index: 999;
     isolation: isolate;
+}
+
+/* Header and LATEST UPDATES travel together and keep their full height in
+   document flow, so anchored content is not hidden below a fixed chrome bar. */
+.site-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 3000;
+    padding: 0.4rem 0 0.55rem;
+    background: linear-gradient(180deg, rgba(248, 250, 252, 0.96), rgba(248, 250, 252, 0.8));
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+html[data-theme="dark"] .site-topbar {
+    background: linear-gradient(180deg, rgba(7, 18, 37, 0.96), rgba(7, 18, 37, 0.82));
+}
+
+.site-topbar header,
+.site-topbar .notice-ticker-container {
+    z-index: auto;
+}
+
+section[id] {
+    scroll-margin-top: 10rem;
 }
 
 .notice-ticker-title {
@@ -400,6 +425,56 @@ header {
     background-color: #030711;
     background-image: radial-gradient(ellipse 90% 70% at 50% 55%, rgba(56, 189, 248, 0.16) 0%, rgba(21, 87, 192, 0.10) 22%, rgba(7, 17, 31, 0.65) 46%, #030711 72%);
     isolation: isolate;
+}
+
+/* Master Your Mind media layer: the existing hero content and controls stay
+   above it while only the old animated hero background is replaced. */
+.master-your-mind-video,
+.master-your-mind-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.master-your-mind-video {
+    z-index: -7;
+    object-fit: cover;
+    object-position: center;
+    filter: saturate(1.05) contrast(1.02) brightness(1.05);
+}
+
+.master-your-mind-overlay {
+    z-index: -6;
+    background:
+        linear-gradient(90deg, rgba(3, 7, 17, 0.5) 0%, rgba(3, 7, 17, 0.16) 48%, rgba(3, 7, 17, 0.46) 100%),
+        linear-gradient(180deg, rgba(3, 7, 17, 0.08), rgba(3, 7, 17, 0.4));
+}
+
+.master-your-mind .hero-grid,
+.master-your-mind::before,
+.master-your-mind::after,
+.master-your-mind .hero-particles {
+    display: none !important;
+}
+
+.ambient-music-toggle {
+    position: absolute;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    z-index: 12;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.6);
+    color: #fff;
+    font-size: 0.78rem;
+    backdrop-filter: blur(12px);
+}
+
+.ambient-music-toggle.is-playing {
+    background: linear-gradient(135deg, #0f766e, #0891b2);
 }
 
 /* ===== COSMIC WARP BACKGROUND (animated stars + shooting light rays) ===== */
@@ -612,11 +687,13 @@ html[data-theme="dark"] .hero-grid,
     background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-royal) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 7px rgba(3, 7, 17, 0.55));
 }
 
 .hero p {
     font-size: clamp(1.1rem, 2vw, 1.4rem);
     color: var(--text-secondary);
+    text-shadow: 0 1px 5px rgba(3, 7, 17, 0.55);
     max-width: 720px;
     margin: 0 auto 2.5rem auto;
 }
@@ -630,9 +707,12 @@ html[data-theme="dark"] .hero-grid,
 }
 
 .hero-btns button, .hero-btns a {
-    padding: 0.9rem 1.8rem;
-    font-size: 1rem;
+    padding: 1rem 2rem;
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
     border-radius: var(--radius-md);
+    text-shadow: 0 1px 6px rgba(3, 7, 17, 0.45);
 }
 
 /* Floating Prospectus Orb Token */
