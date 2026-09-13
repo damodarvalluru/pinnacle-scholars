@@ -898,6 +898,10 @@ if(studentData.success){
         "active_student_name",
         studentData.student.name
     );
+    localStorage.setItem(
+        "active_student_details",
+        JSON.stringify(studentData.student)
+    );
 }
             // FETCH TEST
 
@@ -966,7 +970,26 @@ async function showTestInterface(testObject) {
                 <input type="number" name="q${index}" placeholder="Enter your numerical answer" class="numerical-input" aria-label="Answer for question ${index + 1}">` :
                 q.options.map((opt, optIndex) => `<label class="option-label"><input type="radio" name="q${index}" value="${opt}"><span class="option-key">${String.fromCharCode(65 + optIndex)}</span><span>${opt}</span></label>`).join("")}
             </div>
+            <button type="button" class="clear-selection-btn" data-question="${index}" aria-label="Clear answer for question ${index + 1}">Clear selection</button>
         </article>`).join("");
+
+    let activeStudent = {};
+    try {
+        activeStudent = JSON.parse(localStorage.getItem("active_student_details") || "{}");
+    } catch (err) {
+        console.warn("Student details could not be loaded.", err);
+    }
+    const studentName = activeStudent.name || localStorage.getItem("active_student_name") || "Student";
+    const studentId = activeStudent.student_id || localStorage.getItem("active_student_id") || "N/A";
+    const studentDomain = activeStudent.domain || "N/A";
+    const studentDob = activeStudent.dob || localStorage.getItem("active_student_dob") || "N/A";
+    const studentDetailsMarkup = `
+        <section class="test-student-details" aria-label="Logged-in student details">
+            <span><strong>Student name</strong>${studentName}</span>
+            <span><strong>Student ID</strong>${studentId}</span>
+            <span><strong>Domain</strong>${studentDomain}</span>
+            <span><strong>Date of birth</strong>${studentDob}</span>
+        </section>`;
 
     const wrapper = document.createElement("div");
     wrapper.id = "jeeTestInterface";
@@ -976,7 +999,7 @@ async function showTestInterface(testObject) {
             <div class="test-actions"><div class="test-timer" aria-label="Time remaining">⌛ <span id="testTimer">03:00:00</span></div><button class="submit-btn" id="submitTestBtn">✓ Submit test</button></div>
         </header>
         <main class="test-layout">
-            <section class="questions-container">${questions}</section>
+            <section class="questions-container">${studentDetailsMarkup}${questions}</section>
             <aside class="question-navigator" aria-label="Question navigator">
                 <div class="navigator-heading"><div><span class="exam-kicker">Progress</span><h2>Question navigator</h2></div><span id="answeredCount">0 / ${parsedQuestions.length}</span></div>
                 <div class="navigator-legend"><span><i class="nav-current"></i>Current</span><span><i class="nav-answered"></i>Answered</span><span><i class="nav-unanswered"></i>Unanswered</span></div>
@@ -998,6 +1021,14 @@ async function showTestInterface(testObject) {
     };
     wrapper.querySelectorAll("input").forEach(input => input.addEventListener("input", updateNavigator));
     wrapper.querySelectorAll('input[type="radio"]').forEach(input => input.addEventListener("change", updateNavigator));
+    wrapper.querySelectorAll(".clear-selection-btn").forEach(button => button.addEventListener("click", () => {
+        const questionIndex = button.dataset.question;
+        wrapper.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+            if (input.type === "radio") input.checked = false;
+            else input.value = "";
+        });
+        updateNavigator();
+    }));
     navigatorButtons.forEach(button => button.addEventListener("click", () => {
         const target = wrapper.querySelector(`#question-${button.dataset.target}`);
         target.scrollIntoView({ behavior: "smooth", block: "start" });

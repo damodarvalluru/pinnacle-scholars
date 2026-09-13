@@ -1,3 +1,17 @@
+/* Compact exam controls and student identity panel */
+.test-student-details { position:relative; overflow:hidden; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.65rem; padding:1rem 1.15rem; margin-bottom:1rem; border:1px solid rgba(125,211,252,.38); border-radius:16px; background:linear-gradient(135deg,rgba(14,116,144,.24),rgba(30,41,59,.68)); box-shadow:0 10px 28px rgba(0,0,0,.2),0 0 22px rgba(56,189,248,.12); }
+.test-student-details::after { content:""; position:absolute; top:0; left:-35%; width:28%; height:100%; background:linear-gradient(105deg,transparent,rgba(255,255,255,.38),transparent); transform:skewX(-20deg); animation:studentDetailsShine 4.5s ease-in-out infinite; pointer-events:none; }
+.test-student-details span { position:relative; z-index:1; display:flex; flex-direction:column; gap:.15rem; min-width:0; color:#e0f2fe; font-size:.78rem; }
+.test-student-details strong { color:#7dd3fc; font-size:.64rem; letter-spacing:.08em; text-transform:uppercase; }
+@keyframes studentDetailsShine { 0%,55% { left:-35%; } 100% { left:125%; } }
+.clear-selection-btn { justify-self:start; margin-top:.75rem; padding:.38rem .68rem; border:1px solid rgba(125,211,252,.38); border-radius:8px; background:rgba(15,23,42,.66); color:#bae6fd; font:inherit; font-size:.72rem; font-weight:700; cursor:pointer; transition:.18s ease; }
+.clear-selection-btn:hover { border-color:#38bdf8; color:#fff; background:rgba(14,116,144,.42); box-shadow:0 0 14px rgba(56,189,248,.2); }
+.test-layout { grid-template-columns:minmax(0,1fr) 236px !important; }
+.question-navigator { padding:.8rem !important; overflow:visible !important; }
+.question-grid { grid-template-columns:repeat(10,minmax(0,1fr)) !important; gap:.25rem !important; }
+.question-nav-btn { min-width:0; border-radius:5px; font-size:.7rem !important; }
+@media (max-width:860px) { .question-grid { grid-template-columns:repeat(10,minmax(0,1fr)) !important; gap:.22rem !important; } .question-navigator { padding:.65rem !important; } }
+@media (max-width:560px) { .test-student-details { grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem; padding:.75rem; } .question-grid { grid-template-columns:repeat(10,minmax(0,1fr)) !important; gap:.18rem !important; } .question-nav-btn { font-size:.62rem !important; } }
 /* Secure assessment interface */
 #jeeTestInterface { position:fixed; inset:0; z-index:999999; overflow:auto; color:#dbeafe; background:radial-gradient(circle at 12% 0%,#1d4ed8 0,transparent 28%),radial-gradient(circle at 96% 100%,#0f766e 0,transparent 24%),#071225; font-family:'Poppins','Inter',system-ui,sans-serif; }
 .test-header { position:sticky; top:0; z-index:5; min-height:84px; padding:1rem clamp(1rem,4vw,3rem); display:flex; justify-content:space-between; align-items:center; gap:1rem; background:rgba(7,18,37,.92); border-bottom:1px solid rgba(148,163,184,.2); backdrop-filter:blur(18px); }

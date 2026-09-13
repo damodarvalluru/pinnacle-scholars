@@ -189,3 +189,183 @@
         animation: none !important;
     }
 }
+
+/* Compact mobile presentation */
+@media (max-width: 768px) {
+    html {
+        font-size: 12px;
+    }
+
+    section {
+        padding: 1.75rem 0.55rem;
+    }
+
+    header {
+        width: calc(100% - 1rem);
+        padding: 0.45rem 0.65rem;
+        border-radius: var(--radius-lg);
+        gap: 0.25rem;
+    }
+
+    .brand-header-wrapper {
+        max-width: 38%;
+    }
+
+    .nav-links {
+        gap: 0.2rem 0.35rem;
+    }
+
+    .nav-links a {
+        font-size: 0.68rem;
+        padding: 0.18rem 0.3rem;
+    }
+
+    .nav-link-career-ai {
+        padding: 0.3rem 0.45rem !important;
+        font-size: 0.68rem !important;
+    }
+
+    .notice-ticker-container {
+        top: 5.2rem;
+        width: calc(100% - 1rem);
+        margin-top: 0.65rem;
+    }
+
+    .notice-ticker-title {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.55rem;
+        margin-right: 0.65rem;
+    }
+
+    .ticker-item {
+        font-size: 0.72rem;
+    }
+
+    .hero {
+        padding-top: 2rem !important;
+    }
+
+    .hero h1 {
+        font-size: 1.6rem;
+    }
+
+    .hero p {
+        font-size: 0.78rem;
+    }
+
+    .card,
+    .info-card,
+    .portal-card,
+    .contact-card,
+    .enroll-card,
+    .payment-card {
+        padding: 0.85rem !important;
+    }
+
+    .brand-header-wrapper h1 span:first-child {
+        font-size: 20px !important;
+    }
+
+    .brand-header-wrapper h1 span:last-child {
+        font-size: 8px !important;
+        letter-spacing: 2px !important;
+    }
+
+    .theme-toggle-btn {
+        font-size: 0.65rem;
+        padding: 0.25rem 0.45rem;
+    }
+
+    .portal-card,
+    .jee-card {
+        max-width: calc(100vw - 1rem);
+    }
+
+    .section-title,
+    section h2 {
+        font-size: 1.35rem;
+    }
+
+    .hero-brochure-orb {
+        width: 90px;
+        height: 90px;
+        margin-bottom: 1rem !important;
+    }
+
+    .hero-btns button,
+    .hero-btns a {
+        padding: 0.55rem 0.9rem;
+    }
+
+    .nav-scroll-btn {
+        width: 34px;
+        height: 34px;
+        bottom: 0.65rem;
+        right: 0.65rem;
+    }
+}
+
+@media (max-width: 480px) {
+    html {
+        font-size: 11px;
+    }
+
+    header {
+        width: calc(100% - 0.6rem);
+        padding: 0.35rem 0.45rem;
+    }
+
+    .brand-header-wrapper {
+        max-width: 34%;
+    }
+
+    .brand-header-wrapper h1 span:first-child {
+        font-size: 17px !important;
+    }
+
+    .brand-header-wrapper h1 span:last-child {
+        font-size: 6px !important;
+        letter-spacing: 1px !important;
+    }
+
+    .nav-links {
+        gap: 0.15rem 0.22rem;
+    }
+
+    .nav-links a {
+        font-size: 0.62rem;
+        padding: 0.15rem 0.22rem;
+    }
+
+    .nav-link-career-ai {
+        font-size: 0.6rem !important;
+        padding: 0.22rem 0.3rem !important;
+    }
+
+    .theme-toggle-btn {
+        font-size: 0.58rem;
+        padding: 0.2rem 0.3rem;
+    }
+
+    .notice-ticker-container {
+        top: 4.6rem;
+        padding: 0.25rem 0.4rem;
+    }
+
+    .notice-ticker-title {
+        font-size: 0.62rem;
+        padding: 0.24rem 0.4rem;
+    }
+
+    .ticker-item {
+        font-size: 0.64rem;
+    }
+
+    .hero h1 {
+        font-size: 1.45rem;
+    }
+
+    .hero p {
+        font-size: 0.72rem;
+    }
+}
