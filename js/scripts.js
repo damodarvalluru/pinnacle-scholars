@@ -959,57 +959,91 @@ await fetch(
     return;
 }
 
-            status.innerHTML =
-                "Eligibility verified. Fetching test...";
-            // calls student api for student name
-                const studentResponse =
-await fetch(
-`https://pinnacle-backend-5i7n.onrender.com/api/students/${studentId}`
-);
+            status.innerHTML = "Eligibility verified. Fetching available tests...";
+            
+            // Calls student API for student details
+            const studentResponse = await fetch(`https://pinnacle-backend-5i7n.onrender.com/api/students/${studentId}`);
+            const studentData = await studentResponse.json();
+            if (studentData.success) {
+                localStorage.setItem("active_student_name", studentData.student.name);
+                localStorage.setItem("active_student_details", JSON.stringify(studentData.student));
+            }
 
-const studentData =
-await studentResponse.json();
-
-if(studentData.success){
-
-    localStorage.setItem(
-        "active_student_name",
-        studentData.student.name
-    );
-    localStorage.setItem(
-        "active_student_details",
-        JSON.stringify(studentData.student)
-    );
-}
-            // FETCH TEST
-
-            const response = await fetch(
-                `https://pinnacle-backend-5i7n.onrender.com/api/tests/latest/${domain}`
-            );
-
-            if(!response.ok){
+            // FETCH ALL PUBLISHED TESTS PERMANENTLY STORED IN DATABASE
+            const response = await fetch(`https://pinnacle-backend-5i7n.onrender.com/api/tests/${domain}`);
+            if (!response.ok) {
                 throw new Error("Test API Failed");
             }
 
-            const data =
-await response.json();
+            const tests = await response.json();
+            if (!Array.isArray(tests) || tests.length === 0) {
+                alert("No published tests available for your program at this time.");
+                status.style.display = "none";
+                return;
+            }
 
-if(!data.success){
+            // CHECK ATTEMPT STATUS FOR EACH TEST FOR THIS STUDENT
+            const testsWithAttemptStatus = await Promise.all(tests.map(async (t) => {
+                try {
+                    const statusRes = await fetch(`https://pinnacle-backend-5i7n.onrender.com/api/tests/attempt-status/${studentId}/${t.test_id}`);
+                    const statusData = await statusRes.json();
+                    return {
+                        ...t,
+                        attempted: !!(statusData.success && statusData.attempted)
+                    };
+                } catch {
+                    return { ...t, attempted: false };
+                }
+            }));
 
-    alert(
-        data.message
-    );
+            // RENDER TEST SELECTION PANEL IF MULTIPLE TESTS OR SINGLE TEST DISPLAY
+            const verifySection = document.querySelector("#ultimateJeePortal .verify-section");
+            if (verifySection) {
+                verifySection.innerHTML = `
+                    <div class="published-tests-selector">
+                        <h3 style="color:#00d9ff; margin-bottom:12px; font-size:1.2rem; text-align:center;">
+                            Published Tests Available (${testsWithAttemptStatus.length})
+                        </h3>
+                        <p style="text-align:center; color:#cdefff; font-size:0.9rem; margin-bottom:18px;">
+                            Select a test paper published by faculty to begin your examination.
+                        </p>
+                        <div class="test-cards-grid" style="display:grid; gap:14px; max-height:350px; overflow-y:auto; padding-right:6px;">
+                            ${testsWithAttemptStatus.map((t, idx) => `
+                                <div class="available-test-card" style="background:rgba(255,255,255,0.08); border:1px solid ${t.attempted ? 'rgba(239,68,68,0.4)' : 'rgba(0,217,255,0.3)'}; border-radius:14px; padding:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                                    <div>
+                                        <h4 style="margin:0; font-size:1.1rem; color:#fff;">${t.title || 'Assessment Test'}</h4>
+                                        <span style="font-size:0.8rem; color:#9ae6ff;">Faculty: ${t.faculty_name || 'Department Faculty'}</span> · 
+                                        <small style="color:#cbd5e1;">ID: ${t.test_id}</small>
+                                    </div>
+                                    <div>
+                                        ${t.attempted ? `
+                                            <div style="text-align:right;">
+                                                <span style="display:inline-block; background:rgba(239,68,68,0.2); color:#fca5a5; border:1px solid #ef4444; border-radius:6px; padding:4px 10px; font-size:0.75rem; font-weight:bold; margin-bottom:4px;">Already Attempted</span>
+                                                <div style="font-size:0.75rem; color:#f87171; font-weight:600;">you cannot take this test again</div>
+                                            </div>
+                                        ` : `
+                                            <button type="button" class="jee-btn select-test-btn" data-test-index="${idx}" style="padding:10px 18px; font-size:0.9rem;">
+                                                Start Test →
+                                            </button>
+                                        `}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <p align="center" style="margin-top:20px;"><a href="index.html" class="back">← Return Home</a></p>
+                    </div>
+                `;
 
-    return;
-}
-
-const latestTest =
-data.test;
-            document
-            .getElementById("ultimateJeePortal")
-            .remove();
-
-            showTestInterface(latestTest);
+                // Add click event listeners to test selection buttons
+                verifySection.querySelectorAll(".select-test-btn").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const testIdx = Number(btn.dataset.testIndex);
+                        const selectedTest = testsWithAttemptStatus[testIdx];
+                        document.getElementById("ultimateJeePortal")?.remove();
+                        showTestInterface(selectedTest);
+                    });
+                });
+            }
 
         }catch(err){
 
@@ -1025,7 +1059,7 @@ data.test;
 
 }
 
-//show test interface
+// SHOW TEST INTERFACE (ONE QUESTION PER PAGE, AUTO-SAVE, INTEGRITY RESTRICTIONS)
 async function showTestInterface(testObject) {
     let parsedQuestions = [];
     try {
@@ -1040,17 +1074,6 @@ async function showTestInterface(testObject) {
         return;
     }
 
-    const questions = parsedQuestions.map((q, index) => `
-        <article class="question-card" id="question-${index + 1}" data-question="${index}">
-            <div class="question-top"><span class="subject-badge">${q.subject || "GENERAL"}</span><span class="question-number">Question ${index + 1} of ${parsedQuestions.length}</span></div>
-            <h3 class="question-title">${q.question}</h3>
-            <div class="options-box">${q.type === "numerical" ? `
-                <input type="number" name="q${index}" placeholder="Enter your numerical answer" class="numerical-input" aria-label="Answer for question ${index + 1}">` :
-                q.options.map((opt, optIndex) => `<label class="option-label"><input type="radio" name="q${index}" value="${opt}"><span class="option-key">${String.fromCharCode(65 + optIndex)}</span><span>${opt}</span></label>`).join("")}
-            </div>
-            <button type="button" class="clear-selection-btn" data-question="${index}" aria-label="Clear answer for question ${index + 1}">Clear selection</button>
-        </article>`).join("");
-
     let activeStudent = {};
     try {
         activeStudent = JSON.parse(localStorage.getItem("active_student_details") || "{}");
@@ -1061,6 +1084,7 @@ async function showTestInterface(testObject) {
     const studentId = activeStudent.student_id || localStorage.getItem("active_student_id") || "N/A";
     const studentDomain = activeStudent.domain || "N/A";
     const studentDob = activeStudent.dob || localStorage.getItem("active_student_dob") || "N/A";
+
     const studentDetailsMarkup = `
         <section class="test-student-details" aria-label="Logged-in student details">
             <span><strong>Student name</strong>${studentName}</span>
@@ -1069,62 +1093,259 @@ async function showTestInterface(testObject) {
             <span><strong>Date of birth</strong>${studentDob}</span>
         </section>`;
 
+    // Render questions: display:none by default except question index 0
+    const questionsMarkup = parsedQuestions.map((q, index) => `
+        <article class="question-card ${index === 0 ? 'active-card' : ''}" id="question-card-${index}" data-question="${index}" style="${index === 0 ? 'display:block;' : 'display:none;'}">
+            <div class="question-top">
+                <span class="subject-badge">${q.subject || "GENERAL"}</span>
+                <span class="question-number">Question ${index + 1} of ${parsedQuestions.length}</span>
+            </div>
+            <h3 class="question-title">${q.question}</h3>
+            <div class="options-box">
+                ${q.type === "numerical" ? `
+                    <input type="number" name="q${index}" placeholder="Enter your numerical answer" class="numerical-input" aria-label="Answer for question ${index + 1}">
+                ` : q.options.map((opt, optIndex) => `
+                    <label class="option-label">
+                        <input type="radio" name="q${index}" value="${opt}">
+                        <span class="option-key">${String.fromCharCode(65 + optIndex)}</span>
+                        <span>${opt}</span>
+                    </label>
+                `).join("")}
+            </div>
+            <div class="question-nav-controls" style="display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem; gap:0.5rem; flex-wrap:wrap;">
+                <button type="button" class="exam-control-btn prev-q-btn" data-target="${index - 1}" ${index === 0 ? 'disabled' : ''}>
+                    ← Previous
+                </button>
+                <button type="button" class="clear-selection-btn" data-question="${index}">Clear selection</button>
+                <button type="button" class="exam-control-btn save-next-q-btn" data-target="${index + 1}">
+                    ${index === parsedQuestions.length - 1 ? 'Save Progress' : 'Save & Next →'}
+                </button>
+            </div>
+        </article>
+    `).join("");
+
     const wrapper = document.createElement("div");
     wrapper.id = "jeeTestInterface";
     wrapper.innerHTML = `
         <header class="test-header">
-            <div class="test-heading"><span class="exam-kicker">Pinnacle Scholars Academy · Secure Assessment</span><h1>${testObject.title}</h1></div>
-            <div class="test-actions"><div class="test-timer" aria-label="Time remaining">⌛ <span id="testTimer">03:00:00</span></div><button class="submit-btn" id="submitTestBtn">✓ Submit test</button></div>
+            <div class="test-heading">
+                <span class="exam-kicker">Pinnacle Scholars Academy · Secure Assessment</span>
+                <h1>${testObject.title}</h1>
+            </div>
+            <div class="test-actions">
+                <div class="test-timer" aria-label="Time remaining">⌛ <span id="testTimer">03:00:00</span></div>
+                <button class="submit-btn" id="submitTestBtn">✓ Submit test</button>
+            </div>
         </header>
+        <div id="integrityNotice" style="display:none; background:rgba(239,68,68,0.9); color:white; text-align:center; padding:6px; font-weight:bold; font-size:0.85rem; position:sticky; top:84px; z-index:10;">
+            ⚠️ Exam Security Alert: Focus lost / Unpermitted shortcut detected!
+        </div>
         <main class="test-layout">
-            <section class="questions-container">${studentDetailsMarkup}${questions}</section>
+            <section class="questions-container">${studentDetailsMarkup}${questionsMarkup}</section>
             <aside class="question-navigator" aria-label="Question navigator">
-                <div class="navigator-heading"><div><span class="exam-kicker">Progress</span><h2>Question navigator</h2></div><span id="answeredCount">0 / ${parsedQuestions.length}</span></div>
-                <div class="navigator-legend"><span><i class="nav-current"></i>Current</span><span><i class="nav-answered"></i>Answered</span><span><i class="nav-unanswered"></i>Unanswered</span></div>
-                <div class="question-grid">${parsedQuestions.map((_, index) => `<button type="button" class="question-nav-btn ${index === 0 ? "is-current" : ""}" data-target="${index + 1}" aria-label="Go to question ${index + 1}">${index + 1}</button>`).join("")}</div>
+                <div class="navigator-heading">
+                    <div><span class="exam-kicker">Progress</span><h2>Question navigator</h2></div>
+                    <span id="answeredCount">0 / ${parsedQuestions.length}</span>
+                </div>
+                <div class="navigator-legend">
+                    <span><i class="nav-current"></i>Current</span>
+                    <span><i class="nav-answered"></i>Answered</span>
+                    <span><i class="nav-unanswered"></i>Unanswered</span>
+                </div>
+                <div class="question-grid">
+                    ${parsedQuestions.map((_, index) => `<button type="button" class="question-nav-btn ${index === 0 ? "is-current" : ""}" data-target="${index}" aria-label="Go to question ${index + 1}">${index + 1}</button>`).join("")}
+                </div>
             </aside>
         </main>`;
     document.body.appendChild(wrapper);
 
+    let currentQuestionIndex = 0;
     const navigatorButtons = [...wrapper.querySelectorAll(".question-nav-btn")];
+
+    // FUNCTION TO SHOW A SPECIFIC QUESTION CARD (1 Q PER PAGE)
+    const showQuestion = (index) => {
+        if (index < 0 || index >= parsedQuestions.length) return;
+        currentQuestionIndex = index;
+        wrapper.querySelectorAll(".question-card").forEach((card, idx) => {
+            card.style.display = idx === index ? "block" : "none";
+            card.classList.toggle("active-card", idx === index);
+        });
+        navigatorButtons.forEach((btn, idx) => {
+            btn.classList.toggle("is-current", idx === index);
+        });
+    };
+
+    // UPDATE NAVIGATOR ANSWERED STATES
     const updateNavigator = () => {
         let answered = 0;
         parsedQuestions.forEach((_, index) => {
             const hasAnswer = !!wrapper.querySelector(`input[name="q${index}"]:checked, input[name="q${index}"][type="number"]:not(:placeholder-shown)`);
             const button = navigatorButtons[index];
-            button.classList.toggle("is-answered", hasAnswer);
+            if (button) button.classList.toggle("is-answered", hasAnswer);
             if (hasAnswer) answered++;
         });
-        wrapper.querySelector("#answeredCount").textContent = `${answered} / ${parsedQuestions.length}`;
+        const countEl = wrapper.querySelector("#answeredCount");
+        if (countEl) countEl.textContent = `${answered} / ${parsedQuestions.length}`;
     };
-    wrapper.querySelectorAll("input").forEach(input => input.addEventListener("input", updateNavigator));
-    wrapper.querySelectorAll('input[type="radio"]').forEach(input => input.addEventListener("change", updateNavigator));
-    wrapper.querySelectorAll(".clear-selection-btn").forEach(button => button.addEventListener("click", () => {
-        const questionIndex = button.dataset.question;
-        wrapper.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
-            if (input.type === "radio") input.checked = false;
-            else input.value = "";
+
+    // GET ALL CURRENT ANSWERS OBJECT
+    const getAnswersObject = () => {
+        const answers = {};
+        parsedQuestions.forEach((q, index) => {
+            const val = q.type === "numerical" ?
+                wrapper.querySelector(`input[name="q${index}"]`)?.value :
+                wrapper.querySelector(`input[name="q${index}"]:checked`)?.value;
+            if (val !== undefined && val !== null && String(val).trim() !== "") {
+                answers[`q${index}`] = String(val).trim();
+            }
         });
-        updateNavigator();
-    }));
-    navigatorButtons.forEach(button => button.addEventListener("click", () => {
-        const target = wrapper.querySelector(`#question-${button.dataset.target}`);
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-        navigatorButtons.forEach(item => item.classList.toggle("is-current", item === button));
-    }));
-    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
-        if (entry.isIntersecting) navigatorButtons.forEach(button => button.classList.toggle("is-current", Number(button.dataset.target) === Number(entry.target.dataset.question) + 1));
-    }), { root: wrapper, threshold: 0.5 });
-    wrapper.querySelectorAll(".question-card").forEach(card => observer.observe(card));
+        return answers;
+    };
+
+    // SAVE PROGRESS TO BACKEND DATABASE
+    const saveProgressToBackend = async () => {
+        try {
+            const answers = getAnswersObject();
+            await fetch("https://pinnacle-backend-5i7n.onrender.com/api/tests/save-progress", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    student_id: studentId,
+                    test_id: testObject.test_id,
+                    answers: answers,
+                    current_index: currentQuestionIndex
+                })
+            });
+        } catch (err) {
+            console.warn("Auto-save progress failed:", err);
+        }
+    };
+
+    // RESTORE SAVED PROGRESS FROM BACKEND DATABASE ON LOAD/REFRESH
+    try {
+        const progressRes = await fetch(`https://pinnacle-backend-5i7n.onrender.com/api/tests/progress/${studentId}/${testObject.test_id}`);
+        const progressData = await progressRes.json();
+        if (progressData.attempted) {
+            alert("you cannot take this test again");
+            wrapper.remove();
+            return;
+        }
+        if (progressData.success && progressData.progress && progressData.progress.answers) {
+            const savedAnswers = progressData.progress.answers;
+            Object.keys(savedAnswers).forEach(qKey => {
+                const val = savedAnswers[qKey];
+                const inputVal = wrapper.querySelector(`input[name="${qKey}"][value="${CSS.escape(val)}"]`);
+                if (inputVal) {
+                    inputVal.checked = true;
+                } else {
+                    const numInput = wrapper.querySelector(`input[name="${qKey}"][type="number"]`);
+                    if (numInput) numInput.value = val;
+                }
+            });
+            if (typeof progressData.progress.current_index === "number") {
+                showQuestion(progressData.progress.current_index);
+            }
+        }
+    } catch (err) {
+        console.warn("Progress restore error:", err);
+    }
+
+    updateNavigator();
+
+    // INPUT CHANGE LISTENERS FOR AUTO-SAVE & NAVIGATOR
+    wrapper.querySelectorAll("input").forEach(input => {
+        input.addEventListener("input", () => {
+            updateNavigator();
+            saveProgressToBackend();
+        });
+        input.addEventListener("change", () => {
+            updateNavigator();
+            saveProgressToBackend();
+        });
+    });
+
+    // CLEAR SELECTION HANDLER
+    wrapper.querySelectorAll(".clear-selection-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const questionIndex = button.dataset.question;
+            wrapper.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                if (input.type === "radio") input.checked = false;
+                else input.value = "";
+            });
+            updateNavigator();
+            saveProgressToBackend();
+        });
+    });
+
+    // PREVIOUS & SAVE & NEXT BUTTON HANDLERS
+    wrapper.querySelectorAll(".prev-q-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const targetIndex = Number(btn.dataset.target);
+            saveProgressToBackend();
+            showQuestion(targetIndex);
+        });
+    });
+
+    wrapper.querySelectorAll(".save-next-q-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const targetIndex = Number(btn.dataset.target);
+            saveProgressToBackend();
+            if (targetIndex < parsedQuestions.length) {
+                showQuestion(targetIndex);
+            }
+        });
+    });
+
+    // QUESTION NAVIGATOR GRID BUTTON CLICK HANDLERS
+    navigatorButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const targetIndex = Number(button.dataset.target);
+            saveProgressToBackend();
+            showQuestion(targetIndex);
+        });
+    });
+
+    // EXAM INTEGRITY RESTRICTIONS ON LIVE ASSESSMENT
+    wrapper.addEventListener("contextmenu", e => e.preventDefault());
+    wrapper.addEventListener("selectstart", e => {
+        if (e.target.tagName !== "INPUT") e.preventDefault();
+    });
+    wrapper.addEventListener("copy", e => e.preventDefault());
+    wrapper.addEventListener("cut", e => e.preventDefault());
+    wrapper.addEventListener("paste", e => e.preventDefault());
+    wrapper.addEventListener("dragstart", e => e.preventDefault());
+
+    const integrityKeyHandler = (e) => {
+        if (!document.getElementById("jeeTestInterface")) {
+            document.removeEventListener("keydown", integrityKeyHandler);
+            return;
+        }
+        if (
+            e.key === "F12" ||
+            (e.ctrlKey && e.shiftKey && (e.key.toLowerCase() === "i" || e.key.toLowerCase() === "j" || e.key.toLowerCase() === "c")) ||
+            (e.ctrlKey && (e.key.toLowerCase() === "u" || e.key.toLowerCase() === "s" || e.key.toLowerCase() === "p" || e.key.toLowerCase() === "c"))
+        ) {
+            e.preventDefault();
+            e.stopPropagation();
+            const notice = wrapper.querySelector("#integrityNotice");
+            if (notice) {
+                notice.style.display = "block";
+                setTimeout(() => { if (notice) notice.style.display = "none"; }, 4000);
+            }
+        }
+    };
+    document.addEventListener("keydown", integrityKeyHandler);
 
     window.onbeforeunload = () => "Your test is still in progress.";
     let timeLeft = 180 * 60;
     const timer = setInterval(() => {
         const hrs = Math.floor(timeLeft / 3600), mins = Math.floor((timeLeft % 3600) / 60), secs = timeLeft % 60;
-        wrapper.querySelector("#testTimer").textContent = `${String(hrs).padStart(2,"0")}:${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
+        const timerEl = wrapper.querySelector("#testTimer");
+        if (timerEl) timerEl.textContent = `${String(hrs).padStart(2,"0")}:${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
         if (timeLeft-- <= 0) { clearInterval(timer); wrapper.querySelector("#submitTestBtn").click(); }
     }, 1000);
 
+    // SUBMIT TEST HANDLER WITH ONE-ATTEMPT MESSAGE REQUIREMENT
     wrapper.querySelector("#submitTestBtn").addEventListener("click", async function () {
         const submitBtn = this;
         submitBtn.disabled = true;
@@ -1136,17 +1357,38 @@ async function showTestInterface(testObject) {
         });
         try {
             const totalMarks = parsedQuestions.length * 4;
-            const saveResponse = await fetch("https://pinnacle-backend-5i7n.onrender.com/api/tests/submit-result", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ student_id: localStorage.getItem("active_student_id"), student_name: localStorage.getItem("active_student_name"), test_id: testObject.test_id, score, total_marks: totalMarks }) });
+            const saveResponse = await fetch("https://pinnacle-backend-5i7n.onrender.com/api/tests/submit-result", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    student_id: studentId,
+                    student_name: studentName,
+                    test_id: testObject.test_id,
+                    score,
+                    total_marks: totalMarks
+                })
+            });
             const saveData = await saveResponse.json();
-            if (!saveData.success) throw new Error("Result save failed");
+            if (!saveData.success) {
+                alert(saveData.message || "Result Already Submitted. you cannot take this test again");
+                throw new Error("Result save failed");
+            }
             clearInterval(timer);
             window.onbeforeunload = null;
-            wrapper.innerHTML = `<section class="submission-confirmation"><div class="success-seal">✓</div><span class="exam-kicker">Assessment submitted</span><h1>Thank you for completing your test.</h1><p>Your submission has been securely recorded.</p><strong>Check results via portal</strong><a class="submit-btn" href="result-portal.html">Open Result Portal</a></section>`;
+            wrapper.innerHTML = `
+                <section class="submission-confirmation">
+                    <div class="success-seal">✓</div>
+                    <span class="exam-kicker">Assessment submitted</span>
+                    <h1>Thank you for completing your test.</h1>
+                    <p>Your submission has been securely recorded.</p>
+                    <p style="color:#f87171; font-weight:800; font-size:1.1rem; margin:14px 0;">you cannot take this test again</p>
+                    <strong>Check results via portal</strong>
+                    <a class="submit-btn" href="result-portal.html">Open Result Portal</a>
+                </section>`;
         } catch (err) {
             console.error(err);
             submitBtn.disabled = false;
             submitBtn.textContent = "✓ Submit test";
-            alert("Database save failed.\nContact administrator.");
         }
     });
 }
@@ -1552,53 +1794,55 @@ function downloadBrochure() {
             </div>
 
             <!-- SECTION 4 -->
-            <div
-                style="
-                    background: #f7fafc;
-                    border-left: 3px solid #ed8936;
-                    padding: 4px 10px;
-                    font-weight: bold;
-                    color: #1a365d;
-                    margin-top: 15px;
-                    text-transform: uppercase;
-                    font-size: 11px;
-                ">
+            <div class="brochure-payment-section">
+                <div
+                    style="
+                        background: #f7fafc;
+                        border-left: 3px solid #ed8936;
+                        padding: 4px 10px;
+                        font-weight: bold;
+                        color: #1a365d;
+                        margin-top: 15px;
+                        text-transform: uppercase;
+                        font-size: 11px;
+                    ">
 
-                [4. Active Database Verification Gateway Link]
+                    [4. Active Database Verification Gateway Link]
 
-            </div>
+                </div>
 
-            <p
-                style="
-                    margin-top: 8px;
-                    margin-bottom: 8px;
-                    font-size: 0.88rem;
-                ">
+                <p
+                    style="
+                        margin-top: 8px;
+                        margin-bottom: 8px;
+                        font-size: 0.88rem;
+                    ">
 
-                Clicking the active hyperlink element opens a
-                localized authorization tunnel context to match
-                your profile metrics and execute financial
-                settlements online:
+                    Clicking the active hyperlink element opens a
+                    localized authorization tunnel context to match
+                    your profile metrics and execute financial
+                    settlements online:
 
-            </p>
+                </p>
 
-            <a
-                href="javascript:void(0);"
-                onclick="window.location.href='fees-payment.html'"
-                style="
-                    display: inline-block;
-                    padding: 10px 20px;
-                    background: #38a169;
-                    color: white !important;
-                    text-decoration: none;
-                    border-radius: 4px;
-                    font-weight: bold;
-                    font-size: 0.9rem;
-                ">
+                <a
+                    href="javascript:void(0);"
+                    onclick="window.location.href='fees-payment.html'"
+                    style="
+                        display: inline-block;
+                        padding: 10px 20px;
+                        background: #38a169;
+                        color: white !important;
+                        text-decoration: none;
+                        border-radius: 4px;
+                        font-weight: bold;
+                        font-size: 0.9rem;
+                    ">
 
-                🔗 CLICK HERE TO ENTER ID & PAY FEES
+                    🔗 CLICK HERE TO ENTER ID & PAY FEES
 
-            </a><br><br>
+                </a>
+            </div><br><br>
             <hr><hr><br>
             <div class="website-qr" style="width:140px;text-align:center;margin:auto;padding:10px;border:2px solid #1a365d;border-radius:10px;">
             <strong>Scan to Visit Pinnacle Scholars Academy</strong><br>
@@ -1649,6 +1893,11 @@ function printProspectus(){
             "printableProspectusArea"
         );
 
+    // Hide payment gateway section strictly for PDF export
+    const paymentSec = content ? content.querySelector('.brochure-payment-section') : null;
+    const prevPaymentDisplay = paymentSec ? paymentSec.style.display : '';
+    if (paymentSec) paymentSec.style.display = 'none';
+
     // Prefer a real browser download when html2pdf is available. The
     // temporary presentation changes are restored immediately afterwards, so
     // the on-screen brochure viewer remains unchanged.
@@ -1678,6 +1927,7 @@ function printProspectus(){
             .save()
             .finally(() => {
                 if (toolbar) toolbar.style.display = previous.toolbarDisplay;
+                if (paymentSec) paymentSec.style.display = prevPaymentDisplay;
                 content.style.maxHeight = previous.maxHeight;
                 content.style.overflow = previous.overflow;
                 content.style.width = previous.width;
@@ -1735,7 +1985,7 @@ function printProspectus(){
                     max-width:100%;
                 }
 
-                .no-print{
+                .no-print, .brochure-payment-section{
                     display:none !important;
                 }
 
@@ -1758,6 +2008,7 @@ function printProspectus(){
     `);
 
     printWindow.document.close();
+    if (paymentSec) paymentSec.style.display = prevPaymentDisplay;
 
     printWindow.focus();
 
