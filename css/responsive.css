@@ -384,3 +384,25 @@
         font-size: 0.72rem;
     }
 }
+
+/* Keep both sticky sections independent on compact screens. The updates
+   offset is supplied from the measured header height in scripts.js. */
+header {
+    position: fixed !important;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3000;
+}
+
+.notice-ticker-container {
+    position: fixed !important;
+    top: var(--site-header-stack-height, 7.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2999;
+}
+
+body {
+    padding-top: var(--site-topbar-content-height, 140px);
+}

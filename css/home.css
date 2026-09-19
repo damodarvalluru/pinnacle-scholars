@@ -402,6 +402,33 @@ section[id] {
     color: var(--accent);
 }
 
+/* The institute header and LATEST UPDATES card are independent fixed
+   sections. The JavaScript helper keeps the second card below the actual
+   responsive header height instead of relying on a hard-coded offset. */
+header {
+    position: fixed !important;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    width: min(1240px, calc(100% - 2rem));
+    z-index: 3000;
+}
+
+.notice-ticker-container {
+    position: fixed !important;
+    top: var(--site-header-stack-height, 7.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    width: min(1240px, calc(100% - 2rem));
+    z-index: 2999;
+}
+
+body {
+    padding-top: var(--site-topbar-content-height, 145px);
+}
+
 /* 4. HERO SECTION */
 .hero {
     padding: 6rem 1.5rem 5rem 1.5rem;

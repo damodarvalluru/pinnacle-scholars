@@ -81,6 +81,27 @@ function initHomeAnimations() {
     }
 }
 
+// Keep the independent LATEST UPDATES sticky card directly below the
+// responsive header at every viewport size.
+function syncStickyHeaderOffset() {
+    const header = document.querySelector('body > header');
+    const updates = document.querySelector('.notice-ticker-container');
+    if (!header || !updates) return;
+
+    const gap = window.innerWidth <= 480 ? 6 : 10;
+    const headerStackHeight = header.offsetHeight + gap;
+    const contentOffset = headerStackHeight + updates.offsetHeight + gap;
+
+    document.documentElement.style.setProperty(
+        '--site-header-stack-height',
+        `${headerStackHeight}px`
+    );
+    document.documentElement.style.setProperty(
+        '--site-topbar-content-height',
+        `${contentOffset}px`
+    );
+}
+
 function initMasterYourMindMedia() {
     let bgmAudio = document.getElementById('masterMindAudio');
     let voiceAudio = document.getElementById('welcomeVoiceAudio');
@@ -206,8 +227,12 @@ function initMasterYourMindMedia() {
 document.addEventListener('DOMContentLoaded', function() {
     initGlobalAnimations();
     initHomeAnimations();
+    syncStickyHeaderOffset();
     initMasterYourMindMedia();
 });
+
+window.addEventListener('load', syncStickyHeaderOffset);
+window.addEventListener('resize', syncStickyHeaderOffset);
 
 // Auto-toggle scroll button direction based on scroll position
 window.addEventListener('scroll', function() {
