@@ -151,6 +151,7 @@ function initMasterYourMindMedia() {
 
     function startAudioExperience() {
         // 1. Play continuous pleasant moderate-loud institute background music
+        //    underneath the spoken welcome message, then it keeps playing.
         if (!bgmStarted && bgmAudio) {
             bgmAudio.muted = false;
             bgmAudio.volume = 0.50; // Pleasant, moderate-loud institute volume level
@@ -164,15 +165,18 @@ function initMasterYourMindMedia() {
             }
         }
 
-        // 2. Play spoken official welcome announcement voice
+        // 2. Play the spoken official welcome announcement voice FIRST (in
+        //    combination with the music above). After the message completes,
+        //    only the background music continues to play.
         if (!voicePlayed && voiceAudio) {
             voiceAudio.muted = false;
             voiceAudio.volume = 1.0;
             const voicePromise = voiceAudio.play();
             if (voicePromise) {
-                voicePromise.then(() => {
-                    voicePlayed = true;
-                }).catch(() => {
+                voicePromise.catch((err) => {
+                    // Autoplay still blocked (mousemove/scroll carry no user
+                    // activation). Wait for a real gesture and try again.
+                    if (err && err.name === 'NotAllowedError') return;
                     speakWelcomeFallback();
                     voicePlayed = true;
                 });
@@ -181,6 +185,14 @@ function initMasterYourMindMedia() {
                 voicePlayed = true;
             }
         }
+    }
+
+    // Once the spoken welcome message finishes, let the background music keep
+    // playing and do not repeat the message again during this visit.
+    if (voiceAudio) {
+        voiceAudio.addEventListener('ended', () => {
+            voicePlayed = true;
+        });
     }
 
     // Attempt automatic playback immediately on page load
@@ -196,7 +208,7 @@ function initMasterYourMindMedia() {
         voiceAudio.muted = false;
         voiceAudio.volume = 1.0;
         voiceAudio.play().then(() => {
-            voicePlayed = true;
+            // message completion is handled by the 'ended' listener above
         }).catch(() => {});
     }
 
@@ -208,6 +220,8 @@ function initMasterYourMindMedia() {
 
     triggerEvents.forEach(evt => window.addEventListener(evt, gestureHandler, { passive: true }));
 
+    // Keep the original live video playing: cycle through the building/student
+    // clips automatically so the hero never goes blank.
     if (video) {
         const clips = [
             'https://assets.mixkit.co/videos/8802/8802-720.mp4',
@@ -220,6 +234,53 @@ function initMasterYourMindMedia() {
             video.src = clips[clipIndex];
             video.play().catch(() => {});
         });
+    }
+
+    // Retry once more after the opening intro completes, so the welcome voice +
+    // music start automatically where the browser allows it.
+    if (document.getElementById('welcomeIntro')) {
+        setTimeout(() => {
+            if (!voicePlayed && voiceAudio && voiceAudio.paused) startAudioExperience();
+        }, 4200);
+    }
+
+    // One-tap sound unlock for browsers that block audio autoplay on page open.
+    // If the voice/music has not started shortly after loading, show a small
+    // button so the welcome message starts with a single tap.
+    if (voiceAudio) {
+        let soundBtn = null;
+        const hideSoundBtn = () => {
+            if (soundBtn) {
+                soundBtn.remove();
+                soundBtn = null;
+            }
+        };
+        const soundStarted = () =>
+            (voiceAudio && !voiceAudio.paused && voiceAudio.currentTime > 0) ||
+            (bgmAudio && !bgmAudio.paused && bgmAudio.currentTime > 0);
+
+        const ensureSoundBtn = () => {
+            if (soundStarted()) {
+                hideSoundBtn();
+                return;
+            }
+            if (soundBtn) return;
+            soundBtn = document.createElement('button');
+            soundBtn.className = 'hero-sound-unlock-btn';
+            soundBtn.textContent = '🔊 Tap for Sound';
+            soundBtn.setAttribute('aria-label', 'Play the welcome voice message and background music');
+            soundBtn.addEventListener('click', () => {
+                startAudioExperience();
+                hideSoundBtn();
+            });
+            document.body.appendChild(soundBtn);
+        };
+
+        const onAudioPlaying = () => hideSoundBtn();
+        if (voiceAudio) voiceAudio.addEventListener('playing', onAudioPlaying);
+        if (bgmAudio) bgmAudio.addEventListener('playing', onAudioPlaying);
+        setTimeout(ensureSoundBtn, 2500);
+        window.addEventListener('load', ensureSoundBtn);
     }
 }
 
