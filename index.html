@@ -57,7 +57,6 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
     </svg>
 </button>
 
-<div class="site-topbar">
 <header>
     <!-- UNIQUE BRAND HEADER CONTAINER WITH FALLING STAR ENGINE EFFECT -->
 <div class="brand-header-wrapper">
@@ -90,7 +89,7 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
 </nav>
 </header>
 
-<!-- LIVE MOVING NOTICE SECTION -->
+<!-- LIVE MOVING NOTICE SECTION (SEPARATE FLOATING TOPBAR CARD) -->
 <div class="notice-ticker-container">
     <div class="notice-ticker-title">📢 LATEST UPDATES</div>
     <div class="notice-ticker-viewport">
@@ -128,7 +127,6 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
         </div>
     </div>
 </div>
-</div>
 
 <section class="hero master-your-mind" id="brouchure-section" aria-label="Master Your Mind">
     <video class="master-your-mind-video" autoplay muted playsinline preload="metadata"
@@ -137,8 +135,12 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
         <source src="https://assets.mixkit.co/videos/8802/8802-720.mp4" type="video/mp4">
     </video>
     <div class="master-your-mind-overlay"></div>
+    <audio id="welcomeVoiceAudio" preload="auto">
+        <source src="audio/welcome_voice.wav" type="audio/wav">
+    </audio>
     <audio id="masterMindAudio" loop preload="auto">
-        <source src="https://assets.mixkit.co/music/441/441.mp3" type="audio/mpeg">
+        <source src="audio/academy_bgm_track.mp3" type="audio/mpeg">
+        <source src="https://assets.mixkit.co/music/preview/mixkit-inspiring-innovation-1100.mp3" type="audio/mpeg">
     </audio>
     <div class="hero-grid"></div>
     <!-- Professional Floating Hero Orb -->

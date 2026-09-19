@@ -5,6 +5,10 @@
 
 /* Tablet Breakpoint (<= 1024px) */
 @media (max-width: 1024px) {
+    body {
+        padding-top: 140px;
+    }
+
     section {
         padding: 4rem 1.25rem;
     }
@@ -201,6 +205,10 @@
     }
 
     header {
+        position: fixed;
+        top: 0.35rem;
+        left: 50%;
+        transform: translateX(-50%);
         width: calc(100% - 1rem);
         padding: 0.45rem 0.65rem;
         border-radius: var(--radius-lg);
@@ -225,10 +233,17 @@
         font-size: 0.68rem !important;
     }
 
+    body {
+        padding-top: 140px;
+    }
+
     .notice-ticker-container {
-        top: auto;
+        position: fixed;
+        top: 5.4rem;
+        left: 50%;
+        transform: translateX(-50%);
         width: calc(100% - 1rem);
-        margin-top: 0.65rem;
+        margin: 0;
     }
 
     .notice-ticker-title {
@@ -242,7 +257,7 @@
     }
 
     .hero {
-        padding-top: 2rem !important;
+        padding-top: 3.5rem !important;
     }
 
     .hero h1 {

@@ -81,67 +81,111 @@ function initHomeAnimations() {
     }
 }
 
-// Homepage media: ambient music auto-starts silently on load, then
-// unmutes as soon as the browser considers the page "active" — either
-// via user interaction (click / key / touch) or a timer-based retry.
-// Browsers still ultimately require at least a brief interaction before
-// audible playback is allowed, so the track becomes audible the instant
-// the visitor first touches the page (scroll, click, key, touch).
 function initMasterYourMindMedia() {
-    const audio = document.getElementById('masterMindAudio');
+    let bgmAudio = document.getElementById('masterMindAudio');
+    let voiceAudio = document.getElementById('welcomeVoiceAudio');
     const video = document.querySelector('.master-your-mind-video');
 
-    if (audio) {
-        let audiblyPlaying = false;
-        const VOLUME = 0.75;
+    // Remove any BGM control toggle options anywhere on the site
+    const existingBtn = document.getElementById('bgmToggleBtn');
+    if (existingBtn) existingBtn.remove();
 
-        const setAudible = () => {
-            audio.muted = false;
-            audio.volume = VOLUME;
-        };
-
-        const tryUnmute = () => {
-            if (audiblyPlaying) return;
-            try {
-                setAudible();
-                const p = audio.play();
-                if (p) {
-                    p.then(() => { audiblyPlaying = true; }).catch(() => {});
-                } else {
-                    audiblyPlaying = true;
-                }
-            } catch (_) {
-                /* not ready yet – try again later */
-            }
-        };
-
-        // 1. Start playback muted (always allowed by every browser).
-        audio.muted = true;
-        audio.volume = VOLUME;
-        audio.play().catch(() => {});
-
-        // 2. Immediately start trying to unmute every 200 ms for the
-        //    first 8 seconds — most browsers quietly allow this once the
-        //    media pipeline is primed.
-        let retries = 0;
-        const retryInterval = setInterval(() => {
-            tryUnmute();
-            retries++;
-            if (retries >= 40 || audiblyPlaying) clearInterval(retryInterval);
-        }, 200);
-
-        // 3. Also catch the very first real user interaction — any pointer
-        //    event, key press, or touch that reaches the document counts
-        //    as a user gesture and unlocks audible playback instantly.
-        const gestureHandler = () => {
-            tryUnmute();
-            clearInterval(retryInterval);
-        };
-        window.addEventListener('pointerdown', gestureHandler, { once: true, passive: true });
-        window.addEventListener('keydown',     gestureHandler, { once: true, passive: true });
-        window.addEventListener('touchstart',  gestureHandler, { once: true, passive: true });
-        window.addEventListener('click',       gestureHandler, { once: true, passive: true });
+    // Dynamically inject BGM audio element if missing
+    if (!bgmAudio) {
+        bgmAudio = document.createElement('audio');
+        bgmAudio.id = 'masterMindAudio';
+        bgmAudio.loop = true;
+        bgmAudio.preload = 'auto';
+        bgmAudio.innerHTML = `
+            <source src="audio/academy_bgm_track.mp3" type="audio/mpeg">
+            <source src="https://assets.mixkit.co/music/preview/mixkit-raising-me-higher-34.mp3" type="audio/mpeg">
+        `;
+        document.body.appendChild(bgmAudio);
     }
+
+    // Dynamically inject welcome voice audio if missing on home page
+    if (!voiceAudio && (window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/') || document.getElementById('welcomeIntro'))) {
+        voiceAudio = document.createElement('audio');
+        voiceAudio.id = 'welcomeVoiceAudio';
+        voiceAudio.preload = 'auto';
+        voiceAudio.innerHTML = `<source src="audio/welcome_voice.wav" type="audio/wav">`;
+        document.body.appendChild(voiceAudio);
+    }
+
+    const officialWelcomeMsg = "Dear ladies and gentlemen, welcome to Pinnacle Scholars Academy. Where ambition meets knowledge, and every learner moves closer to excellence. From strong foundations to competitive success, we provide the guidance, discipline, and learning environment needed to reach your pinnacle. Learn with purpose. Grow with confidence. Achieve your future. Pinnacle Scholars Academy - Empowering Futures.";
+
+    let voicePlayed = false;
+    let bgmStarted = false;
+
+    function speakWelcomeFallback() {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(officialWelcomeMsg);
+            utterance.rate = 0.92;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function startAudioExperience() {
+        // 1. Play continuous pleasant moderate-loud institute background music
+        if (!bgmStarted && bgmAudio) {
+            bgmAudio.muted = false;
+            bgmAudio.volume = 0.50; // Pleasant, moderate-loud institute volume level
+            const playPromise = bgmAudio.play();
+            if (playPromise) {
+                playPromise.then(() => {
+                    bgmStarted = true;
+                }).catch(() => {
+                    // Browser autoplay policy retry handler
+                });
+            }
+        }
+
+        // 2. Play spoken official welcome announcement voice
+        if (!voicePlayed && voiceAudio) {
+            voiceAudio.muted = false;
+            voiceAudio.volume = 1.0;
+            const voicePromise = voiceAudio.play();
+            if (voicePromise) {
+                voicePromise.then(() => {
+                    voicePlayed = true;
+                }).catch(() => {
+                    speakWelcomeFallback();
+                    voicePlayed = true;
+                });
+            } else {
+                speakWelcomeFallback();
+                voicePlayed = true;
+            }
+        }
+    }
+
+    // Attempt automatic playback immediately on page load
+    if (bgmAudio) {
+        bgmAudio.muted = false;
+        bgmAudio.volume = 0.50;
+        bgmAudio.play().then(() => {
+            bgmStarted = true;
+        }).catch(() => {});
+    }
+
+    if (voiceAudio) {
+        voiceAudio.muted = false;
+        voiceAudio.volume = 1.0;
+        voiceAudio.play().then(() => {
+            voicePlayed = true;
+        }).catch(() => {});
+    }
+
+    // Trigger seamless background audio automatically on any user movement or interaction anywhere on page
+    const triggerEvents = ['pointerdown', 'pointermove', 'mousemove', 'click', 'keydown', 'touchstart', 'scroll'];
+    const gestureHandler = () => {
+        startAudioExperience();
+    };
+
+    triggerEvents.forEach(evt => window.addEventListener(evt, gestureHandler, { passive: true }));
 
     if (video) {
         const clips = [
