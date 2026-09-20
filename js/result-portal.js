@@ -37,11 +37,12 @@ async function checkResult() {
         const rawScore = Number(matchedResult.score) || 0;
         const percentage = totalMarks > 0 ? (rawScore / totalMarks) * 100 : 0;
         
-        let performanceMessage = "Needs Improvement";
-        if (percentage >= 90) performanceMessage = "Outstanding Performance";
-        else if (percentage >= 75) performanceMessage = "Excellent Performance";
-        else if (percentage >= 60) performanceMessage = "Good Performance";
-        else if (percentage >= 40) performanceMessage = "Average Performance";
+        let performanceMessage = "Poor";
+        if (percentage >= 90) performanceMessage = "Outstanding";
+        else if (percentage >= 80) performanceMessage = "Excellent";
+        else if (percentage >= 70) performanceMessage = "Very Good";
+        else if (percentage >= 60) performanceMessage = "Good";
+        else if (percentage >= 40) performanceMessage = "Needs Improvement";
 
         window.__lastResultRecord = { matchedResult, studentObj, totalMarks, percentage, performanceMessage };
         showResultCard();
@@ -103,11 +104,13 @@ function resultCardMarkup(record) {
         <footer class="result-card-footer">
             <span>Computer-Generated Official Transcript</span>
             <div class="result-signature">
-                <svg class="registrar-sig-svg" width="130" height="38" viewBox="0 0 180 50" style="display:block;margin:0 auto 3px;">
-                    <path d="M 12 38 C 25 10, 38 45, 52 20 C 62 8, 72 35, 88 24 C 102 14, 112 40, 132 20 C 145 8, 155 35, 168 28" fill="none" stroke="#0b3d91" stroke-width="2.2" stroke-linecap="round"/>
-                    <path d="M 22 30 Q 80 48 158 24" fill="none" stroke="#0b3d91" stroke-width="1.6" stroke-dasharray="3 2"/>
+                <svg class="registrar-sig-svg" width="160" height="46" viewBox="0 0 200 58" style="display:block;margin:0 auto 3px;">
+                    <path d="M 12 48 C 15 30, 23 40, 27 19 C 31 6, 41 46, 47 26 C 53 10, 61 42, 67 27 C 73 15, 81 41, 88 26 C 95 12, 105 7, 113 10 C 120 13, 126 20, 131 27 C 136 34, 134 42, 127 38 C 133 15, 143 34, 150 24 C 157 14, 165 34, 172 24 C 178 15, 185 20, 188 17" fill="none" stroke="#0b3d91" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M 16 42 C 56 56, 128 56, 170 34 C 177 30, 184 27, 188 24" fill="none" stroke="#0b3d91" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="13" cy="45" r="2.2" fill="#0b3d91"/>
                 </svg>
                 <i></i>
+                <span class="signature-script" style="font-family:'Snell Roundhand','Segoe Script','Brush Script MT',cursive,Georgia,serif;font-style:italic;color:#1e3a8a;">Damodar Valluru</span>
                 <strong>Academic Registrar</strong>
                 <small>Pinnacle Scholars Academy</small>
             </div>

@@ -247,13 +247,13 @@
     }
 
     .notice-ticker-title {
-        font-size: 0.7rem;
+        font-size: 0.85rem;
         padding: 0.3rem 0.55rem;
         margin-right: 0.65rem;
     }
 
     .ticker-item {
-        font-size: 0.72rem;
+        font-size: 0.86rem;
     }
 
     .hero {
@@ -307,9 +307,16 @@
         margin-bottom: 1rem !important;
     }
 
-    .hero-btns button,
-    .hero-btns a {
-        padding: 0.55rem 0.9rem;
+    .master-your-mind .hero-btns {
+        align-items: center;
+    }
+
+    .master-your-mind .hero-btns button,
+    .master-your-mind .hero-btns a {
+        width: auto;
+        padding: 0.5rem 1.1rem;
+        font-size: 0.85rem;
+        border-radius: 999px !important;
     }
 
     .nav-scroll-btn {
@@ -368,12 +375,12 @@
     }
 
     .notice-ticker-title {
-        font-size: 0.62rem;
+        font-size: 0.75rem;
         padding: 0.24rem 0.4rem;
     }
 
     .ticker-item {
-        font-size: 0.64rem;
+        font-size: 0.77rem;
     }
 
     .hero h1 {
@@ -405,4 +412,57 @@ header {
 
 body {
     padding-top: var(--site-topbar-content-height, 140px);
+}
+
+/* Mobile content visibility & overflow fixes (<= 767px only; desktop/tablet untouched) */
+@media (max-width: 767px) {
+    html,
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+    }
+
+    .card,
+    .info-card,
+    .portal-card,
+    .jee-card,
+    .contact-card,
+    .enroll-card,
+    .payment-card {
+        max-width: 100%;
+    }
+}
+
+/* Portal pages: the login/dashboard cards are centered and fit the viewport
+   on every device, page scrolling is disabled on all portals on every device,
+   and the Faculty portal stays vertically scrollable so its longer forms
+   remain fully reachable. */
+body.student-portal,
+body.faculty-portal,
+body.result-portal {
+    padding-top: 0;
+}
+
+.student-portal .login-container,
+.faculty-portal .portal-container,
+.result-portal .card-wrapper {
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body.student-portal,
+body.result-portal {
+    overflow: hidden;
+}
+
+body.faculty-portal {
+    overflow-y: auto;
 }
