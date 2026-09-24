@@ -137,6 +137,7 @@ function initMasterYourMindMedia() {
 
     let voicePlayed = false;
     let bgmStarted = false;
+    let examOpen = false;
 
     function speakWelcomeFallback() {
         if ('speechSynthesis' in window) {
@@ -150,9 +151,13 @@ function initMasterYourMindMedia() {
     }
 
     function startAudioExperience() {
+        // While a student is inside the live exam environment the website
+        // background music and welcome announcement must stay completely silent.
+        if (examOpen) return;
         // 1. Play continuous pleasant moderate-loud institute background music
         //    underneath the spoken welcome message, then it keeps playing.
-        if (!bgmStarted && bgmAudio) {
+        //    (`paused` also lets the music resume after the exam has ended.)
+        if (bgmAudio && (bgmAudio.paused || !bgmStarted)) {
             bgmAudio.muted = false;
             bgmAudio.volume = 0.50; // Pleasant, moderate-loud institute volume level
             const playPromise = bgmAudio.play();
@@ -240,7 +245,7 @@ function initMasterYourMindMedia() {
     // music start automatically where the browser allows it.
     if (document.getElementById('welcomeIntro')) {
         setTimeout(() => {
-            if (!voicePlayed && voiceAudio && voiceAudio.paused) startAudioExperience();
+            if (!examOpen && !voicePlayed && voiceAudio && voiceAudio.paused) startAudioExperience();
         }, 4200);
     }
 
@@ -260,6 +265,10 @@ function initMasterYourMindMedia() {
             (bgmAudio && !bgmAudio.paused && bgmAudio.currentTime > 0);
 
         const ensureSoundBtn = () => {
+            if (examOpen) {
+                hideSoundBtn();
+                return;
+            }
             if (soundStarted()) {
                 hideSoundBtn();
                 return;
@@ -282,6 +291,18 @@ function initMasterYourMindMedia() {
         setTimeout(ensureSoundBtn, 2500);
         window.addEventListener('load', ensureSoundBtn);
     }
+
+    // Exam-mode audio control: entering a live assessment silences the
+    // website background music and the welcome announcement. The standard
+    // site audio experience resumes automatically once the exam ends.
+    window.setExamEnvironmentActive = function (active) {
+        examOpen = !!active;
+        if (examOpen) {
+            document.querySelectorAll('.hero-sound-unlock-btn').forEach(b => b.remove());
+            if (voiceAudio) voiceAudio.pause();
+            if (bgmAudio) bgmAudio.pause();
+        }
+    };
 }
 
 // Initialize animations when DOM is ready
@@ -1267,7 +1288,7 @@ async function showTestInterface(testObject) {
                 <button class="submit-btn" id="submitTestBtn">✓ Submit test</button>
             </div>
         </header>
-        <div id="integrityNotice" style="display:none; background:rgba(239,68,68,0.9); color:white; text-align:center; padding:6px; font-weight:bold; font-size:0.85rem; position:sticky; top:84px; z-index:10;">
+        <div id="integrityNotice" style="display:none; background:rgba(239,68,68,0.9); color:white; text-align:center; padding:6px; font-weight:bold; font-size:0.85rem; position:sticky; top:var(--exam-sticky-top,84px); z-index:10;">
             ⚠️ Exam Security Alert: Focus lost / Unpermitted shortcut detected!
         </div>
         <main class="test-layout">
@@ -1287,7 +1308,24 @@ async function showTestInterface(testObject) {
                 </div>
             </aside>
         </main>`;
+    // Entering the exam environment silences the website background music.
+    if (window.setExamEnvironmentActive) window.setExamEnvironmentActive(true);
     document.body.appendChild(wrapper);
+
+    // Keep the layout clear of the pinned exam header: navigate using the
+    // measured header height so the navigator and question cards never slide
+    // underneath it on any screen width (mobile and desktop).
+    const applyExamLayoutClearance = () => {
+        const headerEl = wrapper.querySelector('.test-header');
+        if (!headerEl) return;
+        const headerBottom = Math.ceil(headerEl.getBoundingClientRect().bottom);
+        wrapper.style.setProperty('--exam-sticky-top', `${headerBottom}px`);
+    };
+    applyExamLayoutClearance();
+    window.addEventListener('resize', applyExamLayoutClearance);
+    const releaseExamLayoutClearance = () => {
+        window.removeEventListener('resize', applyExamLayoutClearance);
+    };
 
     let currentQuestionIndex = 0;
     const navigatorButtons = [...wrapper.querySelectorAll(".question-nav-btn")];
@@ -1358,6 +1396,8 @@ async function showTestInterface(testObject) {
         if (progressData.attempted) {
             alert("you cannot take this test again");
             wrapper.remove();
+            releaseExamLayoutClearance();
+            if (window.setExamEnvironmentActive) window.setExamEnvironmentActive(false);
             return;
         }
         if (progressData.success && progressData.progress && progressData.progress.answers) {
@@ -1505,6 +1545,9 @@ async function showTestInterface(testObject) {
             }
             clearInterval(timer);
             window.onbeforeunload = null;
+            // The assessment has ended; normal site audio may resume.
+            releaseExamLayoutClearance();
+            if (window.setExamEnvironmentActive) window.setExamEnvironmentActive(false);
             wrapper.innerHTML = `
                 <section class="submission-confirmation">
                     <div class="success-seal">✓</div>
