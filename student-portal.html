@@ -19,6 +19,7 @@
     <script src="js/forgot-id.js" defer></script>
     <script src="js/student-portal.js"></script>
     <script src="js/session-manager.js"></script>
+    <script src="js/neumorphic-flip.js"></script>
     <script src="js/receipt-generator.js"></script>
     <script src="js/student-reference-background.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
@@ -48,26 +49,51 @@
     </button>
 
     <div class="login-container neu-auth" id="loginArea">
-        <form class="portal-card neu-card" id="studentLoginForm" onsubmit="checkLogin(); return false;">
-            <h2>Student Login</h2>
-            <p class="neu-card__sub">Sign in with the Enrollment ID and Date of Birth issued at registration.</p><br>
+        <div class="neu-flip" id="studentAuthFlip">
+            <div class="neu-flip__stage" id="studentAuthFlipStage">
 
-            <input type="text" id="loginId" placeholder="Enrollment ID (PS-I/M-2026-XXXX)" autocomplete="off">
-            <input type="date" id="loginDob" aria-label="Date of Birth">
+                <!-- Front face: the existing student login form, unchanged -->
+                <div class="neu-flip__face neu-flip__face--front">
+                <form class="portal-card neu-card" id="studentLoginForm" onsubmit="checkLogin(); return false;">
+                    <h2>Student Login</h2>
+                    <p class="neu-card__sub">Sign in with the Enrollment ID and Date of Birth issued at registration.</p><br>
 
-            <div class="neu-card__meta">
-                <a href="#" onclick="forgotStudentId(); return false;">Forgot ID?</a>
+                    <input type="text" id="loginId" placeholder="Enrollment ID (PS-I/M-2026-XXXX)" autocomplete="off">
+                    <input type="date" id="loginDob" aria-label="Date of Birth">
+
+                    <div class="neu-card__meta">
+                        <a href="#" onclick="forgotStudentId(); return false;">Forgot ID?</a>
+                    </div>
+
+                    <button id="studentLoginBtn" class="btn" type="submit">Login to Dashboard</button>
+
+                    <p class="neu-card__switch">Not enrolled? <a href="#" onclick="toggleStudentAuthViews(true); return false;"><strong>Register here</strong></a></p>
+
+                    <p class="neu-card__actions">
+                        <button class="btn" type="button" onclick="window.location.href='index.html'" style="padding: 6px 12px; width: auto;">🏠 Home</button>
+                        <button class="btn" type="button" onclick="window.location.href='career-ai/index.html'" style="padding: 6px 12px; width: auto; margin-left: 8px;">⚡ AI Career Enhancement</button>
+                    </p>
+                </form>
+                </div>
+
+                <!-- Back face: the real enrollment.html, embedded rather than
+                     duplicated. The form, its fields, its ids, its validation
+                     and its backend call all still live in enrollment.html. -->
+                <div class="neu-flip__face neu-flip__face--back">
+                <div class="portal-card neu-card neu-card--embed" id="studentEnrollArea">
+                    <h2>New Student Enrollment</h2>
+                    <p class="neu-card__sub">Complete your registration to receive a unique Enrollment ID.</p>
+
+                    <iframe id="studentEnrollFrame" class="neu-embed-frame" src="enrollment.html?embed=1"
+                            title="Student enrollment form" loading="lazy"></iframe>
+
+                    <p class="neu-card__switch">Already enrolled? <a href="#" onclick="toggleStudentAuthViews(false); return false;"><strong>Login here</strong></a></p>
+                    <p class="neu-card__embedalt"><a href="enrollment.html">Open enrollment in a full page</a></p>
+                </div>
+                </div>
+
             </div>
-
-            <button id="studentLoginBtn" class="btn" type="submit">Login to Dashboard</button>
-
-            <p class="neu-card__switch">Not enrolled? <a href="enrollment.html"><strong>Register here</strong></a></p>
-
-            <p class="neu-card__actions">
-                <button class="btn" type="button" onclick="window.location.href='index.html'" style="padding: 6px 12px; width: auto;">🏠 Home</button>
-                <button class="btn" type="button" onclick="window.location.href='career-ai/index.html'" style="padding: 6px 12px; width: auto; margin-left: 8px;">⚡ AI Career Enhancement</button>
-            </p>
-        </form>
+        </div>
     </div>
 
     <div class="dashboard" id="dashboardArea">

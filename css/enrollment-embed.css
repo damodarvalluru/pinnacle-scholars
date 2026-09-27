@@ -1,0 +1,255 @@
+/* ==========================================================================
+   Embedded mode for enrollment.html
+   --------------------------------------------------------------------------
+   When student-portal.html flips its card to the enrollment face it embeds
+   this very page in an iframe (enrollment.html?embed=1). The point is to
+   reuse the real registration form rather than duplicate it, so this file
+   only restyles what is already here - no markup, no fields, no ids and no
+   behaviour are added or changed.
+
+   Everything is gated behind html.is-embedded, which is set by a two-line
+   script in enrollment.html only when ?embed=1 is present. Visitors who open
+   enrollment.html directly never get this class and keep the original look.
+   ========================================================================== */
+
+html.is-embedded {
+    --neu-page: #e0e0e5;
+    --neu-surface: #e8e8e8;
+    --neu-surface-deep: #dedee3;
+    --neu-text: #3d3d3d;
+    --neu-muted: #929191;
+    --neu-accent: #a51818;
+    --neu-accent-deep: #7a1414;
+    --neu-icon: #8a8a92;
+
+    --neu-raised-sm: 7px 7px 16px rgba(163, 163, 168, 0.5),
+                     -7px -7px 16px rgba(255, 255, 255, 0.8);
+    --neu-carved: inset 6px 6px 10px rgba(184, 190, 204, 0.45),
+                  inset -6px -6px 10px rgba(255, 255, 255, 0.7);
+    --neu-bevel: inset 3px 3px 8px rgba(163, 163, 163, 0.18);
+
+    --icon-user: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8a92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E");
+    --icon-calendar: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8a92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cpath d='M16 2v4M8 2v4M3 10h18'/%3E%3C/svg%3E");
+    --icon-book: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8a92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 19.5A2.5 2.5 0 0 1 6.5 17H20'/%3E%3Cpath d='M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z'/%3E%3C/svg%3E");
+}
+
+/* --------------------------------------------------------------------------
+   Drop the standalone page furniture
+   The parent portal already provides the soft gray backdrop, and its own
+   particle canvas is hidden while the auth card is up. Keeping this page's
+   canvas, footer and duplicate nav links would put a second animated
+   background and a second set of navigation controls inside one card.
+   -------------------------------------------------------------------------- */
+html.is-embedded #bg-canvas,
+html.is-embedded body.enrollment-page footer,
+html.is-embedded .nav-footer {
+    display: none !important;
+}
+
+html.is-embedded body.enrollment-page {
+    background: transparent !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    color: var(--neu-text) !important;
+    overflow: hidden !important;
+}
+
+/* Let the parent's neumorphic card be the only visual frame. */
+html.is-embedded .page-center-envelope {
+    min-height: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    place-items: initial !important;
+}
+
+html.is-embedded .enroll-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+}
+
+html.is-embedded .enroll-card {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    animation: none !important;
+    transform: none !important;
+}
+
+html.is-embedded .enroll-card h2 {
+    color: var(--neu-text) !important;
+    margin: 0 0 0.35rem !important;
+    font-size: 1.3rem !important;
+    letter-spacing: -0.4px !important;
+}
+
+html.is-embedded .form-group {
+    margin-bottom: 0.95rem !important;
+}
+
+html.is-embedded .form-group label {
+    color: var(--neu-muted) !important;
+    font-size: 0.74rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.4rem !important;
+    display: block !important;
+}
+
+/* Carved neumorphic fields, matching the login face exactly. */
+html.is-embedded .form-group input,
+html.is-embedded .form-group select {
+    width: 100% !important;
+    box-sizing: border-box;
+    border: 0 !important;
+    border-radius: 12px !important;
+    background-color: var(--neu-surface) !important;
+    background-image: none !important;
+    color: var(--neu-text) !important;
+    font-size: 0.95rem !important;
+    padding: 0.85rem 0.9rem 0.85rem 2.85rem !important;
+    box-shadow: var(--neu-carved) !important;
+    transition: box-shadow 0.22s ease !important;
+}
+
+html.is-embedded .form-group input:focus,
+html.is-embedded .form-group select:focus {
+    outline: none !important;
+    box-shadow: var(--neu-carved), 0 0 0 2px rgba(165, 24, 24, 0.35) !important;
+}
+
+/* The select keeps its own dropdown arrow; re-add it by hand because the
+   original arrow was drawn with a background-image that we just cleared. */
+html.is-embedded .form-group select {
+    background-image:
+        linear-gradient(45deg, transparent 50%, var(--neu-icon) 50%),
+        linear-gradient(135deg, var(--neu-icon) 50%, transparent 50%) !important;
+    background-position:
+        calc(100% - 18px) 55%,
+        calc(100% - 13px) 55% !important;
+    background-size: 5px 5px, 5px 5px !important;
+    background-repeat: no-repeat !important;
+    padding-right: 2.2rem !important;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+/* Icons live on the wrapper so the native date picker stays clickable. */
+html.is-embedded .form-group:has(input#studentName)::before,
+html.is-embedded .form-group:has(input#dob)::before,
+html.is-embedded .form-group:has(select#domain)::before {
+    content: "";
+    position: absolute;
+    left: 0.95rem;
+    top: 2.05rem;
+    width: 1.15rem;
+    height: 1.15rem;
+    pointer-events: none;
+    z-index: 1;
+}
+
+html.is-embedded .form-group {
+    position: relative;
+}
+
+html.is-embedded .form-group:has(input#studentName)::before {
+    background-image: var(--icon-user);
+}
+
+html.is-embedded .form-group:has(input#dob)::before {
+    background-image: var(--icon-calendar);
+}
+
+html.is-embedded .form-group:has(select#domain)::before {
+    background-image: var(--icon-book);
+}
+
+/* Native date input must keep its own calendar affordance. */
+html.is-embedded .form-group input#dob {
+    -webkit-appearance: auto;
+    appearance: auto;
+    padding-right: 2rem !important;
+}
+
+/* Raised accent button, same as the login face's submit. */
+html.is-embedded .btn-submit {
+    width: 100% !important;
+    border: 0 !important;
+    border-radius: 12px !important;
+    background: var(--neu-accent) !important;
+    background-image: none !important;
+    color: #fff !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+    padding: 0.9rem 1rem !important;
+    box-shadow: 6px 6px 14px rgba(163, 163, 168, 0.55),
+                -4px -4px 12px rgba(255, 255, 255, 0.7) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease,
+                background 0.2s ease !important;
+}
+
+html.is-embedded .btn-submit:hover {
+    background: var(--neu-accent-deep) !important;
+    transform: translateY(-1px);
+}
+
+html.is-embedded .btn-submit:active {
+    transform: translateY(1px);
+    box-shadow: var(--neu-bevel) !important;
+}
+
+/* Success state shown after a successful registration inside the card. */
+html.is-embedded .success-box {
+    color: var(--neu-text) !important;
+    padding: 0.5rem 0 !important;
+}
+
+html.is-embedded .success-icon {
+    color: #15803d !important;
+}
+
+html.is-embedded .id-badge {
+    background: var(--neu-surface) !important;
+    box-shadow: var(--neu-carved) !important;
+    border-radius: 12px !important;
+}
+
+html.is-embedded .id-badge strong {
+    color: var(--neu-accent) !important;
+}
+
+html.is-embedded .success-box p {
+    color: var(--neu-muted) !important;
+}
+
+html.is-embedded .portal-link {
+    display: inline-block;
+    background: var(--neu-accent);
+    color: #fff !important;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.88rem;
+    padding: 0.75rem 1.1rem;
+    border-radius: 12px;
+}
+
+/* The success link points at student-portal.html, which must replace the whole
+   page rather than load inside the iframe. The embed script sets target="_top";
+   this is only the styling. */
+html.is-embedded .success-box .celebrate {
+    animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    html.is-embedded .form-group input,
+    html.is-embedded .form-group select,
+    html.is-embedded .btn-submit {
+        transition: none !important;
+    }
+}

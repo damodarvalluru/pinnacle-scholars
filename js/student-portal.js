@@ -298,7 +298,7 @@
     })();
 
     // Removes the decorative briefcase-arrival overlay from paint once its
-    // fade-out animation finishes. Purely cosmetic cleanup — does not touch
+    // fade-out animation finishes. Purely cosmetic cleanup �?" does not touch
     // login/dashboard logic, and the overlay never blocks clicks either way
     // since it is pointer-events:none for its entire lifetime.
     (function cleanupBriefcaseIntro() {
@@ -308,3 +308,33 @@
             if (e.target === intro) intro.classList.add('briefcase-intro--done');
         });
     })();
+
+    // Student Portal flip-card: rotates the single card between the login face
+    // and the enrollment face. The enrollment face is NOT a second form - it
+    // embeds enrollment.html in an iframe, so the real registration fields,
+    // their ids, their validation and their backend call all stay in
+    // enrollment.html exactly as they were. Nothing here duplicates a field.
+    // checkLogin() and the dashboard logic above are untouched.
+    function toggleStudentAuthViews(showRegister) {
+
+        const flip = document.getElementById('studentAuthFlip');
+
+        if (!flip) {
+            // Fallback: no wrapper, so behave like the original plain link.
+            window.location.href = 'enrollment.html';
+            return;
+        }
+
+        flip.classList.toggle('is-flipped', !!showRegister);
+
+        if (typeof window.syncFlipHeight === 'function') {
+            window.syncFlipHeight(flip);
+        }
+
+        // The two faces are very different heights, so return to the top of
+        // the card after rotating - otherwise the shorter login face can end
+        // up scrolled off screen.
+        const stage = document.getElementById('studentAuthFlipStage');
+        if (stage) stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+

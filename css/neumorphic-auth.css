@@ -516,6 +516,52 @@ body.faculty-portal:has(> .neu-auth:not([style*="display: none"])) footer p {
     }
 }
 
+/* --------------------------------------------------------------------------
+   Embedded enrollment face
+   The back face hosts the real enrollment.html in an iframe instead of a
+   copied form, so the card needs a little more room and a fixed-height
+   scroll area. The iframe document styles itself via enrollment-embed.css
+   when it detects ?embed=1.
+   -------------------------------------------------------------------------- */
+.neu-card--embed {
+    max-width: 460px;
+}
+
+.neu-embed-frame {
+    display: block;
+    width: 100%;
+    height: 430px;
+    margin: 1rem 0 0.25rem;
+    border: 0;
+    border-radius: 14px;
+    background: var(--neu-surface);
+    box-shadow: var(--neu-carved);
+    overflow: hidden;
+}
+
+.neu-card__embedalt {
+    margin: 0.1rem 0 0;
+    text-align: center;
+    font-size: 0.74rem;
+}
+
+.neu-card__embedalt a {
+    color: var(--neu-muted);
+    text-decoration: none;
+    border-bottom: 1px dotted currentColor;
+}
+
+.neu-card__embedalt a:hover {
+    color: var(--neu-accent);
+}
+
+@media (max-width: 480px) {
+
+    .neu-embed-frame {
+        height: 400px;
+    }
+}
+
 /* Short viewports: the enrollment face would otherwise push the footer far
    down. Tighten the vertical rhythm rather than hide any field. */
 @media (max-height: 700px) {

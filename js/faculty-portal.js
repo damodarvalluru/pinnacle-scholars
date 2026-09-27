@@ -27,7 +27,7 @@
         flip.classList.toggle("is-flipped", !!showRegister);
 
         if (typeof window.syncFlipHeight === "function") {
-            window.syncFlipHeight();
+            window.syncFlipHeight(flip);
         }
 
         // Keep the original intent of scrolling the freshly-shown panel into
