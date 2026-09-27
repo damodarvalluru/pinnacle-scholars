@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/receipt.css">
     <link rel="stylesheet" href="css/portal-premium.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/neumorphic-auth.css">
 
     <script src="js/scripts.js"></script>
     <script src="js/forgot-id.js" defer></script>
@@ -46,17 +47,25 @@
         </svg>
     </button>
 
-    <div class="login-container" id="loginArea">
-        <form class="portal-card" id="studentLoginForm" onsubmit="checkLogin(); return false;">
-            <h2 style="color: #1a365d; text-align: center; margin-top: 0;">Student Login</h2><br><hr><br>
-            <input type="text" id="loginId" placeholder="Enrollment ID (PS-I/M-2026-XXXX)" style="width:100%; padding:10px; margin-bottom:10px;">
-            <input type="date" id="loginDob" style="width:100%; padding:10px; margin-bottom:20px;">
+    <div class="login-container neu-auth" id="loginArea">
+        <form class="portal-card neu-card" id="studentLoginForm" onsubmit="checkLogin(); return false;">
+            <h2>Student Login</h2>
+            <p class="neu-card__sub">Sign in with the Enrollment ID and Date of Birth issued at registration.</p><br>
+
+            <input type="text" id="loginId" placeholder="Enrollment ID (PS-I/M-2026-XXXX)" autocomplete="off">
+            <input type="date" id="loginDob" aria-label="Date of Birth">
+
+            <div class="neu-card__meta">
+                <a href="#" onclick="forgotStudentId(); return false;">Forgot ID?</a>
+            </div>
+
             <button id="studentLoginBtn" class="btn" type="submit">Login to Dashboard</button>
-            <p style="text-align:center; margin-bottom: 0; margin-top: 15px;"><a href="#" onclick="forgotStudentId(); return false;" style="color: #2b6cb0; text-decoration: none;">Forgot ID?</a></p>
-            <p style="text-align:center; margin-bottom: 0; margin-top: 15px;"><a href="enrollment.html" style="color: #2b6cb0; text-decoration: none;">Not enrolled? Register here</a></p>
-            <p style="text-align:center; margin-bottom: 0; margin-top: 15px;">
-                <button class="btn" onclick="window.location.href='index.html'" style="padding: 6px 12px; width: auto;">🏠 Home</button>
-                <button class="btn" onclick="window.location.href='career-ai/index.html'" style="padding: 6px 12px; width: auto; margin-left: 8px;">⚡ AI Career Enhancement</button>
+
+            <p class="neu-card__switch">Not enrolled? <a href="enrollment.html"><strong>Register here</strong></a></p>
+
+            <p class="neu-card__actions">
+                <button class="btn" type="button" onclick="window.location.href='index.html'" style="padding: 6px 12px; width: auto;">🏠 Home</button>
+                <button class="btn" type="button" onclick="window.location.href='career-ai/index.html'" style="padding: 6px 12px; width: auto; margin-left: 8px;">⚡ AI Career Enhancement</button>
             </p>
         </form>
     </div>

@@ -15,6 +15,30 @@
         return;
     }
 
+    // Neumorphic soft-UI flip card: when the rotating wrapper is present the
+    // two panels are the front (login) and back (signup) faces of ONE card,
+    // so switching views means rotating it 180 degrees rather than showing
+    // and hiding each panel. Purely presentational - the panels, their
+    // fields and every handler stay exactly as they were.
+    const flip = document.getElementById("authFlip");
+
+    if (flip) {
+
+        flip.classList.toggle("is-flipped", !!showRegister);
+
+        if (typeof window.syncFlipHeight === "function") {
+            window.syncFlipHeight();
+        }
+
+        // Keep the original intent of scrolling the freshly-shown panel into
+        // view: the register face is much taller than the login face, so
+        // after rotating we return to the top of the card.
+        const stage = document.getElementById("authFlipStage");
+        if (stage) stage.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+    }
+
+    // Fallback: original show/hide behaviour when the flip wrapper is absent.
     if (showRegister) {
 
         loginArea.style.display = "none";
@@ -436,8 +460,22 @@ if(!result.success){
     // "New Faculty? Register/Enroll here" link to reach registration
     // — matching the pattern already used on the Student Portal
     // (login-first, registration reached via a secondary link).
-    document.getElementById("loginArea").style.display = "block";
-    document.getElementById("registerArea").style.display = "none";
+    // The login face is the front face of the neumorphic flip card, so
+    // the initial state is "not flipped". The inline display:none that
+    // used to sit on the markup is gone, and neither panel is given an
+    // inline display here any more, because that would hide one of the
+    // two faces and break the rotation. The original
+    // loginArea="block" / registerArea="none" outcome is preserved
+    // visually by the face swap.
+    if (document.getElementById("authFlip")) {
+        document.getElementById("authFlip").classList.remove("is-flipped");
+        if (typeof window.syncFlipHeight === "function") {
+            window.syncFlipHeight();
+        }
+    } else {
+        document.getElementById("loginArea").style.display = "block";
+        document.getElementById("registerArea").style.display = "none";
+    }
 
     // FIX: cap Date of Birth and Enrollment Date pickers at today so
     // a faculty member can't pick a future date while enrolling. The

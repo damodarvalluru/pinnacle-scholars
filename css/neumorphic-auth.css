@@ -1,0 +1,536 @@
+/* ==========================================================================
+   PINNACLE SCHOLARS ACADEMY - NEUMORPHIC AUTH (SOFT-UI) FLIP CARD
+   --------------------------------------------------------------------------
+   Applies ONLY to the login / signup screens of the Student and Faculty
+   portals. Scoped to:
+       body.student-portal  ->  .neu-auth  ->  .neu-card
+       body.faculty-portal  ->  .neu-auth  ->  .neu-card
+
+   Nothing here changes field names, ids, labels, validation, backend calls
+   or routes. The Faculty portal's existing login <-> signup toggle
+   (toggleAuthViews) now rotates this card instead of swapping panels.
+
+   Loaded last on both portal pages so it wins over the older portal themes.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Design tokens
+   -------------------------------------------------------------------------- */
+/* Tokens live on the two portal <body> elements, not on .neu-auth. Custom
+   properties only inherit DOWN the tree, and these values are consumed by
+   body itself (page background), by the footer and by .neu-auth further down.
+   Declaring them on the child would have left every var() above it unresolved
+   and silently dropped those declarations. */
+body.student-portal,
+body.faculty-portal {
+    --neu-page: #e0e0e5;
+    --neu-surface: #e8e8e8;
+    --neu-surface-deep: #dedee3;
+    --neu-text: #3d3d3d;
+    --neu-muted: #929191;
+    --neu-accent: #a51818;
+    --neu-accent-deep: #7a1414;
+    --neu-icon: #8a8a92;
+
+    /* Light from the top-left, shade falling to the bottom-right. */
+    --neu-raised: 18px 18px 38px rgba(163, 163, 168, 0.55),
+                  -18px -18px 38px rgba(255, 255, 255, 0.85);
+    --neu-raised-sm: 7px 7px 16px rgba(163, 163, 168, 0.5),
+                     -7px -7px 16px rgba(255, 255, 255, 0.8);
+    --neu-carved: inset 6px 6px 10px rgba(184, 190, 204, 0.45),
+                  inset -6px -6px 10px rgba(255, 255, 255, 0.7);
+    --neu-bevel: inset 3px 3px 8px rgba(163, 163, 163, 0.18);
+}
+
+/* --------------------------------------------------------------------------
+   1. Page background: soft light gray, full viewport height, centred
+   -------------------------------------------------------------------------- */
+
+/* The portals paint an animated dark canvas behind everything. It is switched
+   off only while the auth screen is up, detected with :has() on the auth
+   wrapper's inline display, so the dashboard keeps its original backdrop.
+   If :has() is unsupported the whole block is ignored and the old look stays. */
+body.student-portal:has(> .neu-auth:not([style*="display: none"])),
+body.faculty-portal:has(> .neu-auth:not([style*="display: none"])) {
+    background: var(--neu-page);
+    color: var(--neu-text);
+}
+
+body.student-portal:has(> .neu-auth:not([style*="display: none"])) #portalGeometryCanvas,
+body.student-portal:has(> .neu-auth:not([style*="display: none"])) .student-portal-bg,
+body.faculty-portal:has(> .neu-auth:not([style*="display: none"])) #bg-canvas,
+body.faculty-portal:has(> .neu-auth:not([style*="display: none"])) .faculty-portal-bg {
+    display: none;
+}
+
+.neu-auth {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1rem, 4vw, 2.5rem) clamp(0.75rem, 4vw, 2rem);
+    background: var(--neu-page);
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    box-sizing: border-box;
+}
+
+/* Footer text is white for the old dark backdrop; keep it readable on gray. */
+body.student-portal:has(> .neu-auth:not([style*="display: none"])) footer p,
+body.faculty-portal:has(> .neu-auth:not([style*="display: none"])) footer p {
+    color: var(--neu-muted) !important;
+    font-size: 0.85rem !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. Card container: big rounded "soft card" + embossed inner bevel ring
+   -------------------------------------------------------------------------- */
+.neu-card {
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    padding: clamp(1.75rem, 5vw, 2.75rem) clamp(1.25rem, 4.5vw, 2.5rem);
+    box-sizing: border-box;
+
+    background: var(--neu-surface);
+    border: 0 !important;
+    border-radius: 34px;
+    box-shadow: var(--neu-raised), inset -1px -1px 1px rgba(255, 255, 255, 0.5);
+
+    /* The bevel is a pseudo-element, so the card itself must not scroll. */
+    max-height: none;
+    overflow: visible;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    color: var(--neu-text);
+}
+
+/* Replaces the old animated gradient top bar: an inset glass ring. */
+.neu-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow: var(--neu-bevel);
+    pointer-events: none;
+    animation: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Typography
+   -------------------------------------------------------------------------- */
+.neu-card h2 {
+    margin: 0 0 0.35rem !important;
+    font-size: clamp(1.4rem, 5.4vw, 1.75rem) !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.01em !important;
+    text-align: center !important;
+    color: var(--neu-text) !important;
+    text-shadow: none !important;
+}
+
+.neu-card__sub {
+    margin: 0 0 1.5rem;
+    font-size: 0.82rem;
+    font-weight: 400;
+    line-height: 1.45;
+    text-align: center;
+    color: var(--neu-muted);
+}
+
+.neu-card hr {
+    height: 1px;
+    margin: 0 0 1.5rem;
+    border: 0;
+    background: linear-gradient(90deg, transparent, rgba(163, 163, 168, 0.55), transparent);
+}
+
+.neu-card label {
+    display: block;
+    margin: 0 0 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--neu-muted);
+}
+
+/* --------------------------------------------------------------------------
+   4. Fields: pill shaped, carved in, with a left-aligned purpose icon
+   -------------------------------------------------------------------------- */
+
+/* Inline SVG data URIs, matching the stroke style already used by the
+   portal's own inline SVGs. No new icon library is introduced. */
+.neu-auth {
+    --icon-user: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8a92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E");
+    --icon-mail: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8a92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='4' width='20' height='16' rx='2'/%3E%3Cpath d='m22 7-10 6L2 7'/%3E%3C/svg%3E");
+    --icon-calendar: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8a92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cpath d='M16 2v4M8 2v4M3 10h18'/%3E%3C/svg%3E");
+    --icon-phone: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8a92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z'/%3E%3C/svg%3E");
+    --icon-pin: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8a92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E");
+    --icon-book: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8a92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 19.5A2.5 2.5 0 0 1 6.5 17H20'/%3E%3Cpath d='M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z'/%3E%3C/svg%3E");
+    --icon-award: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8a92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='6'/%3E%3Cpath d='M15.477 12.89 17 22l-5-3-5 3 1.523-9.11'/%3E%3C/svg%3E");
+    --icon-trophy: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8a92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z'/%3E%3Cpath d='M17 5h2a2 2 0 0 1 0 4h-2M7 5H5a2 2 0 0 0 0 4h2'/%3E%3C/svg%3E");
+    --icon-badge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8a92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='5' width='20' height='14' rx='2'/%3E%3Ccircle cx='8' cy='11' r='2'/%3E%3Cpath d='M5 16c.6-1.5 1.6-2 3-2s2.4.5 3 2M14 10h5M14 14h3'/%3E%3C/svg%3E");
+}
+
+.neu-card input {
+    width: 100%;
+    box-sizing: border-box;
+    /* 16px minimum stops iOS zooming the viewport when a field is focused. */
+    font-size: max(0.95rem, 16px) !important;
+    font-family: inherit;
+    line-height: 1.4;
+    color: var(--neu-text) !important;
+    background-color: #e0e0e0 !important;
+    background-repeat: no-repeat;
+    background-position: left 1rem center;
+    background-size: 18px 18px;
+    border: 0 !important;
+    border-radius: 12px !important;
+    box-shadow: var(--neu-carved) !important;
+    padding: 0.85rem 1rem 0.85rem 2.85rem !important;
+    margin: 0 0 1.1rem !important;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: box-shadow 0.22s ease;
+}
+
+.neu-card input::placeholder {
+    color: var(--neu-muted);
+    opacity: 1;
+}
+
+.neu-card input:focus {
+    background-color: #e4e4e4 !important;
+    box-shadow: var(--neu-carved), 0 0 0 2px rgba(165, 24, 24, 0.35) !important;
+}
+
+/* Native date pickers: keep the browser's own calendar affordance (picker
+   icon and text entry) intact, and leave room for the indicator. */
+.neu-card input[type="date"] {
+    -webkit-appearance: auto;
+    appearance: auto;
+    padding: 0.85rem 2rem 0.85rem 2.85rem !important;
+}
+
+/* Purpose icons, matched to each existing field. */
+#loginId { background-image: var(--icon-badge) !important; }
+#loginFacId { background-image: var(--icon-badge) !important; }
+#facName { background-image: var(--icon-user) !important; }
+#facAddress { background-image: var(--icon-pin) !important; }
+#facDomain { background-image: var(--icon-book) !important; }
+#facMobile { background-image: var(--icon-phone) !important; }
+#facMail { background-image: var(--icon-mail) !important; }
+#facDob,
+#facEnrollDate,
+#loginDob,
+#loginFacDob { background-image: var(--icon-calendar) !important; }
+#facQuals { background-image: var(--icon-award) !important; }
+#facAchieve { background-image: var(--icon-trophy) !important; }
+#facAwards { background-image: var(--icon-award) !important; }
+
+/* --------------------------------------------------------------------------
+   5. Secondary row: muted small text, accent-coloured link on the right
+   -------------------------------------------------------------------------- */
+.neu-card__meta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin: 0.35rem 0 1.35rem;
+    font-size: 0.78rem;
+    color: var(--neu-muted);
+}
+
+.neu-card__meta a {
+    color: var(--neu-accent) !important;
+    font-weight: 600;
+    text-decoration: none;
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+}
+
+.neu-card__meta a:hover,
+.neu-card__meta a:focus-visible {
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   6. Primary action: raised neumorphic by default, maroon on press
+   -------------------------------------------------------------------------- */
+.neu-card .btn,
+.neu-card button[type="submit"],
+.neu-card #generateFacultyBtn,
+.neu-card #facultyLoginBtn,
+.neu-card #studentLoginBtn {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-height: 3.1rem;
+    margin: 0;
+    padding: 0.95rem 1.25rem;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--neu-text) !important;
+    background-color: var(--neu-surface) !important;
+    background-image: linear-gradient(145deg, #f0f0f2, #d6d6da) !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    box-shadow: var(--neu-raised-sm) !important;
+    cursor: pointer;
+    isolation: auto;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: background-color 0.22s ease,
+                background-image 0.22s ease,
+                color 0.22s ease,
+                box-shadow 0.22s ease,
+                transform 0.12s ease !important;
+}
+
+/* No decorative glyph or shimmer on the soft-UI buttons. */
+.neu-card .btn::before,
+.neu-card .btn::after,
+.neu-card button::before,
+.neu-card button::after {
+    content: none !important;
+    background: none !important;
+}
+
+.neu-card .btn:hover,
+.neu-card button[type="submit"]:hover,
+.neu-card #generateFacultyBtn:hover,
+.neu-card #facultyLoginBtn:hover,
+.neu-card #studentLoginBtn:hover {
+    color: #FFFFFF !important;
+    background-color: var(--neu-accent-deep) !important;
+    background-image: linear-gradient(135deg, #7a1414, #a51818) !important;
+    box-shadow: 0 10px 22px rgba(122, 20, 20, 0.35),
+                inset 0 2px 6px rgba(0, 0, 0, 0.28) !important;
+    filter: none !important;
+    transform: translateY(0) !important;
+}
+
+.neu-card .btn:active,
+.neu-card button[type="submit"]:active,
+.neu-card #generateFacultyBtn:active,
+.neu-card #facultyLoginBtn:active,
+.neu-card #studentLoginBtn:active {
+    color: #FFFFFF !important;
+    background-image: linear-gradient(135deg, #6b1111, #8f1414) !important;
+    box-shadow: inset 3px 3px 8px rgba(0, 0, 0, 0.4) !important;
+    transform: translateY(1px);
+}
+
+.neu-card .btn:focus-visible,
+.neu-card button[type="submit"]:focus-visible {
+    outline: 2px solid var(--neu-accent);
+    outline-offset: 3px;
+}
+
+/* Secondary navigation buttons (Home / AI Career) stay quiet and carved. */
+.neu-card .btn-secondary,
+.neu-card .home-btn-link .btn {
+    min-height: 2.6rem;
+    padding: 0.6rem 1.1rem;
+    font-size: 0.78rem !important;
+    letter-spacing: 0.04em;
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e0e0e0 !important;
+    background-image: none !important;
+    color: var(--neu-muted) !important;
+    box-shadow: var(--neu-carved) !important;
+}
+
+.neu-card .btn-secondary:hover,
+.neu-card .home-btn-link .btn:hover {
+    color: var(--neu-text) !important;
+    background-color: #e6e6e6 !important;
+    background-image: none !important;
+    box-shadow: inset 3px 3px 7px rgba(184, 190, 204, 0.4),
+                inset -3px -3px 7px rgba(255, 255, 255, 0.7) !important;
+}
+
+.neu-card .home-btn-link {
+    color: var(--neu-muted) !important;
+    text-decoration: none;
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+.neu-card .home-btn-link:hover {
+    color: var(--neu-accent) !important;
+    text-decoration: none;
+}
+
+.neu-card .neu-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 1.4rem 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. Footer link line: action word bold in the accent colour (flip trigger)
+   -------------------------------------------------------------------------- */
+.neu-card .neu-card__switch {
+    margin: 1.4rem 0 0;
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--neu-muted);
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+.neu-card__switch a {
+    color: var(--neu-muted) !important;
+    text-decoration: none;
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    font-weight: 400;
+}
+
+.neu-card__switch a strong {
+    color: var(--neu-accent);
+    font-weight: 800;
+}
+
+.neu-card__switch a:hover strong,
+.neu-card__switch a:focus-visible strong {
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   8. Flip container (Faculty portal login <-> signup)
+   -------------------------------------------------------------------------- */
+.neu-flip {
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    perspective: 1600px;
+    -webkit-perspective: 1600px;
+}
+
+.neu-flip__stage {
+    position: relative;
+    width: 100%;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    transition: transform 0.6s ease, height 0.45s ease;
+    transform: rotateY(0deg);
+}
+
+.neu-flip.is-flipped .neu-flip__stage {
+    transform: rotateY(180deg);
+}
+
+.neu-flip__face {
+    width: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Front face keeps its normal flow position, so the stage sizes to the face
+   that is currently showing. The back face is taken out of flow. */
+.neu-flip__face--back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: rotateY(180deg);
+}
+
+/* Flipped: the roles swap so the signup face now drives the stage height. */
+.neu-flip.is-flipped .neu-flip__face--front {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.neu-flip.is-flipped .neu-flip__face--back {
+    position: static;
+}
+
+/* Reduced motion: suppress the ANIMATION, not the end state.
+   Zeroing the transforms here would have been wrong - with both faces back in
+   normal flow the login form and the whole enrollment form would render
+   stacked together, and .is-flipped would have had no effect at all. Instead
+   the rotation is kept and only the transition is removed, so the card snaps
+   to the correct face with no animation. */
+@media (prefers-reduced-motion: reduce) {
+
+    .neu-flip,
+    .neu-flip__stage,
+    .neu-flip__face,
+    .neu-card,
+    .neu-card__sub,
+    .neu-card__switch,
+    .neu-card__meta,
+    .neu-card__actions,
+    .neu-card .btn,
+    .neu-card .btn:hover,
+    .neu-card .btn:active {
+        transition: none !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Responsive: the register face is long, so tighten it on small screens
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+    .neu-card {
+        border-radius: 26px;
+    }
+
+    .neu-card input {
+        padding: 0.75rem 0.85rem 0.75rem 2.6rem !important;
+        margin-bottom: 0.95rem !important;
+    }
+
+    .neu-card .btn,
+    .neu-card button[type="submit"] {
+        font-size: 0.85rem !important;
+    }
+}
+
+/* Short viewports: the enrollment face would otherwise push the footer far
+   down. Tighten the vertical rhythm rather than hide any field. */
+@media (max-height: 700px) {
+    .neu-card {
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+
+    .neu-card input {
+        margin-bottom: 0.85rem !important;
+        padding-top: 0.7rem !important;
+        padding-bottom: 0.7rem !important;
+    }
+
+    .neu-card__sub {
+        margin-bottom: 1.1rem;
+    }
+}

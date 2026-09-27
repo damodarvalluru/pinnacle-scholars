@@ -13,10 +13,12 @@
     <link rel="stylesheet" href="css/session-manager.css">
     <link rel="stylesheet" href="css/portal-premium.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/neumorphic-auth.css">
     <script src="js/scripts.js"></script>
     <script src="js/forgot-id.js" defer></script>
     <script src="js/faculty-portal.js"></script>
     <script src="js/session-manager.js"></script>
+    <script src="js/neumorphic-flip.js"></script>
     <script src="js/faculty-neon-background.js"></script>
     <script>
         // Disable global animations for faculty portal - use faculty neon background instead
@@ -43,52 +45,76 @@
     </button>
 
     <!-- Portal Master Interface Content Wrapper -->
-    <div class="portal-container" id="authContainer">
-        
-        <!-- Registration Form Layout Panel Block -->
-        <div class="portal-card" id="registerArea" style="display:none;">
-            <h2 style="color: var(--text-main); text-align: center; margin-top:0; margin-bottom: 24px; font-weight: 800; letter-spacing: -0.5px;">Faculty Enrollment</h2>
-            
-            <input type="text" id="facName" placeholder="Full Name">
-            <input type="text" id="facAddress" placeholder="Address">
-            <input type="text" id="facDomain" placeholder="Core Domain Specialization (e.g., Mathematics)">
-            <input type="text" id="facMobile" placeholder="Mobile Number">
-            <input type="email" id="facMail" placeholder="Email Address">
-            
-            <label for="facDob">Date of Birth</label>
-            <input type="date" id="facDob">
-            
-            <input type="text" id="facQuals" placeholder="Academic Qualifications (e.g., PhD, M.Tech)">
-            <input type="text" id="facAchieve" placeholder="Key Technical Achievements">
-            <input type="text" id="facAwards" placeholder="Honors / Awards Received">
-            
-            <label for="facEnrollDate">System Enrollment Joining Date</label>
-            <input type="date" id="facEnrollDate" value="2026-01-01">
+    <div class="portal-container neu-auth" id="authContainer">
 
-            <button  id="generateFacultyBtn" class="btn btn-accent" onclick="processFacultyEnrollment()">Generate Unique Faculty ID</button>
-            
-            <!-- Structural Link Routing Fixed: Now targets a separate physical file architecture as requested -->
-            <p style="text-align:center; margin-top: 20px; margin-bottom:0;"><a href="#" onclick="toggleAuthViews(false)">Already Enrolled? Login here</a></p>
-            
-            <!-- Fixed Home Button Link wrapping syntax error logic -->
-            <a href="index.html" class="home-btn-link">
-                <button type="button" class="btn btn-secondary">← Return Home</button>
-            </a>
+        <!-- Neumorphic soft-UI flip card. Both existing panels are kept intact
+             and simply become the front (login) and back (signup) faces of one
+             rotating card. Field ids, labels, handlers and order are unchanged. -->
+        <div class="neu-flip" id="authFlip">
+            <div class="neu-flip__stage" id="authFlipStage">
+
+                <!-- Verification Secure Sign-in Layout Panel Block (front face) -->
+                <div class="neu-flip__face neu-flip__face--front">
+                <form class="portal-card neu-card" id="loginArea" onsubmit="checkFacultyLogin(); return false;">
+                    <h2>Faculty Secure Login</h2>
+                    <p class="neu-card__sub">Sign in with your Faculty ID and Date of Birth to open your workspace.</p>
+
+                    <input type="text" id="loginFacId" placeholder="Faculty ID (PS-FAC-2026-XXXX)" autocomplete="off">
+                    <label for="loginFacDob">Date of Birth</label>
+                    <input type="date" id="loginFacDob">
+
+                    <div class="neu-card__meta">
+                        <a href="#" onclick="forgotFacultyId(); return false;">Forgot ID?</a>
+                    </div>
+
+                    <button id="facultyLoginBtn" class="btn" type="submit">Login to Dashboard</button>
+
+                    <p class="neu-card__switch"><a href="#" onclick="toggleAuthViews(true)">New Faculty? <strong>Register/Enroll here</strong></a></p>
+
+                    <p class="neu-card__actions" align="center"><a href="index.html" class="home-btn-link">
+                        <span>🏠</span> Home
+                    </a></p>
+                </form>
+                </div>
+
+                <!-- Registration Form Layout Panel Block (back face) -->
+                <div class="neu-flip__face neu-flip__face--back">
+                <div class="portal-card neu-card" id="registerArea">
+                    <h2>Faculty Enrollment</h2>
+                    <p class="neu-card__sub">Create your faculty profile to receive a unique Faculty ID.</p>
+
+                    <input type="text" id="facName" placeholder="Full Name" autocomplete="off">
+                    <input type="text" id="facAddress" placeholder="Address" autocomplete="off">
+                    <input type="text" id="facDomain" placeholder="Core Domain Specialization (e.g., Mathematics)" autocomplete="off">
+                    <input type="text" id="facMobile" placeholder="Mobile Number" autocomplete="off">
+                    <input type="email" id="facMail" placeholder="Email Address" autocomplete="off">
+
+                    <label for="facDob">Date of Birth</label>
+                    <input type="date" id="facDob">
+
+                    <input type="text" id="facQuals" placeholder="Academic Qualifications (e.g., PhD, M.Tech)" autocomplete="off">
+                    <input type="text" id="facAchieve" placeholder="Key Technical Achievements" autocomplete="off">
+                    <input type="text" id="facAwards" placeholder="Honors / Awards Received" autocomplete="off">
+
+                    <label for="facEnrollDate">System Enrollment Joining Date</label>
+                    <input type="date" id="facEnrollDate" value="2026-01-01">
+
+                    <button  id="generateFacultyBtn" class="btn btn-accent" onclick="processFacultyEnrollment()">Generate Unique Faculty ID</button>
+
+                    <!-- Structural Link Routing Fixed: Now targets a separate physical file architecture as requested -->
+                    <p class="neu-card__switch"><a href="#" onclick="toggleAuthViews(false)">Already Enrolled? <strong>Login here</strong></a></p>
+
+                    <!-- Fixed Home Button Link wrapping syntax error logic -->
+                    <p class="neu-card__actions" align="center">
+                        <a href="index.html" class="home-btn-link">
+                            <button type="button" class="btn btn-secondary">← Return Home</button>
+                        </a>
+                    </p>
+                </div>
+                </div>
+
+            </div>
         </div>
-
-        <!-- Verification Secure Sign-in Layout Panel Block -->
-        <form class="portal-card" id="loginArea" onsubmit="checkFacultyLogin(); return false;">
-            <h2 style="color: var(--text-main); text-align: center; margin-top:0; margin-bottom: 24px; font-weight: 800;">Faculty Secure Login</h2>
-            <input type="text" id="loginFacId" placeholder="Faculty ID (PS-FAC-2026-XXXX)">
-            <label for="loginFacDob">Date of Birth</label>
-            <input type="date" id="loginFacDob">
-            <button id="facultyLoginBtn" class="btn" type="submit">Login to Dashboard</button>
-            <p style="text-align:center; margin-top: 12px; margin-bottom:0;"><a href="#" onclick="forgotFacultyId(); return false;">Forgot ID?</a></p>
-            <p style="text-align:center; margin-top: 20px; margin-bottom:0;"><a href="#" onclick="toggleAuthViews(true)">New Faculty? Register/Enroll here</a></p>
-            <p align="center"><a href="index.html" class="home-btn-link">
-                <span>🏠</span> Home
-            </a></p>
-        </form>
     </div>
 
     <!-- Active Live Dashboard Screen Container Context -->
