@@ -42,7 +42,11 @@ html.is-embedded {
    -------------------------------------------------------------------------- */
 html.is-embedded #bg-canvas,
 html.is-embedded body.enrollment-page footer,
-html.is-embedded .nav-footer {
+html.is-embedded .nav-footer,
+/* The session clock is position:fixed with a very high z-index, so inside a
+   430px frame it sat on top of the enrollment fields counting down from
+   25:00. The parent portal is the only place a session clock belongs. */
+html.is-embedded .pinnacle-session-clock {
     display: none !important;
 }
 
@@ -52,7 +56,10 @@ html.is-embedded body.enrollment-page {
     padding: 0 !important;
     margin: 0 !important;
     color: var(--neu-text) !important;
-    overflow: hidden !important;
+    /* Not `hidden`: the registration form and, more importantly, the taller
+       success box must never be clipped out of reach. The iframe scrolls. */
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
 }
 
 /* Let the parent's neumorphic card be the only visual frame. */
@@ -70,6 +77,10 @@ html.is-embedded .enroll-container {
     width: 100% !important;
 }
 
+/* neumorphic-pages.css is also linked here (for the standalone page) and is
+   loaded BEFORE this file, so the embedded view has to neutralise it:
+   the card's own frame and bevel ring are suppressed, because the PARENT
+   portal card is now the single visual frame around this form. */
 html.is-embedded .enroll-card {
     background: transparent !important;
     border: 0 !important;
@@ -78,13 +89,24 @@ html.is-embedded .enroll-card {
     border-radius: 0 !important;
     animation: none !important;
     transform: none !important;
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 auto !important;
 }
 
+/* The embossed bevel ring from neumorphic-pages.css would otherwise draw a
+   second frame inside the parent's card. */
+html.is-embedded .enroll-card::before,
+html.is-embedded .enroll-card::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* The parent card already renders the "New Student Enrollment" heading and a
+   subtitle above the frame, so the embedded copy is dropped rather than
+   showing the same title twice. */
 html.is-embedded .enroll-card h2 {
-    color: var(--neu-text) !important;
-    margin: 0 0 0.35rem !important;
-    font-size: 1.3rem !important;
-    letter-spacing: -0.4px !important;
+    display: none !important;
 }
 
 html.is-embedded .form-group {
@@ -100,18 +122,23 @@ html.is-embedded .form-group label {
     display: block !important;
 }
 
-/* Carved neumorphic fields, matching the login face exactly. */
+/* Carved neumorphic fields, matching the login face exactly. The icon is a
+   background layer ON THE FIELD, positioned `left ... center`, so it stays
+   aligned to the input without any magic offsets. 16px is deliberate: iOS
+   Safari zooms the viewport in on focus for anything smaller. */
 html.is-embedded .form-group input,
 html.is-embedded .form-group select {
     width: 100% !important;
-    box-sizing: border-box;
+    box-sizing: border-box !important;
     border: 0 !important;
     border-radius: 12px !important;
     background-color: var(--neu-surface) !important;
-    background-image: none !important;
     color: var(--neu-text) !important;
-    font-size: 0.95rem !important;
+    font-size: 16px !important;
+    line-height: 1.4 !important;
     padding: 0.85rem 0.9rem 0.85rem 2.85rem !important;
+    background-repeat: no-repeat !important;
+    background-size: 1.15rem 1.15rem !important;
     box-shadow: var(--neu-carved) !important;
     transition: box-shadow 0.22s ease !important;
 }
@@ -122,57 +149,40 @@ html.is-embedded .form-group select:focus {
     box-shadow: var(--neu-carved), 0 0 0 2px rgba(165, 24, 24, 0.35) !important;
 }
 
-/* The select keeps its own dropdown arrow; re-add it by hand because the
-   original arrow was drawn with a background-image that we just cleared. */
-html.is-embedded .form-group select {
+html.is-embedded #studentName {
+    background-image: var(--icon-user) !important;
+    background-position: left 0.95rem center !important;
+}
+
+html.is-embedded #dob {
+    background-image: var(--icon-calendar) !important;
+    background-position: left 0.95rem center !important;
+}
+
+/* Native date picker must keep its own calendar affordance, so this field is
+   excluded from the appearance reset and keeps room for the indicator. */
+html.is-embedded #dob {
+    -webkit-appearance: auto !important;
+    appearance: auto !important;
+    padding-right: 2.1rem !important;
+}
+
+/* The select layers its own dropdown arrow on top of the leading icon, because
+   the appearance reset removes the browser's native one. */
+html.is-embedded #domain {
+    -webkit-appearance: none !important;
+    appearance: none !important;
     background-image:
+        var(--icon-book),
         linear-gradient(45deg, transparent 50%, var(--neu-icon) 50%),
         linear-gradient(135deg, var(--neu-icon) 50%, transparent 50%) !important;
     background-position:
+        left 0.95rem center,
         calc(100% - 18px) 55%,
         calc(100% - 13px) 55% !important;
-    background-size: 5px 5px, 5px 5px !important;
+    background-size: 1.15rem 1.15rem, 5px 5px, 5px 5px !important;
     background-repeat: no-repeat !important;
     padding-right: 2.2rem !important;
-    appearance: none;
-    -webkit-appearance: none;
-}
-
-/* Icons live on the wrapper so the native date picker stays clickable. */
-html.is-embedded .form-group:has(input#studentName)::before,
-html.is-embedded .form-group:has(input#dob)::before,
-html.is-embedded .form-group:has(select#domain)::before {
-    content: "";
-    position: absolute;
-    left: 0.95rem;
-    top: 2.05rem;
-    width: 1.15rem;
-    height: 1.15rem;
-    pointer-events: none;
-    z-index: 1;
-}
-
-html.is-embedded .form-group {
-    position: relative;
-}
-
-html.is-embedded .form-group:has(input#studentName)::before {
-    background-image: var(--icon-user);
-}
-
-html.is-embedded .form-group:has(input#dob)::before {
-    background-image: var(--icon-calendar);
-}
-
-html.is-embedded .form-group:has(select#domain)::before {
-    background-image: var(--icon-book);
-}
-
-/* Native date input must keep its own calendar affordance. */
-html.is-embedded .form-group input#dob {
-    -webkit-appearance: auto;
-    appearance: auto;
-    padding-right: 2rem !important;
 }
 
 /* Raised accent button, same as the login face's submit. */

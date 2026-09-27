@@ -91,14 +91,31 @@
 
 /* ---- Panel ---------------------------------------------------------------- */
 
+/* The panel is position:fixed, NOT absolute, and this is deliberate.
+
+   The nav row is a horizontal scroll container (`header .nav-links` in
+   home.css carries `overflow-x: auto` so the links never wrap on narrow
+   screens). Because one axis of an overflow container is not `visible`, the
+   other computes to `auto` too, so that element clips BOTH axes - and an
+   absolutely-positioned dropdown panel inside it was being clipped away and
+   rendered invisible on hover, even though .is-open was applied correctly.
+
+   A fixed-position panel is only clipped by ancestors in its own containing
+   block chain, and this menu's containing block is the header, not
+   .nav-links, so it escapes the scroll container entirely. This is the same
+   mechanism the mobile full-width sheet below already relies on.
+
+   Horizontal placement is measured from the trigger by js/nav-dropdown.js and
+   written to `left`, because `left: 50%` would now resolve against the
+   header's width and park every menu in the same place. */
 .nav-dropdown-menu {
-    position: absolute;
-    top: calc(100% + 0.55rem);
-    left: 50%;
+    position: fixed;
+    top: var(--pinnacle-dropdown-top, 5.5rem);
+    left: 0;
     width: max-content;
     min-width: 14.5rem;
     max-width: min(21rem, calc(100vw - 1.5rem));
-    transform: translate(-50%, -0.4rem);
+    transform: translateY(-0.4rem);
     padding: 0.5rem;
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
@@ -115,29 +132,19 @@
     overflow-wrap: anywhere;
 }
 
-/* Edge-aligned variant for triggers that sit near the viewport edge. */
-.nav-dropdown--end > .nav-dropdown-menu {
-    left: auto;
-    right: 0;
-    transform: translate(0, -0.4rem);
-}
-
+/* Horizontal alignment is now computed in JS from the trigger's rect, so the
+   edge-aligned variants only need to drop their absolute offsets. */
+.nav-dropdown--end > .nav-dropdown-menu,
 .nav-dropdown--start > .nav-dropdown-menu {
     left: 0;
-    right: auto;
-    transform: translate(0, -0.4rem);
+    transform: translateY(-0.4rem);
 }
 
 .nav-dropdown.is-open > .nav-dropdown-menu {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    transform: translate(-50%, 0);
-}
-
-.nav-dropdown--end.is-open > .nav-dropdown-menu,
-.nav-dropdown--start.is-open > .nav-dropdown-menu {
-    transform: translate(0, 0);
+    transform: translateY(0);
 }
 
 /* ---- Menu items ----------------------------------------------------------- */

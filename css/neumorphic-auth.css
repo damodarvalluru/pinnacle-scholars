@@ -79,6 +79,16 @@ body.faculty-portal:has(> .neu-auth:not([style*="display: none"])) .faculty-port
 }
 
 /* Footer text is white for the old dark backdrop; keep it readable on gray. */
+/* The session clock is position:fixed with z-index 9999, so it was landing on
+   top of the centred auth card and, inside the embedded enrollment frame, on
+   top of the registration fields. It counts down from 25:00 and reads
+   "Sign in to begin" until you actually sign in, so it is hidden for the whole
+   auth screen and comes back with the dashboard, where it belongs. */
+body.student-portal:has(> .neu-auth:not([style*="display: none"])) .pinnacle-session-clock,
+body.faculty-portal:has(> .neu-auth:not([style*="display: none"])) .pinnacle-session-clock {
+    display: none !important;
+}
+
 body.student-portal:has(> .neu-auth:not([style*="display: none"])) footer p,
 body.faculty-portal:has(> .neu-auth:not([style*="display: none"])) footer p {
     color: var(--neu-muted) !important;

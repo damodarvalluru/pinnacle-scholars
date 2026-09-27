@@ -51,6 +51,54 @@
         ].join('-');
     }
 
+    /* -------------------------------------------------------- positioning */
+
+    /**
+     * The panel is position:fixed so it can escape the nav row's horizontal
+     * scroll container (see the note on .nav-dropdown-menu in
+     * css/examinations.css). That means the browser can no longer centre it on
+     * the trigger for us, so the offset is measured here and written to `left`.
+     *
+     * The mobile panel is a full-width sheet that positions itself from
+     * --pinnacle-dropdown-top, so any inline offset is cleared there instead -
+     * an inline `left` would otherwise beat the stylesheet's `left: 0.5rem`.
+     */
+    function positionMenu(drop) {
+        const trigger = triggerOf(drop);
+        const menu = menuOf(drop);
+        if (!trigger || !menu) return;
+
+        if (isMobile()) {
+            menu.style.left = '';
+            menu.style.top = '';
+            return;
+        }
+
+        const rect = trigger.getBoundingClientRect();
+        const GAP = 8; // matches the +8 in syncHeaderMetrics()
+        const MARGIN = 8; // keep the panel off the viewport edges
+
+        menu.style.top = Math.round(rect.bottom + GAP) + 'px';
+
+        // visibility:hidden still generates boxes, so offsetWidth is a valid
+        // measurement even before the panel is revealed.
+        const width = menu.offsetWidth;
+
+        let left;
+        if (drop.classList.contains('nav-dropdown--end')) {
+            left = rect.right - width;
+        } else if (drop.classList.contains('nav-dropdown--start')) {
+            left = rect.left;
+        } else {
+            left = rect.left + rect.width / 2 - width / 2;
+        }
+
+        const maxLeft = Math.max(MARGIN, window.innerWidth - width - MARGIN);
+        left = Math.min(Math.max(left, MARGIN), maxLeft);
+
+        menu.style.left = Math.round(left) + 'px';
+    }
+
     /* --------------------------------------------------------- open / close */
 
     function open(drop) {
@@ -62,6 +110,7 @@
         if (drop.classList.contains(OPEN_CLASS)) return;
 
         closeAll(drop);
+        positionMenu(drop);
         drop.classList.add(OPEN_CLASS);
         const trigger = triggerOf(drop);
         if (trigger) trigger.setAttribute('aria-expanded', 'true');
