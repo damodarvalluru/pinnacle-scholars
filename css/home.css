@@ -437,12 +437,24 @@ header {
 /* Brand anchored left, navigation reading left to right on the right. */
 header .nav-links {
     flex-wrap: nowrap;
-    justify-content: flex-end;
+    justify-content: flex-start;
     gap: clamp(0.3rem, 1.2vw, 0.85rem);
     min-width: 0;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scrollbar-width: none;
+}
+
+/* Right-aligns the nav on wide screens without relying on
+   `justify-content: flex-end`. Auto margins resolve to 0 once free space goes
+   negative, so on a narrow screen the links overflow towards the END (the
+   reachable side of a scroll container) instead of the start.
+
+   With `flex-end` the overflow spilled out of the LEFT edge, where it was
+   clipped and could not be scrolled back to. That hid every link ahead of
+   "Examinations" and sheared the leading "S" off "Syllabus". */
+header .nav-links > :first-child {
+    margin-left: auto;
 }
 
 header .nav-links::-webkit-scrollbar {
