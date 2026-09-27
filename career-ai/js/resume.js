@@ -66,7 +66,18 @@ function updateResumePreview() {
     prevContact.textContent = `${val("rb-email") || "alex.morgan@email.com"} • ${val("rb-phone") || "+1 (555) 019-2834"} • GitHub / LinkedIn`;
 
     const skills = val("rb-skills") || "Python, JavaScript, React, SQL, Git, AWS";
-    prevSkills.innerHTML = skills.split(",").map(s => `<span class="badge badge-cyan" style="margin:0.2rem;">${s.trim()}</span>`).join('');
+    // Built as real nodes with textContent rather than innerHTML: this box is
+    // free text, so anything typed into it must never be parsed as markup.
+    prevSkills.textContent = "";
+    skills.split(",").forEach(s => {
+        const text = s.trim();
+        if (!text) return;
+        const badge = document.createElement("span");
+        badge.className = "badge badge-cyan";
+        badge.style.margin = "0.2rem";
+        badge.textContent = text;
+        prevSkills.appendChild(badge);
+    });
 
     prevEdu.textContent = val("rb-education") || "B.Tech in Computer Science & Engineering — GPA 3.8 / 4.0";
     prevProj.textContent = val("rb-projects") || "CareerAI Platform — Built responsive career guidance tool using JS and Chart.js";

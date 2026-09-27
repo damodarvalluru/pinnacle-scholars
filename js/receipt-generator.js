@@ -1,4 +1,17 @@
 /* Generates a local PDF after the backend has cryptographically verified payment. */
+
+/* Receipt values originate from the backend student record and the payment
+   gateway response, so they are escaped before being interpolated into markup.
+   Without this, a stored value containing markup would be parsed as HTML. */
+function escapeReceiptHtml(value) {
+  return String(value === null || value === undefined ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 window.downloadPaymentReceipt = function (details) {
   if (!window.jspdf || !window.jspdf.jsPDF) { console.warn('Receipt library unavailable.'); return; }
   const { jsPDF } = window.jspdf;
@@ -46,12 +59,24 @@ window.showPaymentReceiptDownload = function (details) {
   const remainingFees = Number(details.remainingFees || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const previousPaid = Number(details.previousPaid || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+  /* Escape every untrusted field up front so the template below only ever
+     interpolates inert text. The currency figures are already coerced through
+     Number(), so they need no escaping. */
+  const reference = escapeReceiptHtml(details.reference || `PSA-${details.paymentId || Date.now()}`);
+  const studentName = escapeReceiptHtml(details.name || 'Student');
+  const studentId = escapeReceiptHtml(details.studentId || 'N/A');
+  const domain = escapeReceiptHtml(details.domain || 'N/A');
+  const paymentId = escapeReceiptHtml(details.paymentId || 'N/A');
+  const orderId = escapeReceiptHtml(details.orderId || 'N/A');
+  const paymentType = escapeReceiptHtml(details.paymentType || 'Fee Payment');
+  const dateTime = escapeReceiptHtml(details.dateTime || new Date().toLocaleString('en-IN'));
+
   area.innerHTML = `
     <div class="receipt-preview-card">
       <div class="receipt-header">
         <div class="receipt-institute-name">Pinnacle Scholars Academy</div>
         <div class="receipt-title">Official Fee Payment Receipt</div>
-        <div class="receipt-reference">Ref: ${details.reference || `PSA-${details.paymentId || Date.now()}`}</div>
+        <div class="receipt-reference">Ref: ${reference}</div>
       </div>
 
       <div class="receipt-status">PAID / SUCCESS</div>
@@ -59,27 +84,27 @@ window.showPaymentReceiptDownload = function (details) {
       <div class="receipt-details">
         <div class="receipt-detail-row">
           <span class="receipt-detail-label">Student Name</span>
-          <span class="receipt-detail-value">${details.name || 'Student'}</span>
+          <span class="receipt-detail-value">${studentName}</span>
         </div>
         <div class="receipt-detail-row">
           <span class="receipt-detail-label">Student ID</span>
-          <span class="receipt-detail-value">${details.studentId || 'N/A'}</span>
+          <span class="receipt-detail-value">${studentId}</span>
         </div>
         <div class="receipt-detail-row">
           <span class="receipt-detail-label">Academic Domain</span>
-          <span class="receipt-detail-value">${details.domain || 'N/A'}</span>
+          <span class="receipt-detail-value">${domain}</span>
         </div>
         <div class="receipt-detail-row">
           <span class="receipt-detail-label">Transaction ID</span>
-          <span class="receipt-detail-value highlight">${details.paymentId || 'N/A'}</span>
+          <span class="receipt-detail-value highlight">${paymentId}</span>
         </div>
         <div class="receipt-detail-row">
           <span class="receipt-detail-label">Order ID</span>
-          <span class="receipt-detail-value">${details.orderId || 'N/A'}</span>
+          <span class="receipt-detail-value">${orderId}</span>
         </div>
         <div class="receipt-detail-row">
           <span class="receipt-detail-label">Payment Type</span>
-          <span class="receipt-detail-value">${details.paymentType || 'Fee Payment'}</span>
+          <span class="receipt-detail-value">${paymentType}</span>
         </div>
         <div class="receipt-detail-row">
           <span class="receipt-detail-label">Previous Amount Paid</span>
@@ -99,7 +124,7 @@ window.showPaymentReceiptDownload = function (details) {
         </div>
         <div class="receipt-detail-row">
           <span class="receipt-detail-label">Date & Time</span>
-          <span class="receipt-detail-value">${details.dateTime || new Date().toLocaleString('en-IN')}</span>
+          <span class="receipt-detail-value">${dateTime}</span>
         </div>
       </div>
 

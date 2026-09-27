@@ -1,3 +1,16 @@
+/* Escapes text before it is interpolated into an innerHTML template, so stored
+   or remotely supplied values (student details from localStorage, test-bank
+   content) are rendered as text and never parsed as markup. Covers quotes so
+   the same helper is safe inside attribute values. */
+function escapeHtmlText(value) {
+    return String(value === null || value === undefined ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 function toggleTheme() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -1258,30 +1271,37 @@ async function showTestInterface(testObject) {
     const studentDomain = activeStudent.domain || "N/A";
     const studentDob = activeStudent.dob || localStorage.getItem("active_student_dob") || "N/A";
 
+    // Escaped copies for markup only. The raw values above are reused further
+    // down for API payloads and request URLs, where entities would corrupt them.
+    const studentNameHtml = escapeHtmlText(studentName);
+    const studentIdHtml = escapeHtmlText(studentId);
+    const studentDomainHtml = escapeHtmlText(studentDomain);
+    const studentDobHtml = escapeHtmlText(studentDob);
+
     const studentDetailsMarkup = `
         <section class="test-student-details" aria-label="Logged-in student details">
-            <span><strong>Student name</strong>${studentName}</span>
-            <span><strong>Student ID</strong>${studentId}</span>
-            <span><strong>Domain</strong>${studentDomain}</span>
-            <span><strong>Date of birth</strong>${studentDob}</span>
+            <span><strong>Student name</strong>${studentNameHtml}</span>
+            <span><strong>Student ID</strong>${studentIdHtml}</span>
+            <span><strong>Domain</strong>${studentDomainHtml}</span>
+            <span><strong>Date of birth</strong>${studentDobHtml}</span>
         </section>`;
 
     // Render questions: display:none by default except question index 0
     const questionsMarkup = parsedQuestions.map((q, index) => `
         <article class="question-card ${index === 0 ? 'active-card' : ''}" id="question-card-${index}" data-question="${index}" style="${index === 0 ? 'display:block;' : 'display:none;'}">
             <div class="question-top">
-                <span class="subject-badge">${q.subject || "GENERAL"}</span>
+                <span class="subject-badge">${escapeHtmlText(q.subject || "GENERAL")}</span>
                 <span class="question-number">Question ${index + 1} of ${parsedQuestions.length}</span>
             </div>
-            <h3 class="question-title">${q.question}</h3>
+            <h3 class="question-title">${escapeHtmlText(q.question)}</h3>
             <div class="options-box">
                 ${q.type === "numerical" ? `
                     <input type="number" name="q${index}" placeholder="Enter your numerical answer" class="numerical-input" aria-label="Answer for question ${index + 1}">
                 ` : q.options.map((opt, optIndex) => `
                     <label class="option-label">
-                        <input type="radio" name="q${index}" value="${opt}">
+                        <input type="radio" name="q${index}" value="${escapeHtmlText(opt)}">
                         <span class="option-key">${String.fromCharCode(65 + optIndex)}</span>
-                        <span>${opt}</span>
+                        <span>${escapeHtmlText(opt)}</span>
                     </label>
                 `).join("")}
             </div>
@@ -1303,7 +1323,7 @@ async function showTestInterface(testObject) {
         <header class="test-header">
             <div class="test-heading">
                 <span class="exam-kicker">Pinnacle Scholars Academy · Secure Assessment</span>
-                <h1>${testObject.title}</h1>
+                <h1>${escapeHtmlText(testObject.title)}</h1>
             </div>
             <div class="test-actions">
                 <div class="test-timer" aria-label="Time remaining">⌛ <span id="testTimer">03:00:00</span></div>

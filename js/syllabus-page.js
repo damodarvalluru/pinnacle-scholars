@@ -70,31 +70,85 @@
 
     /* ----------------------------------------------------------------- search */
 
+    function escapeHtml(value) {
+        return String(value === null || value === undefined ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     function normalise(text) {
         return (text || '').toLowerCase();
     }
 
     /**
-     * Rebuilds the topic lists from the original markup with the query wrapped
-     * in <mark>. innerHTML is used with a single interpolated match that is
-     * escaped first, so no page text can inject markup.
+     * Highlighting is applied to text nodes directly, and each list keeps a
+     * pristine clone of its original children. Markup is therefore never round-
+     * tripped through innerHTML, so a unit containing entities or inline tags
+     * can no longer be corrupted by searching, and no page text can inject
+     * markup into the search results.
      */
+    const pristineNodes = new WeakMap();
+
+    function getPristineNodes(node) {
+        if (!pristineNodes.has(node)) {
+            pristineNodes.set(node, Array.from(node.childNodes).map((child) => child.cloneNode(true)));
+        }
+        return pristineNodes.get(node);
+    }
+
+    function restoreNodes(node) {
+        const saved = getPristineNodes(node);
+        node.textContent = '';
+        saved.forEach((child) => {
+            node.appendChild(child.cloneNode(true));
+        });
+    }
+
+    function textNodesIn(root) {
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+        const found = [];
+        let current = walker.nextNode();
+        while (current) {
+            found.push(current);
+            current = walker.nextNode();
+        }
+        return found;
+    }
+
     function highlight(list, query) {
         if (!list) return;
 
-        if (!query) {
-            list.innerHTML = list.getAttribute('data-original') || '';
-            return;
-        }
+        /* Always rebuild from the pristine markup first, so consecutive searches
+           can never wrap an existing <mark> inside another <mark>. */
+        restoreNodes(list);
 
-        const original = list.getAttribute('data-original');
-        if (original === null) {
-            list.setAttribute('data-original', list.innerHTML);
-        }
+        const needle = query ? query.toLowerCase() : '';
+        if (!needle) return;
 
-        const pattern = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
-        list.innerHTML = (list.getAttribute('data-original') || '')
-            .replace(pattern, '<mark class="syl-hit">$1</mark>');
+        textNodesIn(list).forEach((textNode) => {
+            const text = textNode.nodeValue;
+            if (!text) return;
+            const haystack = text.toLowerCase();
+            if (haystack.indexOf(needle) === -1) return;
+
+            const fragment = document.createDocumentFragment();
+            let cursor = 0;
+            let at = haystack.indexOf(needle);
+            while (at !== -1) {
+                if (at > cursor) fragment.appendChild(document.createTextNode(text.slice(cursor, at)));
+                const mark = document.createElement('mark');
+                mark.className = 'syl-hit';
+                mark.textContent = text.slice(at, at + needle.length);
+                fragment.appendChild(mark);
+                cursor = at + needle.length;
+                at = haystack.indexOf(needle, cursor);
+            }
+            if (cursor < text.length) fragment.appendChild(document.createTextNode(text.slice(cursor)));
+            textNode.parentNode.replaceChild(fragment, textNode);
+        });
     }
 
     function runSearch(rawQuery) {
@@ -109,15 +163,11 @@
                 const list = unit.querySelector('.syl-unit__body ul');
                 const nameNode = unit.querySelector('.syl-unit__name');
 
-                if (nameNode && nameNode.getAttribute('data-original') === null) {
-                    nameNode.setAttribute('data-original', nameNode.innerHTML);
-                }
-
                 if (!query) {
                     unit.hidden = false;
                     openUnit(unit, unit.classList.contains('is-open'));
                     if (list) highlight(list, '');
-                    if (nameNode) nameNode.innerHTML = nameNode.getAttribute('data-original');
+                    if (nameNode) highlight(nameNode, '');
                     subjectHits++;
                     return;
                 }
@@ -296,12 +346,12 @@
 
         const styles = Array.prototype.slice
             .call(document.querySelectorAll('link[rel="stylesheet"]'))
-            .map((link) => '<link rel="stylesheet" href="' + link.href + '">')
+            .map((link) => '<link rel="stylesheet" href="' + escapeHtml(link.href) + '">')
             .join('');
 
         win.document.write(
             '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">' +
-            '<title>' + examLabel + ' Syllabus — Pinnacle Scholars Academy</title>' +
+            '<title>' + escapeHtml(examLabel) + ' Syllabus — Pinnacle Scholars Academy</title>' +
             styles +
             '<style>body{background:#fff;margin:0;padding:14px;}' +
             // The same print rules the PDF sheet uses, with the off-screen
