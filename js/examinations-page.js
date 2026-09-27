@@ -21,6 +21,80 @@
         return;
     }
 
+    /* ======================================================================
+       VIEW ISOLATION
+       ----------------------------------------------------------------------
+       Every Examinations dropdown entry opens this page with ?view=<section>.
+       Only that section is built and shown, so a window opened for, say,
+       "Timetables" never carries the guidelines or the marking schemes. With
+       no ?view the page keeps its original all-sections behaviour.
+       ====================================================================== */
+
+    const VIEWS = {
+        timetables: {
+            id: 'timetables',
+            kicker: '🗓️ Timetables',
+            title: 'Monthly Test Timetable',
+            intro: 'Every monthly test date for the academic year, the December Grand Test and every re-conduct Saturday.'
+        },
+        notifications: {
+            id: 'notifications',
+            kicker: '📢 Notifications',
+            title: 'Examination Notifications',
+            intro: 'This month and next month confirmed dates, the Grand Test notice and the published national examination windows.'
+        },
+        guidelines: {
+            id: 'guidelines',
+            kicker: '📋 Guidelines',
+            title: 'Examination Guidelines',
+            intro: 'Rules governing every monthly test, grand test and re-conduct examination, with the full penalty schedule.'
+        },
+        schemas: {
+            id: 'schemas',
+            kicker: '🧮 Schemas',
+            title: 'JEE & GATE Marking Schemes',
+            intro: 'The institute pattern and the officially published pattern, listed separately for each programme.'
+        }
+    };
+
+    const SECTIONS = ['timetables', 'notifications', 'guidelines', 'schemas'];
+
+    function requestedView() {
+        const requested = new URLSearchParams(window.location.search).get('view');
+        return requested && VIEWS[requested] ? requested : null;
+    }
+
+    /**
+     * Collapses the page to a single section: the hero copy is rewritten for
+     * that section, the other three are removed from the DOM entirely and the
+     * in-page subnav is dropped (there is nothing left to jump between).
+     */
+    function applyView(view) {
+        const config = VIEWS[view];
+
+        const kicker = byId('examsHeroKicker');
+        if (kicker) kicker.textContent = config.kicker;
+
+        const title = byId('examsHeroTitle');
+        if (title) title.textContent = config.title;
+
+        const intro = byId('examsHeroPattern');
+        if (intro) intro.textContent = config.intro;
+
+        document.title = config.title + ' | Pinnacle Scholars Academy';
+
+        SECTIONS.forEach((id) => {
+            if (id === config.id) return;
+            const section = document.getElementById(id);
+            if (section) section.remove();
+        });
+
+        const subnav = document.querySelector('.exams-subnav');
+        if (subnav) subnav.remove();
+
+        return config.id;
+    }
+
     /* ---------------------------------------------------------------- utils */
 
     function h(tag, className, text) {
@@ -50,13 +124,26 @@
 
     function renderHero() {
         const totalTests = data.months.reduce((sum, month) => sum + month.events.length, 0);
+        const view = requestedView();
 
-        const stats = [
-            { value: data.months.length, label: 'Months covered' },
-            { value: totalTests, label: 'Monthly tests' },
-            { value: '1', label: 'Grand Test' },
-            { value: data.reConductSaturdays.length, label: 'Re-conduct Saturdays' }
-        ];
+        const stats = view === 'guidelines'
+            ? [
+                { value: data.guidelines.sections.length, label: 'Rule groups' },
+                { value: data.guidelines.penaltyPolicy.rows.length, label: 'Penalty levels' },
+                { value: data.guidelines.validity.length, label: 'Validity periods' }
+            ]
+            : view === 'schemas'
+                ? [
+                    { value: '2', label: 'Programmes' },
+                    { value: '2', label: 'Schemas each' },
+                    { value: '4', label: 'Marking tables' }
+                ]
+                : [
+                    { value: data.months.length, label: 'Months covered' },
+                    { value: totalTests, label: 'Monthly tests' },
+                    { value: '1', label: 'Grand Test' },
+                    { value: data.reConductSaturdays.length, label: 'Re-conduct Saturdays' }
+                ];
 
         const host = byId('examsHeroStats');
         if (!host) return;
@@ -73,7 +160,7 @@
         if (year) year.textContent = 'Academic Year ' + data.academicYear.label;
 
         const pattern = byId('examsHeroPattern');
-        if (pattern) pattern.textContent = data.schedulePattern.summary;
+        if (pattern && !view) pattern.textContent = data.schedulePattern.summary;
     }
 
     /* ======================================================================
@@ -732,12 +819,21 @@
     /* ------------------------------------------------------------------ boot */
 
     function init() {
+        // The view is applied first so the three unrelated sections are gone
+        // before their renderers run, and so the hero copy is written once.
+        const view = requestedView();
+        if (view) applyView(view);
+
         renderHero();
-        renderTimetable();
-        initProgramSwitch();
-        renderNotifications();
-        renderGuidelines();
-        renderSchemas();
+
+        if (!view || view === 'timetables') {
+            renderTimetable();
+            initProgramSwitch();
+        }
+        if (!view || view === 'notifications') renderNotifications();
+        if (!view || view === 'guidelines') renderGuidelines();
+        if (!view || view === 'schemas') renderSchemas();
+
         initSectionNav();
         initPrint();
         initThemeToggle();

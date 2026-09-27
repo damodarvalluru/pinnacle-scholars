@@ -81,7 +81,29 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
 </div>   
 
 <nav class="nav-links" aria-label="Main navigation">
-        <a href="#syllabus">Syllabus</a>
+        <!-- SYLLABUS -->
+        <div class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+                Syllabus <span class="nav-caret" aria-hidden="true"></span>
+            </button>
+            <div class="nav-dropdown-menu" role="menu">
+                <a class="nav-dropdown-item" role="menuitem" href="syllabus-jee.html" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon nav-dd-icon--jee" aria-hidden="true">📘</span>
+                    <span class="nav-dd-text">
+                        <strong>JEE Syllabus 2026</strong>
+                        <small>Physics · Chemistry · Mathematics — view &amp; download</small>
+                    </span>
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="syllabus-gate.html" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon nav-dd-icon--gate" aria-hidden="true">⚙️</span>
+                    <span class="nav-dd-text">
+                        <strong>GATE Syllabus 2026</strong>
+                        <small>General Aptitude · Engg. Maths · Core — view &amp; download</small>
+                    </span>
+                </a>
+            </div>
+        </div>
+
         <a href="#faculty-directory-section">Faculty Directory</a>
 
         <!-- FEES -->
@@ -152,20 +174,20 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
                 Examinations <span class="nav-caret" aria-hidden="true"></span>
             </button>
             <div class="nav-dropdown-menu" role="menu">
-                <button type="button" class="nav-dropdown-item" role="menuitem" onclick="window.open('index.html#take-test','_blank','noopener')">
+                <a class="nav-dropdown-item" role="menuitem" href="index.html?exam=jee#take-test" target="_blank" rel="noopener noreferrer">
                     <span class="nav-dd-icon nav-dd-icon--jee" aria-hidden="true">📘</span>
                     <span class="nav-dd-text">
                         <strong>JEE Test</strong>
                         <small>75 questions · 300 marks · 180 min</small>
                     </span>
-                </button>
-                <button type="button" class="nav-dropdown-item" role="menuitem" onclick="window.open('index.html#take-test','_blank','noopener')">
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="index.html?exam=gate#take-test" target="_blank" rel="noopener noreferrer">
                     <span class="nav-dd-icon nav-dd-icon--gate" aria-hidden="true">⚙️</span>
                     <span class="nav-dd-text">
                         <strong>GATE Test</strong>
                         <small>Aptitude + core · 180 min</small>
                     </span>
-                </button>
+                </a>
                 <a class="nav-dropdown-item" role="menuitem" href="result-portal.html" target="_blank" rel="noopener noreferrer">
                     <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">📊</span>
                     <span class="nav-dd-text">
@@ -176,42 +198,32 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
 
                 <div class="nav-dropdown-sep" role="separator"></div>
 
-                <a class="nav-dropdown-item" role="menuitem" href="examinations.html#timetables" target="_blank" rel="noopener noreferrer" data-enhance="next-test">
+                <a class="nav-dropdown-item" role="menuitem" href="examinations.html?view=timetables" target="_blank" rel="noopener noreferrer" data-enhance="next-test">
                     <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">🗓️</span>
                     <span class="nav-dd-text">
                         <strong>Timetables</strong>
                         <small>Monthly test dates</small>
                     </span>
                 </a>
-                <a class="nav-dropdown-item" role="menuitem" href="examinations.html#notifications" target="_blank" rel="noopener noreferrer" data-enhance="reconduct">
+                <a class="nav-dropdown-item" role="menuitem" href="examinations.html?view=notifications" target="_blank" rel="noopener noreferrer" data-enhance="reconduct">
                     <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">📢</span>
                     <span class="nav-dd-text">
                         <strong>Notifications</strong>
                         <small>Re-conduct and exam notices</small>
                     </span>
                 </a>
-                <a class="nav-dropdown-item" role="menuitem" href="examinations.html#guidelines" target="_blank" rel="noopener noreferrer">
+                <a class="nav-dropdown-item" role="menuitem" href="examinations.html?view=guidelines" target="_blank" rel="noopener noreferrer">
                     <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">📋</span>
                     <span class="nav-dd-text">
                         <strong>Guidelines</strong>
                         <small>Rules, conduct and penalties</small>
                     </span>
                 </a>
-                <a class="nav-dropdown-item" role="menuitem" href="examinations.html#schemas" target="_blank" rel="noopener noreferrer">
+                <a class="nav-dropdown-item" role="menuitem" href="examinations.html?view=schemas" target="_blank" rel="noopener noreferrer">
                     <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">🧮</span>
                     <span class="nav-dd-text">
                         <strong>Schemas</strong>
                         <small>JEE &amp; GATE marking schemes</small>
-                    </span>
-                </a>
-
-                <div class="nav-dropdown-sep" role="separator"></div>
-
-                <a class="nav-dropdown-item" role="menuitem" href="#take-test" target="_blank" rel="noopener noreferrer">
-                    <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">🎯</span>
-                    <span class="nav-dd-text">
-                        <strong>Examination Center</strong>
-                        <small>Browse both test formats</small>
                     </span>
                 </a>
             </div>
@@ -353,17 +365,17 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
 </section>
 
 <section id="take-test">
-    <h2 data-aos="fade-right">Examination Center</h2>
-    <p data-aos="fade-right">Select your domain to begin your Monthly assessment or practice test.</p>
+    <h2 data-aos="fade-right" id="takeTestTitle">Examination Center</h2>
+    <p data-aos="fade-right" id="takeTestIntro">Select your domain to begin your Monthly assessment or practice test.</p>
     <div class="grid">
-        <div class="card" data-aos="flip-left" data-aos-delay="100">
+        <div class="card" data-aos="flip-left" data-aos-delay="100" data-exam-card="jee">
             <h3>JEE Format (Intermediate)</h3>
             <p>Mathematics, Physics, & Chemistry. Multiple Choice & Numerical types.</p><br>
             <button class="portal-btn" style="background: var(--accent);" onclick="startTest('jee')">Start Monthly JEE Test</button>
         </div>
-        <div class="card" data-aos="flip-left" data-aos-delay="300">
+        <div class="card" data-aos="flip-left" data-aos-delay="300" data-exam-card="gate">
             <h3>GATE Format (M.Tech)</h3>
-            <p>Technical Core & General Aptitude. High-level problem solving.</p><br>
+            <p>Technical Core &amp; General Aptitude. High-level problem solving.</p><br>
             <button class="portal-btn" style="background: var(--accent);" onclick="startTest('gate')">Start Monthly GATE Test</button>
         </div>
     </div>
@@ -379,6 +391,8 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
                 <li>JEE & NEET Integrated Prep</li>
                 <li>Board Exam Mastery (Class 11 & 12)</li>
             </ul>
+            <button class="portal-btn" style="background: var(--accent); margin-top: 12px;"
+                onclick="window.open('syllabus-jee.html','_blank','noopener')">📘 Open JEE Syllabus 2026</button>
            <div style="
     font-size: 0.88rem;
     color: #718096;
@@ -419,6 +433,8 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
                 <li>GATE Technical Subject Depth</li>
                 <li>Industry Project Mentorship</li>
             </ul>
+            <button class="portal-btn" style="background: var(--accent); margin-top: 12px;"
+                onclick="window.open('syllabus-gate.html','_blank','noopener')">⚙️ Open GATE Syllabus 2026</button>
             <p style="font-size: 0.88rem; color: #718096; background: #fffaf0; border-left: 3px solid var(--accent); padding: 8px 12px; margin-top: 15px; border-radius: 4px;">
                 <strong>⚠️ Notice:</strong> Please download the latest syllabus from the official <strong>GATE organizing IIT website</strong>, as the organizing institute or topic weights may change.
             </p>

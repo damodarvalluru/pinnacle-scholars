@@ -202,8 +202,12 @@ header {
     width: calc(100% - 3rem);
     max-width: 1240px;
     background: var(--bg-nav);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    /* No backdrop-filter here: the bar is opaque, full width and pinned to the
+       top of the page, so there is nothing behind it to blur, and a filter on
+       this element would make it the containing block for the position:fixed
+       mobile dropdown panels and trap them inside the header. */
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
     padding: 0.75rem 1.4rem;
@@ -402,26 +406,68 @@ section[id] {
     color: var(--accent);
 }
 
-/* The institute header and LATEST UPDATES card are independent fixed
-   sections. The JavaScript helper keeps the second card below the actual
-   responsive header height instead of relying on a hard-coded offset. */
+/* The institute header and the LATEST UPDATES strip are independent sticky
+   bars. Both are boxless and span the full viewport width edge to edge, and
+   the strip sits flush underneath the header at every viewport size. The
+   JavaScript helper keeps the second bar below the measured header height
+   instead of relying on a hard-coded offset. */
 header {
     position: fixed !important;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    right: 0;
+    transform: none;
     margin: 0;
-    width: min(1240px, calc(100% - 2rem));
+    width: 100%;
+    max-width: none;
+    /* Boxless: no side borders, no rounded corners, no floating-card frame. */
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    /* Inner content is still inset so the brand and links do not touch the
+       viewport edge, while the bar itself stays full width. */
+    padding: 0.7rem clamp(0.85rem, 3vw, 2.5rem);
+    flex-wrap: nowrap;
+    gap: clamp(0.5rem, 2vw, 1.5rem);
+    justify-content: space-between;
     z-index: 3000;
+}
+
+/* Brand anchored left, navigation reading left to right on the right. */
+header .nav-links {
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    gap: clamp(0.3rem, 1.2vw, 0.85rem);
+    min-width: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+}
+
+header .nav-links::-webkit-scrollbar {
+    display: none;
+}
+
+header .nav-links a {
+    flex-shrink: 0;
 }
 
 .notice-ticker-container {
     position: fixed !important;
-    top: var(--site-header-stack-height, 7.5rem);
-    left: 50%;
-    transform: translateX(-50%);
+    top: var(--site-header-stack-height, 4.4rem);
+    left: 0;
+    right: 0;
+    transform: none;
     margin: 0;
-    width: min(1240px, calc(100% - 2rem));
+    width: 100%;
+    max-width: none;
+    /* Boxless strip: no frame, flush against the header above it. */
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    padding: 0.45rem clamp(0.85rem, 3vw, 2.5rem);
     z-index: 2999;
 }
 
@@ -493,34 +539,6 @@ body {
 .ambient-music-toggle.is-playing {
     background: linear-gradient(135deg, #0f766e, #0891b2);
 }
-
-/* One-tap sound unlock for browsers that block audio autoplay on page open */
-.hero-sound-unlock-btn {
-    position: fixed;
-    right: 22px;
-    bottom: 22px;
-    z-index: 9999;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.4px;
-    color: #fff;
-    background: linear-gradient(135deg, #7c3aed, #b83280);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 999px;
-    padding: 11px 18px;
-    cursor: pointer;
-    box-shadow: 0 10px 30px rgba(76, 29, 149, 0.45);
-    animation: heroSoundPulse 2s ease-in-out infinite;
-}
-@keyframes heroSoundPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-.hero-sound-unlock-btn:hover { filter: brightness(1.1); }
 
 /* ===== COSMIC WARP BACKGROUND (animated stars + shooting light rays) ===== */
 

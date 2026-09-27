@@ -81,16 +81,17 @@ function initHomeAnimations() {
     }
 }
 
-// Keep the independent LATEST UPDATES sticky card directly below the
-// responsive header at every viewport size.
+// Keep the independent LATEST UPDATES strip directly below the sticky
+// header at every viewport size. The two bars are flush by design, so the
+// gap stays at zero and only the strip's own height is added on top.
 function syncStickyHeaderOffset() {
     const header = document.querySelector('body > header');
     const updates = document.querySelector('.notice-ticker-container');
     if (!header || !updates) return;
 
-    const gap = window.innerWidth <= 480 ? 6 : 10;
+    const gap = 0;
     const headerStackHeight = header.offsetHeight + gap;
-    const contentOffset = headerStackHeight + updates.offsetHeight + gap;
+    const contentOffset = headerStackHeight + updates.offsetHeight;
 
     document.documentElement.style.setProperty(
         '--site-header-stack-height',
@@ -217,13 +218,36 @@ function initMasterYourMindMedia() {
         }).catch(() => {});
     }
 
-    // Trigger seamless background audio automatically on any user movement or interaction anywhere on page
-    const triggerEvents = ['pointerdown', 'pointermove', 'mousemove', 'click', 'keydown', 'touchstart', 'scroll'];
-    const gestureHandler = () => {
+    // Audio starts on the visitor's FIRST REAL INTERACTION. Browsers only
+    // grant playback to a gesture that carries user activation, so pointer
+    // moves, mouse moves and scrolling are deliberately excluded here: they
+    // can never unlock audio and only cause pointless play() attempts. The
+    // first pointerdown / touchstart / keydown / click starts both the music
+    // and the spoken welcome, and the listener then detaches itself so the
+    // start happens exactly once.
+    const firstInteractionEvents = ['pointerdown', 'touchstart', 'keydown', 'click'];
+    let firstInteractionHandled = false;
+    const onFirstInteraction = () => {
+        if (firstInteractionHandled) return;
+        firstInteractionHandled = true;
+        firstInteractionEvents.forEach(evt => window.removeEventListener(evt, onFirstInteraction, true));
         startAudioExperience();
     };
 
-    triggerEvents.forEach(evt => window.addEventListener(evt, gestureHandler, { passive: true }));
+    if (bgmAudio && bgmAudio.paused) {
+        firstInteractionEvents.forEach(evt => {
+            window.addEventListener(evt, onFirstInteraction, { capture: true, passive: true });
+        });
+    }
+
+    // The spoken welcome message must also survive an autoplay block, so if
+    // the very first interaction only managed to start the music, a later
+    // interaction still gets a chance to deliver the announcement.
+    if (voiceAudio && voiceAudio.paused) {
+        ['pointerdown', 'touchstart', 'keydown', 'click'].forEach(evt => {
+            window.addEventListener(evt, startAudioExperience, { passive: true });
+        });
+    }
 
     // Keep the original live video playing: cycle through the building/student
     // clips automatically so the hero never goes blank.
@@ -249,48 +273,9 @@ function initMasterYourMindMedia() {
         }, 4200);
     }
 
-    // One-tap sound unlock for browsers that block audio autoplay on page open.
-    // If the voice/music has not started shortly after loading, show a small
-    // button so the welcome message starts with a single tap.
-    if (voiceAudio) {
-        let soundBtn = null;
-        const hideSoundBtn = () => {
-            if (soundBtn) {
-                soundBtn.remove();
-                soundBtn = null;
-            }
-        };
-        const soundStarted = () =>
-            (voiceAudio && !voiceAudio.paused && voiceAudio.currentTime > 0) ||
-            (bgmAudio && !bgmAudio.paused && bgmAudio.currentTime > 0);
-
-        const ensureSoundBtn = () => {
-            if (examOpen) {
-                hideSoundBtn();
-                return;
-            }
-            if (soundStarted()) {
-                hideSoundBtn();
-                return;
-            }
-            if (soundBtn) return;
-            soundBtn = document.createElement('button');
-            soundBtn.className = 'hero-sound-unlock-btn';
-            soundBtn.textContent = '🔊 Tap for Sound';
-            soundBtn.setAttribute('aria-label', 'Play the welcome voice message and background music');
-            soundBtn.addEventListener('click', () => {
-                startAudioExperience();
-                hideSoundBtn();
-            });
-            document.body.appendChild(soundBtn);
-        };
-
-        const onAudioPlaying = () => hideSoundBtn();
-        if (voiceAudio) voiceAudio.addEventListener('playing', onAudioPlaying);
-        if (bgmAudio) bgmAudio.addEventListener('playing', onAudioPlaying);
-        setTimeout(ensureSoundBtn, 2500);
-        window.addEventListener('load', ensureSoundBtn);
-    }
+    // The standalone "Tap for Sound" unlock tab has been retired. Audio now
+    // begins on the visitor's first real interaction, so no extra on-screen
+    // control is shown or required.
 
     // Exam-mode audio control: entering a live assessment silences the
     // website background music and the welcome announcement. The standard
@@ -298,17 +283,54 @@ function initMasterYourMindMedia() {
     window.setExamEnvironmentActive = function (active) {
         examOpen = !!active;
         if (examOpen) {
-            document.querySelectorAll('.hero-sound-unlock-btn').forEach(b => b.remove());
             if (voiceAudio) voiceAudio.pause();
             if (bgmAudio) bgmAudio.pause();
         }
     };
 }
 
+// EXAMINATION ISOLATION
+// The Examinations dropdown links open this page with ?exam=jee or ?exam=gate.
+// Only that one format is left on screen, so a window opened for the JEE test
+// never offers the GATE test alongside it. Without the parameter the section
+// keeps showing both formats.
+function isolateRequestedExam() {
+    const requested = new URLSearchParams(window.location.search).get('exam');
+    if (requested !== 'jee' && requested !== 'gate') return;
+
+    const section = document.getElementById('take-test');
+    if (!section) return;
+
+    const copy = {
+        jee: {
+            title: 'JEE Monthly Test',
+            intro: 'Intermediate JEE format — Physics, Chemistry and Mathematics, 75 questions for 300 marks in 180 minutes.'
+        },
+        gate: {
+            title: 'GATE Monthly Test',
+            intro: 'M.Tech GATE format — General Aptitude and your core paper, 100 marks in 180 minutes.'
+        }
+    }[requested];
+
+    const title = document.getElementById('takeTestTitle');
+    if (title) title.textContent = copy.title;
+
+    const intro = document.getElementById('takeTestIntro');
+    if (intro) intro.textContent = copy.intro;
+
+    document.querySelectorAll('[data-exam-card]').forEach((card) => {
+        if (card.getAttribute('data-exam-card') === requested) return;
+        card.remove();
+    });
+
+    document.title = copy.title + ' | Pinnacle Scholars Academy';
+}
+
 // Initialize animations when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     initGlobalAnimations();
     initHomeAnimations();
+    isolateRequestedExam();
     syncStickyHeaderOffset();
     initMasterYourMindMedia();
 });
@@ -1681,7 +1703,6 @@ function downloadBrochure() {
         modal = document.createElement('div');
 
         modal.id = 'prospectusViewModal';
-        modal.classList.add('vault-open');
 
         modal.style.position = 'fixed';
         modal.style.top = '0';
@@ -1691,7 +1712,9 @@ function downloadBrochure() {
         modal.style.backgroundColor = 'rgba(10, 9, 6, 0.86)';
         modal.style.backdropFilter = 'blur(6px)';
         modal.style.zIndex = '10000';
-        modal.style.display = 'flex';
+        /* Kept hidden while the document markup is injected below, so the
+           full-screen backdrop never paints an empty frame (the blink). */
+        modal.style.display = 'none';
         modal.style.justifyContent = 'center';
         modal.style.alignItems = 'center';
         modal.style.padding = '15px';
@@ -1699,6 +1722,10 @@ function downloadBrochure() {
 
         document.body.appendChild(modal);
     }
+
+    // Take the viewer down for the single frame it takes to swap in the fresh
+    // document markup, so reopening it never shows a half-painted frame.
+    modal.style.display = 'none';
 
     modal.innerHTML = `
 
@@ -2054,9 +2081,11 @@ function downloadBrochure() {
     modal.classList.add('vault-open');
     modal.style.display = 'flex';
 
-    // The brochure action is a direct A4 print/download flow. It never calls
-    // a payment function or opens the fees gateway.
-    window.setTimeout(() => printProspectus(), 60);
+    // The brochure action only OPENS the viewer. Nothing is generated, saved
+    // or printed here: the A4 document is produced exclusively by the
+    // "Download A4 Academic Brochure" button inside the viewer, so opening
+    // the brochure never triggers a surprise print dialog, download or the
+    // flickering html2canvas render.
 }
 
 function printProspectus(){

@@ -1,16 +1,29 @@
 /* ==========================================================================
    PINNACLE SCHOLARS ACADEMY - ENROLLMENT PAGE (ENROLLMENT.HTML) STYLES
    Digital Admission Container, Styled Controls, Success Box & Unique ID Badge
+
+   Responsive contract: the card is always fully visible and fully usable.
+   It grows with its content, the page scrolls when it does not fit, and every
+   control stays large enough to tap on a phone. Nothing is hidden or clipped
+   at any viewport, and no `overflow:hidden` locks the page any more.
    ========================================================================== */
 
-body { overflow: hidden; }
+/* This page has no fixed site header, so it must not inherit the large
+   top offset that responsive.css reserves for the home/exam pages. The class
+   selector outranks the bare `body` rule that ships later in the cascade. */
+body.enrollment-page {
+    padding-top: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 100dvh;
+}
 
 .page-center-envelope {
-    min-height: calc(100vh - 80px);
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem 1.5rem;
+    padding: clamp(1rem, 3vw, 2.5rem) clamp(0.75rem, 3vw, 2rem);
 }
 
 .enroll-container {
@@ -22,42 +35,64 @@ body { overflow: hidden; }
     background: var(--bg-surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
-    padding: 3rem;
+    padding: clamp(1.25rem, 4vw, 3rem);
     box-shadow: var(--shadow-lg);
     position: relative;
-    overflow: auto;
-    max-height: calc(100vh - 2rem);
+    /* No max-height and no inner scrollbar: the card sizes itself to its
+       content and the document scrolls instead, so nothing can be cut off on
+       a short screen or with the on-screen keyboard open. */
+    max-height: none;
+    overflow: visible;
 }
 
 .enroll-card h2 {
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 5.2vw, 2rem);
     font-weight: 800;
     text-align: center;
     color: var(--text-primary);
-    margin-bottom: 2rem;
+    margin-bottom: clamp(1.25rem, 4vw, 2rem);
     letter-spacing: -0.02em;
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: clamp(1rem, 3vw, 1.5rem);
 }
 
 .form-group label {
+    display: block;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 0.5rem;
+    font-size: 0.95rem;
 }
 
 .form-group input,
 .form-group select {
+    /* 16px minimum keeps iOS from zooming the viewport in on focus. */
     width: 100%;
+    max-width: 100%;
     padding: 0.9rem 1.15rem;
-    font-size: 1rem;
+    font-size: max(1rem, 16px);
+    line-height: 1.4;
+    font-family: inherit;
     background-color: var(--bg-surface-soft);
     border: 1.5px solid var(--border);
     border-radius: var(--radius-md);
     color: var(--text-primary);
     transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    /* Prevent iOS Safari from zooming when a field is focused. */
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.form-group select {
+    /* Room for the native arrow, which the reset above removes. */
+    background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                      linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position: calc(100% - 20px) 55%, calc(100% - 14px) 55%;
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 2.75rem;
 }
 
 .form-group input:focus,
@@ -70,7 +105,8 @@ body { overflow: hidden; }
 .btn-submit {
     width: 100%;
     padding: 1rem;
-    font-size: 1.05rem;
+    font-size: clamp(1rem, 3.4vw, 1.05rem);
+    font-family: inherit;
     font-weight: 700;
     background: var(--grad-primary);
     color: #FFFFFF;
@@ -91,7 +127,7 @@ body { overflow: hidden; }
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
-    margin-top: 2rem;
+    margin-top: clamp(1.25rem, 4vw, 2rem);
     text-align: center;
 }
 
@@ -103,7 +139,7 @@ body { overflow: hidden; }
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.6rem 1rem;
+    padding: 0.75rem 1rem;
     border-radius: var(--radius-sm);
     background: var(--bg-surface-soft);
     border: 1px solid var(--border);
@@ -123,12 +159,12 @@ body { overflow: hidden; }
 }
 
 .success-icon {
-    width: 70px;
-    height: 70px;
+    width: clamp(56px, 18vw, 70px);
+    height: clamp(56px, 18vw, 70px);
     border-radius: 50%;
     background: rgba(22, 163, 74, 0.15);
     color: var(--success);
-    font-size: 2.2rem;
+    font-size: clamp(1.8rem, 6vw, 2.2rem);
     font-weight: 900;
     display: flex;
     align-items: center;
@@ -141,31 +177,37 @@ body { overflow: hidden; }
     background: var(--bg-surface-soft);
     border: 1.5px dashed var(--primary-bright);
     border-radius: var(--radius-lg);
-    padding: 1.5rem;
+    padding: clamp(1rem, 4vw, 1.5rem);
     margin: 1.5rem 0;
 }
 
 .id-badge p {
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 800;
     color: var(--text-muted);
-    letter-spacing: 1.5px;
+    letter-spacing: clamp(0.5px, 0.6vw, 1.5px);
     margin-bottom: 0.5rem;
 }
 
 .id-badge strong {
-    font-size: 1.8rem;
+    /* Scales with the viewport so a long identifier wraps instead of
+       overflowing sideways on a narrow phone. */
+    font-size: clamp(1.15rem, 6.5vw, 1.8rem);
     font-weight: 900;
     color: var(--primary-bright);
-    letter-spacing: 2px;
+    letter-spacing: clamp(0.5px, 0.8vw, 2px);
+    display: block;
+    word-break: break-all;
 }
 
 .portal-link {
     display: inline-block;
+    width: 100%;
     padding: 0.85rem 2rem;
     background: var(--grad-accent);
     color: #FFFFFF;
     font-weight: 700;
+    text-align: center;
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-md);
 }
@@ -174,3 +216,66 @@ body { overflow: hidden; }
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
+
+body.enrollment-page footer {
+    padding: 1.25rem 1rem calc(1.25rem + env(safe-area-inset-bottom));
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------------ */
+/* Landscape phones: a short viewport, so drop the decorative breathing */
+/* room rather than let the card push the footer off screen.           */
+/* ------------------------------------------------------------------ */
+@media (max-height: 560px) and (orientation: landscape) {
+    .page-center-envelope {
+        align-items: flex-start;
+        min-height: 0;
+        padding: 1rem 0.85rem;
+    }
+
+    .enroll-card h2 {
+        margin-bottom: 1rem;
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* Phones                                                                */
+/* ------------------------------------------------------------------ */
+@media (max-width: 480px) {
+    .page-center-envelope {
+        align-items: flex-start;
+        min-height: 0;
+        padding: 0.85rem 0.65rem 1.25rem;
+    }
+
+    .enroll-card {
+        border-radius: var(--radius-lg);
+    }
+
+    .nav-footer a {
+        font-size: 0.88rem;
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* responsive.css pads .enroll-card with `!important` in its tablet and */
+/* phone blocks, which would flatten this page's own spacing. These     */
+/* scoped rules win on specificity, so the fluid padding above is what   */
+/* actually renders on every device.                                    */
+/* ------------------------------------------------------------------ */
+@media (max-width: 1024px) {
+    body.enrollment-page .enroll-card {
+        padding: clamp(1.5rem, 4.5vw, 2.5rem) !important;
+        border-radius: var(--radius-xl) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    body.enrollment-page .enroll-card {
+        padding: 1.1rem !important;
+        border-radius: var(--radius-lg) !important;
+    }
+}
+

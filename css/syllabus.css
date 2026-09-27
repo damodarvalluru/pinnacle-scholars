@@ -1,0 +1,1108 @@
+/* ==========================================================================
+   PINNACLE SCHOLARS ACADEMY - SYLLABUS VIEWER (JEE / GATE)
+   --------------------------------------------------------------------------
+   Standalone, self-contained stylesheet used only by syllabus-jee.html and
+   syllabus-gate.html. It styles the on-screen syllabus reader: sticky action
+   bar, exam hero, subject navigation, unit accordions, weightage badges and
+   the print/PDF layout.
+
+   Loaded AFTER themes.css so every colour below resolves from the active
+   theme tokens, and AFTER responsive.css so the mobile scale used across the
+   site keeps working.
+   ========================================================================== */
+
+body.syllabus-page {
+    padding-top: 0;
+    background:
+        radial-gradient(circle at 12% -5%, rgba(37, 99, 235, 0.10) 0%, transparent 45%),
+        radial-gradient(circle at 92% 8%, rgba(124, 58, 237, 0.10) 0%, transparent 42%),
+        var(--bg-base);
+    overflow-x: hidden;
+}
+
+.syl-wrap {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 clamp(0.7rem, 3vw, 1.75rem) 3.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   1. STICKY ACTION BAR
+   -------------------------------------------------------------------------- */
+
+.syl-actionbar {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin: 0 calc(clamp(0.7rem, 3vw, 1.75rem) * -1) 1.25rem;
+    padding: 0.7rem clamp(0.7rem, 3vw, 1.75rem);
+    background: var(--bg-nav);
+    -webkit-backdrop-filter: blur(18px) saturate(170%);
+    backdrop-filter: blur(18px) saturate(170%);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 6px 22px rgba(11, 61, 145, 0.10);
+}
+
+.syl-actionbar__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+}
+
+.syl-badge {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 14px;
+    font-size: 1.05rem;
+    color: #fff;
+    background: var(--grad-accent);
+    box-shadow: 0 4px 14px var(--border-glow);
+}
+
+.syl-badge--gate {
+    background: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+}
+
+.syl-actionbar__brand h1 {
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.syl-actionbar__brand p {
+    margin: 0;
+    font-size: 0.72rem;
+    line-height: 1.2;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.syl-actionbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.syl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    padding: 0.6rem 1.05rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-surface-soft);
+    color: var(--text-primary);
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+        filter var(--transition-fast);
+}
+
+.syl-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.syl-btn--primary {
+    border-color: transparent;
+    background: linear-gradient(135deg, #0B3D91 0%, #2563EB 55%, #00A8E8 100%);
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+}
+
+.syl-btn--gate {
+    background: linear-gradient(135deg, #6D28D9 0%, #7C3AED 45%, #06B6D4 100%);
+    box-shadow: 0 6px 18px rgba(124, 58, 237, 0.38);
+}
+
+.syl-btn--primary:hover,
+.syl-btn--gate:hover {
+    filter: brightness(1.06);
+}
+
+.syl-btn[disabled] {
+    opacity: 0.6;
+    cursor: progress;
+    transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   2. EXAM HERO
+   -------------------------------------------------------------------------- */
+
+.syl-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    padding: clamp(1.4rem, 3.4vw, 2.6rem);
+    margin-bottom: 1.35rem;
+    color: #fff;
+    background:
+        radial-gradient(circle at 88% 12%, rgba(56, 189, 248, 0.42) 0%, transparent 55%),
+        linear-gradient(135deg, #0B3D91 0%, #1557C0 52%, #0E7490 100%);
+    box-shadow: 0 18px 44px rgba(11, 61, 145, 0.28);
+}
+
+.syl-hero--gate {
+    background:
+        radial-gradient(circle at 88% 12%, rgba(34, 211, 238, 0.40) 0%, transparent 55%),
+        linear-gradient(135deg, #4C1D95 0%, #6D28D9 48%, #0E7490 100%);
+    box-shadow: 0 18px 44px rgba(109, 40, 217, 0.30);
+}
+
+.syl-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(120deg, rgba(255, 255, 255, 0.14) 0%, transparent 38%),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 46px);
+}
+
+.syl-hero__kicker {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    margin-bottom: 0.7rem;
+}
+
+.syl-hero h2 {
+    position: relative;
+    z-index: 1;
+    margin: 0 0 0.5rem;
+    color: #fff;
+    font-size: clamp(1.5rem, 3.6vw, 2.35rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 12px rgba(2, 6, 23, 0.35);
+}
+
+.syl-hero p {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    max-width: 70ch;
+    color: rgba(255, 255, 255, 0.90);
+    font-size: 0.92rem;
+    line-height: 1.65;
+}
+
+.syl-chips {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 1rem;
+}
+
+.syl-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.26);
+    color: #fff;
+    backdrop-filter: blur(6px);
+}
+
+.syl-chip b {
+    font-weight: 800;
+}
+
+/* --------------------------------------------------------------------------
+   3. STAT STRIP
+   -------------------------------------------------------------------------- */
+
+.syl-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.35rem;
+}
+
+.syl-stat {
+    padding: 0.9rem 1rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+.syl-stat:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.syl-stat strong {
+    display: block;
+    font-size: 1.35rem;
+    font-weight: 900;
+    line-height: 1.1;
+    background: var(--grad-accent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.syl-stat span {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   4. SUBJECT NAVIGATION + FILTERS
+   -------------------------------------------------------------------------- */
+
+.syl-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 0.9rem;
+}
+
+.syl-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), color var(--transition-fast),
+        border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.syl-nav a:hover {
+    transform: translateY(-2px);
+    color: var(--primary-bright);
+    border-color: var(--primary-bright);
+}
+
+.syl-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    padding: 0.75rem 0.9rem;
+    margin-bottom: 1.1rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+.syl-search {
+    position: relative;
+    flex: 1 1 15rem;
+    min-width: 0;
+}
+
+.syl-search input {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    background: var(--bg-surface-soft);
+    border: 1.5px solid var(--border);
+    border-radius: 999px;
+    padding: 0.6rem 1rem 0.6rem 2.2rem;
+    outline: none;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.syl-search input:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 4px var(--border-glow);
+}
+
+.syl-search__icon {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.syl-toolbar__meta {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   5. SUBJECT BLOCKS + UNIT ACCORDIONS
+   -------------------------------------------------------------------------- */
+
+.syl-subject {
+    margin-bottom: 1.25rem;
+    border-radius: var(--radius-xl);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.syl-subject[hidden] {
+    display: none;
+}
+
+.syl-subject__head {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1rem 1.15rem;
+    background: linear-gradient(135deg, var(--bg-surface-soft) 0%, var(--bg-surface) 100%);
+    border-bottom: 1px solid var(--border);
+}
+
+.syl-subject__icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 14px;
+    font-size: 1.1rem;
+    background: var(--grad-accent);
+    color: #fff;
+    box-shadow: 0 4px 14px var(--border-glow);
+}
+
+.syl-subject__icon--gate {
+    background: linear-gradient(135deg, #6D28D9 0%, #06B6D4 100%);
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+}
+
+.syl-subject__titles {
+    min-width: 0;
+    flex: 1;
+}
+
+.syl-subject__titles h3 {
+    margin: 0;
+    font-size: 1.08rem;
+    letter-spacing: -0.01em;
+}
+
+.syl-subject__titles p {
+    margin: 0.15rem 0 0;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.syl-subject__count {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--primary-bright);
+    background: var(--bg-surface-soft);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.3rem 0.7rem;
+    white-space: nowrap;
+}
+
+.syl-subject__body {
+    padding: 0.55rem 0.6rem 0.8rem;
+}
+
+/* ---- Pattern / quick-fact table ------------------------------------------ */
+
+.syl-table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    margin: 0.35rem 0 0.75rem;
+}
+
+.syl-table {
+    width: 100%;
+    min-width: 22rem;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.syl-table caption {
+    caption-side: top;
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--bg-surface-soft);
+    border-bottom: 1px solid var(--border);
+}
+
+.syl-table th,
+.syl-table td {
+    padding: 0.55rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-subtle);
+    vertical-align: top;
+}
+
+.syl-table thead th {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    background: var(--bg-surface-soft);
+}
+
+.syl-table tbody tr:last-child th,
+.syl-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.syl-table tbody th {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.syl-table td {
+    color: var(--text-secondary);
+}
+
+.syl-table td b {
+    color: var(--text-primary);
+}
+
+/* ---- Unit row ------------------------------------------------------------ */
+
+.syl-unit {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface-soft);
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.syl-unit:hover {
+    border-color: var(--border-glow);
+    box-shadow: var(--shadow-sm);
+}
+
+.syl-unit[hidden] {
+    display: none;
+}
+
+.syl-unit__head {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.72rem 0.85rem;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-align: left;
+    color: var(--text-primary);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    box-shadow: none;
+    transition: background-color var(--transition-fast);
+}
+
+.syl-unit__head:hover {
+    background: var(--bg-surface);
+}
+
+.syl-unit__index {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 1.7rem;
+    height: 1.7rem;
+    border-radius: 9px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #fff;
+    background: var(--grad-accent);
+}
+
+.syl-unit__index--gate {
+    background: linear-gradient(135deg, #6D28D9 0%, #06B6D4 100%);
+}
+
+.syl-unit__name {
+    flex: 1;
+    min-width: 0;
+}
+
+.syl-unit__name small {
+    display: block;
+    margin-top: 0.1rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.syl-badge-weight {
+    flex-shrink: 0;
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 0.24rem 0.6rem;
+    border-radius: 999px;
+    white-space: nowrap;
+    border: 1px solid transparent;
+}
+
+.syl-badge-weight[data-weight="Very High"] {
+    color: #9F1239;
+    background: rgba(225, 29, 72, 0.12);
+    border-color: rgba(225, 29, 72, 0.32);
+}
+
+.syl-badge-weight[data-weight="High"] {
+    color: #B45309;
+    background: rgba(245, 158, 11, 0.14);
+    border-color: rgba(245, 158, 11, 0.34);
+}
+
+.syl-badge-weight[data-weight="Medium"] {
+    color: #1D4ED8;
+    background: rgba(37, 99, 235, 0.12);
+    border-color: rgba(37, 99, 235, 0.30);
+}
+
+.syl-badge-weight[data-weight="Low"] {
+    color: #047857;
+    background: rgba(16, 185, 129, 0.13);
+    border-color: rgba(16, 185, 129, 0.30);
+}
+
+.syl-unit__caret {
+    flex-shrink: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 2px solid var(--text-muted);
+    border-bottom: 2px solid var(--text-muted);
+    transform: rotate(45deg) translate(-2px, -2px);
+    transition: transform var(--transition-smooth);
+}
+
+.syl-unit.is-open .syl-unit__caret {
+    transform: rotate(225deg) translate(-2px, -2px);
+}
+
+.syl-unit__body {
+    display: none;
+    padding: 0.15rem 0.9rem 0.85rem 3.1rem;
+    border-top: 1px dashed var(--border);
+    margin-top: 0;
+}
+
+.syl-unit.is-open .syl-unit__body {
+    display: block;
+}
+
+.syl-unit__body ul {
+    margin: 0;
+    padding: 0.55rem 0 0 0;
+    list-style: none;
+}
+
+.syl-unit__body li {
+    position: relative;
+    padding: 0.22rem 0 0.22rem 1.05rem;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--text-secondary);
+}
+
+.syl-unit__body li::before {
+    content: '';
+    position: absolute;
+    left: 0.15rem;
+    top: 0.62rem;
+    width: 0.34rem;
+    height: 0.34rem;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--border-glow);
+}
+
+.syl-unit__body li b {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+mark.syl-hit {
+    background: rgba(250, 204, 21, 0.55);
+    color: inherit;
+    border-radius: 3px;
+    padding: 0 2px;
+}
+
+/* --------------------------------------------------------------------------
+   6. WEIGHTAGE LEGEND + SOURCE CALLOUT
+   -------------------------------------------------------------------------- */
+
+.syl-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.9rem;
+    align-items: center;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 1.25rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+.syl-legend h4 {
+    margin: 0;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.syl-legend__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.75rem;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.syl-source {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 1rem 1.15rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg-surface-soft);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--warning);
+    box-shadow: var(--shadow-sm);
+}
+
+.syl-source__icon {
+    font-size: 1.15rem;
+    line-height: 1.3;
+}
+
+.syl-source h4 {
+    margin: 0 0 0.25rem;
+    font-size: 0.9rem;
+}
+
+.syl-source p {
+    margin: 0 0 0.45rem;
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+.syl-source a {
+    font-weight: 700;
+    font-size: 0.8rem;
+    word-break: break-all;
+}
+
+.syl-footnote {
+    margin: 0.35rem 0 0;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.syl-empty {
+    display: none;
+    padding: 1.1rem;
+    margin-bottom: 1.25rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg-surface);
+    border: 1px dashed var(--border);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.syl-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 1.4rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary-bright);
+    text-decoration: none;
+    padding: 0.6rem 1.1rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.syl-back:hover {
+    transform: translateX(-3px);
+    border-color: var(--primary-bright);
+}
+
+/* Download progress line */
+.syl-progress {
+    display: none;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--primary-bright);
+}
+
+.syl-progress.is-active {
+    display: inline-flex;
+}
+
+.syl-progress__bar {
+    width: 90px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--border);
+    overflow: hidden;
+}
+
+.syl-progress__bar span {
+    display: block;
+    width: 40%;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--grad-accent);
+    animation: sylSlide 1.1s ease-in-out infinite;
+}
+
+@keyframes sylSlide {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(260%); }
+}
+
+/* --------------------------------------------------------------------------
+   7. OFF-SCREEN PDF SHEET
+   --------------------------------------------------------------------------
+   The download builds a print-clean copy of the syllabus in a sheet parked
+   outside the viewport, so generating the file never resizes, hides or
+   flickers the page the student is reading.
+   -------------------------------------------------------------------------- */
+
+.syl-pdf-sheet {
+    position: fixed;
+    top: 0;
+    left: -12000px;
+    width: 190mm;
+    padding: 0;
+    background: #ffffff;
+    color: #2d3748;
+    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.5;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.syl-pdf-sheet .syl-wrap {
+    max-width: none;
+    padding: 0;
+}
+
+.syl-pdf-sheet .syl-actionbar,
+.syl-pdf-sheet .syl-nav,
+.syl-pdf-sheet .syl-toolbar,
+.syl-pdf-sheet .syl-progress,
+.syl-pdf-sheet .syl-back,
+.syl-pdf-sheet .syl-unit__caret,
+.syl-pdf-sheet .syl-legend,
+.syl-pdf-sheet .syl-empty {
+    display: none !important;
+}
+
+.syl-pdf-sheet .syl-hero {
+    color: #102a43;
+    background: #eef4ff !important;
+    box-shadow: none;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+.syl-pdf-sheet .syl-hero h2,
+.syl-pdf-sheet .syl-hero p,
+.syl-pdf-sheet .syl-chip,
+.syl-pdf-sheet .syl-hero__kicker {
+    color: #102a43 !important;
+    text-shadow: none;
+}
+
+.syl-pdf-sheet .syl-chip {
+    background: #dbeafe;
+    border-color: #bfdbfe;
+    color: #1e3a8a;
+}
+
+.syl-pdf-sheet .syl-hero::after {
+    display: none;
+}
+
+.syl-pdf-sheet .syl-stats {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.syl-pdf-sheet .syl-stat,
+.syl-pdf-sheet .syl-subject,
+.syl-pdf-sheet .syl-source {
+    box-shadow: none;
+    border: 1px solid #cbd5e1;
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+.syl-pdf-sheet .syl-stat strong {
+    color: #0b3d91;
+    -webkit-text-fill-color: #0b3d91;
+    background: none;
+}
+
+.syl-pdf-sheet .syl-stat span,
+.syl-pdf-sheet .syl-subject__titles p,
+.syl-pdf-sheet .syl-table caption,
+.syl-pdf-sheet .syl-footnote,
+.syl-pdf-sheet .syl-toolbar__meta {
+    color: #4a5568;
+}
+
+.syl-pdf-sheet .syl-subject__head {
+    background: #f1f5f9;
+    border-bottom: 1px solid #cbd5e1;
+}
+
+.syl-pdf-sheet .syl-unit {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    box-shadow: none;
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+.syl-pdf-sheet .syl-unit__head--static,
+.syl-pdf-sheet .syl-unit__head--static:hover {
+    cursor: default;
+    background: transparent;
+}
+
+.syl-pdf-sheet .syl-unit__body {
+    display: block !important;
+}
+
+.syl-pdf-sheet .syl-unit__body li {
+    color: #2d3748;
+}
+
+.syl-pdf-sheet .syl-unit__body li::before {
+    background: #2563eb;
+    box-shadow: none;
+}
+
+.syl-pdf-sheet .syl-table {
+    font-size: 9.5pt;
+}
+
+.syl-pdf-sheet .syl-table thead th {
+    background: #e2e8f0;
+    color: #102a43;
+}
+
+.syl-pdf-sheet .syl-source {
+    background: #fffaf0;
+    border-left: 4px solid #f59e0b;
+}
+
+.syl-pdf-sheet .syl-pdf-note {
+    margin-top: 6mm;
+    padding-top: 3mm;
+    border-top: 1px solid #cbd5e1;
+    font-size: 9pt;
+    color: #64748b;
+    text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   8. RESPONSIVE
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .syl-actionbar {
+        gap: 0.5rem;
+        padding: 0.55rem 0.7rem;
+    }
+
+    .syl-actionbar__brand p {
+        display: none;
+    }
+
+    .syl-btn {
+        font-size: 0.76rem;
+        padding: 0.5rem 0.8rem;
+    }
+
+    .syl-hero {
+        border-radius: var(--radius-lg);
+    }
+
+    .syl-subject__head {
+        flex-wrap: wrap;
+        gap: 0.6rem;
+    }
+
+    .syl-subject__count {
+        order: 3;
+    }
+
+    .syl-unit__body {
+        padding-left: 1rem;
+    }
+
+    .syl-stats {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+}
+
+/* --------------------------------------------------------------------------
+   8. PRINT / PDF LAYOUT
+   -------------------------------------------------------------------------- */
+
+@media print {
+    @page {
+        size: A4;
+        margin: 12mm;
+    }
+
+    html,
+    body {
+        font-size: 11pt;
+    }
+
+    body.syllabus-page {
+        background: #fff !important;
+        padding: 0;
+    }
+
+    .syl-actionbar,
+    .syl-nav,
+    .syl-toolbar,
+    .syl-progress,
+    .syl-back,
+    .nav-scroll-btn,
+    .syl-legend {
+        display: none !important;
+    }
+
+    .syl-wrap {
+        max-width: none;
+        padding: 0;
+    }
+
+    .syl-hero,
+    .syl-subject,
+    .syl-stat,
+    .syl-source,
+    .syl-legend {
+        box-shadow: none !important;
+        border: 1px solid #cbd5e1 !important;
+        break-inside: avoid;
+    }
+
+    .syl-hero {
+        color: #0b1f3a;
+        background: #eef4ff !important;
+    }
+
+    .syl-hero h2,
+    .syl-hero p,
+    .syl-chip,
+    .syl-hero__kicker {
+        color: #0b1f3a !important;
+        text-shadow: none;
+    }
+
+    .syl-unit {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .syl-unit__body {
+        display: block !important;
+    }
+
+    .syl-unit__caret {
+        display: none;
+    }
+}

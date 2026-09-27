@@ -16,8 +16,8 @@
     header {
         flex-direction: row;
         gap: 0.5rem;
-        padding: 0.75rem 1.25rem;
-        flex-wrap: wrap;
+        padding: 0.6rem 0.85rem;
+        flex-wrap: nowrap;
     }
 
     .brand-header-wrapper h1 {
@@ -206,13 +206,17 @@
 
     header {
         position: fixed;
-        top: 0.35rem;
-        left: 50%;
-        transform: translateX(-50%);
-        width: calc(100% - 1rem);
-        padding: 0.45rem 0.65rem;
-        border-radius: var(--radius-lg);
+        top: 0;
+        left: 0;
+        right: 0;
+        transform: none;
+        width: 100%;
+        padding: 0.4rem 0.5rem;
+        border: 0;
+        border-bottom: 1px solid var(--border);
+        border-radius: 0;
         gap: 0.25rem;
+        flex-wrap: nowrap;
     }
 
     .brand-header-wrapper {
@@ -239,11 +243,17 @@
 
     .notice-ticker-container {
         position: fixed;
-        top: 5.4rem;
-        left: 50%;
-        transform: translateX(-50%);
-        width: calc(100% - 1rem);
+        top: var(--site-header-stack-height, 4.4rem);
+        left: 0;
+        right: 0;
+        transform: none;
+        width: 100%;
+        border: 0;
+        border-bottom: 1px solid var(--border);
+        border-radius: 0;
         margin: 0;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
     }
 
     .notice-ticker-title {
@@ -333,8 +343,8 @@
     }
 
     header {
-        width: calc(100% - 0.6rem);
-        padding: 0.35rem 0.45rem;
+        width: 100%;
+        padding: 0.3rem 0.4rem;
     }
 
     .brand-header-wrapper {
@@ -371,7 +381,7 @@
 
     .notice-ticker-container {
         top: auto;
-        padding: 0.25rem 0.4rem;
+        padding: 0.25rem 0.35rem;
     }
 
     .notice-ticker-title {
@@ -436,6 +446,134 @@ body {
     .enroll-card,
     .payment-card {
         max-width: 100%;
+    }
+}
+
+/* ==========================================================================
+   MOBILE SCALE-DOWN
+   Everything on a phone is rendered smaller so more of the page fits per
+   screen. Nothing is hidden, collapsed or removed: the same content and the
+   same controls stay present and usable, only the type, spacing and purely
+   decorative dimensions are reduced. Interactive targets (buttons, form
+   fields, the scroll button) are intentionally left at their current sizes
+   so they remain comfortably tappable.
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* Headings and body copy */
+    .hero h1 {
+        font-size: 1.45rem;
+    }
+
+    .hero p {
+        font-size: 0.74rem;
+    }
+
+    .section-title,
+    section h2 {
+        font-size: 1.2rem;
+    }
+
+    /* Welcome intro overlay */
+    .intro-title {
+        font-size: 1.5rem !important;
+    }
+
+    .intro-message {
+        font-size: 0.82rem !important;
+    }
+
+    /* Vertical rhythm: reclaim the oversized decorative gaps */
+    .hero {
+        padding: 2.5rem 0.6rem 1.75rem 0.6rem !important;
+    }
+
+    .hero-btns {
+        gap: 0.55rem !important;
+    }
+
+    .hero-btns button,
+    .hero-btns a {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    /* Purely decorative brochure orb */
+    .hero-brochure-orb {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 0.75rem !important;
+    }
+
+    /* Visitor community counter */
+    .visitor-section {
+        padding: 1.75rem 0.85rem;
+        margin: 1.75rem auto;
+    }
+
+    .visitor-title {
+        font-size: 1.4rem;
+    }
+
+    .visitor-subtitle {
+        margin-bottom: 1.25rem;
+        font-size: 0.78rem;
+    }
+
+    .visitor-counter-box {
+        padding: 1.25rem 1.75rem;
+    }
+
+    #visitor-count {
+        font-size: 2.4rem;
+    }
+
+    .visitor-counter-box span {
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+    }
+
+    /* Card interiors */
+    .card,
+    .info-card,
+    .portal-card,
+    .jee-card,
+    .contact-card,
+    .enroll-card,
+    .payment-card {
+        padding: 0.7rem !important;
+    }
+
+    .card p,
+    .info-card p {
+        font-size: 0.78rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 1.35rem;
+    }
+
+    .hero p {
+        font-size: 0.7rem;
+    }
+
+    .section-title,
+    section h2 {
+        font-size: 1.1rem;
+    }
+
+    .hero-brochure-orb {
+        width: 64px;
+        height: 64px;
+    }
+
+    #visitor-count {
+        font-size: 2.1rem;
+    }
+
+    .visitor-counter-box {
+        padding: 1rem 1.25rem;
     }
 }
 

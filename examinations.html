@@ -36,7 +36,29 @@
 
     <nav class="nav-links" aria-label="Main navigation">
         <a href="index.html">Home</a>
-        <a href="index.html#syllabus">Syllabus</a>
+
+        <!-- SYLLABUS -->
+        <div class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+                Syllabus <span class="nav-caret" aria-hidden="true"></span>
+            </button>
+            <div class="nav-dropdown-menu" role="menu">
+                <a class="nav-dropdown-item" role="menuitem" href="syllabus-jee.html" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon nav-dd-icon--jee" aria-hidden="true">📘</span>
+                    <span class="nav-dd-text">
+                        <strong>JEE Syllabus 2026</strong>
+                        <small>Physics · Chemistry · Mathematics — view &amp; download</small>
+                    </span>
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="syllabus-gate.html" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon nav-dd-icon--gate" aria-hidden="true">⚙️</span>
+                    <span class="nav-dd-text">
+                        <strong>GATE Syllabus 2026</strong>
+                        <small>General Aptitude · Engg. Maths · Core — view &amp; download</small>
+                    </span>
+                </a>
+            </div>
+        </div>
 
         <!-- FEES -->
         <div class="nav-dropdown">
@@ -106,20 +128,20 @@
                 Examinations <span class="nav-caret" aria-hidden="true"></span>
             </button>
             <div class="nav-dropdown-menu" role="menu">
-                <button type="button" class="nav-dropdown-item" role="menuitem" onclick="window.open('index.html#take-test','_blank','noopener')">
+                <a class="nav-dropdown-item" role="menuitem" href="index.html?exam=jee#take-test" target="_blank" rel="noopener noreferrer">
                     <span class="nav-dd-icon nav-dd-icon--jee" aria-hidden="true">📘</span>
                     <span class="nav-dd-text">
                         <strong>JEE Test</strong>
-                        <small>Starts from the Examination Center</small>
+                        <small>75 questions · 300 marks · 180 min</small>
                     </span>
-                </button>
-                <button type="button" class="nav-dropdown-item" role="menuitem" onclick="window.open('index.html#take-test','_blank','noopener')">
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="index.html?exam=gate#take-test" target="_blank" rel="noopener noreferrer">
                     <span class="nav-dd-icon nav-dd-icon--gate" aria-hidden="true">⚙️</span>
                     <span class="nav-dd-text">
                         <strong>GATE Test</strong>
-                        <small>Starts from the Examination Center</small>
+                        <small>Aptitude + core · 180 min</small>
                     </span>
-                </button>
+                </a>
                 <a class="nav-dropdown-item" role="menuitem" href="result-portal.html" target="_blank" rel="noopener noreferrer">
                     <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">📊</span>
                     <span class="nav-dd-text">
@@ -130,28 +152,28 @@
 
                 <div class="nav-dropdown-sep" role="separator"></div>
 
-                <a class="nav-dropdown-item" role="menuitem" href="examinations.html#timetables" target="_blank" rel="noopener noreferrer" data-enhance="next-test">
+                <a class="nav-dropdown-item" role="menuitem" href="examinations.html?view=timetables" target="_blank" rel="noopener noreferrer" data-enhance="next-test">
                     <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">🗓️</span>
                     <span class="nav-dd-text">
                         <strong>Timetables</strong>
                         <small>Monthly test dates</small>
                     </span>
                 </a>
-                <a class="nav-dropdown-item" role="menuitem" href="examinations.html#notifications" target="_blank" rel="noopener noreferrer" data-enhance="reconduct">
+                <a class="nav-dropdown-item" role="menuitem" href="examinations.html?view=notifications" target="_blank" rel="noopener noreferrer" data-enhance="reconduct">
                     <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">📢</span>
                     <span class="nav-dd-text">
                         <strong>Notifications</strong>
                         <small>Re-conduct and exam notices</small>
                     </span>
                 </a>
-                <a class="nav-dropdown-item" role="menuitem" href="examinations.html#guidelines" target="_blank" rel="noopener noreferrer">
+                <a class="nav-dropdown-item" role="menuitem" href="examinations.html?view=guidelines" target="_blank" rel="noopener noreferrer">
                     <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">📋</span>
                     <span class="nav-dd-text">
                         <strong>Guidelines</strong>
                         <small>Rules, conduct and penalties</small>
                     </span>
                 </a>
-                <a class="nav-dropdown-item" role="menuitem" href="examinations.html#schemas" target="_blank" rel="noopener noreferrer">
+                <a class="nav-dropdown-item" role="menuitem" href="examinations.html?view=schemas" target="_blank" rel="noopener noreferrer">
                     <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">🧮</span>
                     <span class="nav-dd-text">
                         <strong>Schemas</strong>
@@ -169,11 +191,12 @@
 
     <!-- ========================= HERO ========================= -->
     <section class="exams-hero" aria-labelledby="examsHeroTitle">
-        <p class="exams-hero__kicker">📋 Examination Centre</p>
+        <p class="exams-hero__kicker" id="examsHeroKicker">📋 Examination Centre</p>
         <h1 id="examsHeroTitle">Examination Timetables, Notifications &amp; Marking Schemes</h1>
         <p id="examsHeroPattern">Monthly JEE and GATE test schedule for the current academic year.</p>
         <div class="exams-hero__stats" id="examsHeroStats"></div>
         <p class="exams-note" id="examsHeroYear" style="margin-top:1rem;">Academic Year</p>
+        <p class="exams-hero__back"><a href="index.html">← Back to Home</a></p>
     </section>
 
     <!-- ========================= IN-PAGE NAV ========================= -->
