@@ -1,0 +1,2022 @@
+/* ==========================================================================
+   PINNACLE SCHOLARS ACADEMY - EXAMINATION SYSTEM
+   Phase 1 · Header dropdowns + Examinations page
+   --------------------------------------------------------------------------
+   Self-contained stylesheet. Nothing here modifies any existing rule; it only
+   styles new components (nav dropdown menus and the examinations page).
+
+   Loaded AFTER themes.css so the design tokens below resolve per theme, and
+   AFTER responsive.css on pages that need to neutralise the home-page topbar
+   offsets.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. HEADER DROPDOWN MENUS
+   -------------------------------------------------------------------------- */
+
+.nav-dropdown {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* The trigger is visually identical to the existing .nav-links <a> items so
+   the header keeps its current look, plus a caret. */
+.nav-dropdown-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font: inherit;
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    background: none;
+    border: 0;
+    padding: 0.3rem 0.5rem;
+    margin: 0;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: var(--radius-sm);
+    position: relative;
+    transition: color var(--transition-fast), background-color var(--transition-fast);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.nav-dropdown-trigger::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width var(--transition-smooth), left var(--transition-smooth);
+}
+
+.nav-dropdown-trigger:hover,
+.nav-dropdown-trigger:focus-visible {
+    color: var(--primary-bright);
+}
+
+.nav-dropdown-trigger:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+}
+
+.nav-dropdown.is-open > .nav-dropdown-trigger {
+    color: var(--primary-bright);
+}
+
+.nav-dropdown.is-open > .nav-dropdown-trigger::after {
+    width: 100%;
+    left: 0;
+}
+
+.nav-caret {
+    width: 0.42rem;
+    height: 0.42rem;
+    border-right: 1.8px solid currentColor;
+    border-bottom: 1.8px solid currentColor;
+    transform: rotate(45deg) translate(-1px, -1px);
+    transition: transform var(--transition-smooth);
+    opacity: 0.75;
+    flex-shrink: 0;
+}
+
+.nav-dropdown.is-open > .nav-dropdown-trigger .nav-caret {
+    transform: rotate(225deg) translate(-1px, -1px);
+}
+
+/* ---- Panel ---------------------------------------------------------------- */
+
+.nav-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.55rem);
+    left: 50%;
+    width: max-content;
+    min-width: 14.5rem;
+    max-width: min(21rem, calc(100vw - 1.5rem));
+    transform: translate(-50%, -0.4rem);
+    padding: 0.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg-surface) 82%, transparent);
+    -webkit-backdrop-filter: blur(22px) saturate(165%);
+    backdrop-filter: blur(22px) saturate(165%);
+    box-shadow: var(--shadow-lg), 0 0 0 1px var(--border-glow);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--transition-smooth), transform var(--transition-smooth),
+        visibility var(--transition-smooth);
+    z-index: 3100;
+    overflow-wrap: anywhere;
+}
+
+/* Edge-aligned variant for triggers that sit near the viewport edge. */
+.nav-dropdown--end > .nav-dropdown-menu {
+    left: auto;
+    right: 0;
+    transform: translate(0, -0.4rem);
+}
+
+.nav-dropdown--start > .nav-dropdown-menu {
+    left: 0;
+    right: auto;
+    transform: translate(0, -0.4rem);
+}
+
+.nav-dropdown.is-open > .nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate(-50%, 0);
+}
+
+.nav-dropdown--end.is-open > .nav-dropdown-menu,
+.nav-dropdown--start.is-open > .nav-dropdown-menu {
+    transform: translate(0, 0);
+}
+
+/* ---- Menu items ----------------------------------------------------------- */
+
+.nav-dropdown-menu::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(160deg, var(--border-glow) 0%, transparent 42%);
+    opacity: 0.85;
+}
+
+.nav-dropdown-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    width: 100%;
+    padding: 0.6rem 0.7rem;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.86rem;
+    font-weight: 500;
+    line-height: 1.3;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color var(--transition-fast), color var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.nav-dropdown-item + .nav-dropdown-item {
+    margin-top: 0.1rem;
+}
+
+.nav-dropdown-item:hover,
+.nav-dropdown-item:focus-visible {
+    background: var(--bg-surface-soft);
+    color: var(--primary-bright);
+    transform: translateX(2px);
+    outline: none;
+}
+
+.nav-dropdown-item:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--border-focus);
+}
+
+.nav-dd-icon {
+    flex-shrink: 0;
+    width: 1.85rem;
+    height: 1.85rem;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem;
+    background: var(--grad-accent);
+    box-shadow: 0 2px 8px var(--border-glow);
+}
+
+.nav-dd-icon--jee {
+    background: linear-gradient(135deg, #0B3D91 0%, #2563EB 100%);
+}
+
+.nav-dd-icon--gate {
+    background: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+}
+
+.nav-dd-icon--plain {
+    background: var(--bg-surface-soft);
+    box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.nav-dd-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+}
+
+.nav-dd-text strong {
+    font-weight: 600;
+    font-size: 0.87rem;
+}
+
+.nav-dd-text small {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    font-weight: 400;
+    line-height: 1.35;
+}
+
+/* Menu items that open a separate window are marked, so the extra tab is
+   expected rather than surprising. Driven off the attribute so the markup
+   stays clean. */
+.nav-dropdown-item[target="_blank"]::after {
+    content: '\2197';
+    margin-left: auto;
+    flex-shrink: 0;
+    align-self: center;
+    font-size: 0.72rem;
+    line-height: 1;
+    color: var(--text-muted);
+    opacity: 0.65;
+    transition: opacity var(--transition-fast), color var(--transition-fast);
+}
+
+.nav-dropdown-item[target="_blank"]:hover::after,
+.nav-dropdown-item[target="_blank"]:focus-visible::after {
+    opacity: 1;
+    color: var(--primary-bright);
+}
+
+/* Separator + footer note inside a menu */
+.nav-dropdown-sep {
+    height: 1px;
+    margin: 0.4rem 0.35rem;
+    background: var(--border);
+}
+
+.nav-dropdown-note {
+    padding: 0.15rem 0.7rem 0.35rem;
+    font-size: 0.68rem;
+    line-height: 1.45;
+    color: var(--text-muted);
+}
+
+/* ---- Mobile: full-width fixed panel, never overflows ---------------------- */
+
+@media (max-width: 768px) {
+    .nav-dropdown-menu,
+    .nav-dropdown--end > .nav-dropdown-menu,
+    .nav-dropdown--start > .nav-dropdown-menu {
+        position: fixed;
+        top: var(--pinnacle-dropdown-top, 5.5rem);
+        left: 0.5rem;
+        right: 0.5rem;
+        width: auto;
+        min-width: 0;
+        max-width: none;
+        max-height: calc(100vh - var(--pinnacle-dropdown-top, 5.5rem) - 1rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        transform: translateY(-0.5rem);
+        z-index: 3200;
+    }
+
+    .nav-dropdown.is-open > .nav-dropdown-menu,
+    .nav-dropdown--end.is-open > .nav-dropdown-menu,
+    .nav-dropdown--start.is-open > .nav-dropdown-menu {
+        transform: translateY(0);
+    }
+
+    .nav-dropdown-item {
+        padding: 0.7rem 0.65rem;
+        font-size: 0.9rem;
+    }
+
+    .nav-dropdown-item:hover,
+    .nav-dropdown-item:focus-visible {
+        transform: none;
+    }
+}
+
+
+/* ==========================================================================
+   2. EXAMINATIONS PAGE
+   ========================================================================== */
+
+/* The site header is position:fixed, so the page content starts below it.
+   --pinnacle-header-height is measured at runtime by js/nav-dropdown.js; the
+   fallback keeps the layout sane if that script is unavailable. */
+body.exams-page {
+    padding-top: calc(var(--pinnacle-header-height, 5.5rem) + 1.25rem);
+    overflow-x: hidden;
+}
+
+body.exams-page footer {
+    margin-top: 2rem;
+    padding: 1.25rem 0 0.5rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+
+body.exams-page footer p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.exams-wrap {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: clamp(1rem, 3vw, 2.25rem) clamp(0.75rem, 3vw, 1.75rem) 4rem;
+}
+
+/* ---- Hero ----------------------------------------------------------------- */
+
+.exams-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border);
+    background: var(--grad-card);
+    box-shadow: var(--shadow-md);
+    padding: clamp(1.25rem, 4vw, 2.5rem);
+    text-align: center;
+}
+
+.exams-hero::before {
+    content: '';
+    position: absolute;
+    inset: -40% 20% auto;
+    height: 260px;
+    background: var(--grad-glow);
+    filter: blur(28px);
+    pointer-events: none;
+}
+
+.exams-hero > * {
+    position: relative;
+}
+
+.exams-hero__kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 0 0 0.6rem;
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--primary-bright);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.exams-hero h1 {
+    margin: 0 0 0.5rem;
+    font-family: 'Outfit', 'Poppins', sans-serif;
+    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    line-height: 1.15;
+    color: var(--text-primary);
+}
+
+.exams-hero p {
+    margin: 0 auto;
+    max-width: 62ch;
+    color: var(--text-secondary);
+    font-size: clamp(0.88rem, 2.2vw, 1rem);
+    line-height: 1.65;
+}
+
+.exams-hero__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.7rem;
+    margin-top: 1.4rem;
+}
+
+.exams-stat {
+    padding: 0.85rem 0.6rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.exams-stat strong {
+    display: block;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    color: var(--primary-bright);
+    line-height: 1.2;
+}
+
+.exams-stat span {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* ---- Sticky in-page section nav ------------------------------------------- */
+
+.exams-subnav {
+    position: sticky;
+    top: calc(var(--pinnacle-header-height, 0px) + 0.5rem);
+    z-index: 900;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1.1rem 0 1.6rem;
+    padding: 0.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg-surface) 88%, transparent);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    box-shadow: var(--shadow-md);
+}
+
+.exams-subnav a {
+    flex: 1 1 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-width: 0;
+    padding: 0.55rem 0.75rem;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    background: transparent;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color var(--transition-fast), color var(--transition-fast),
+        border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.exams-subnav a:hover,
+.exams-subnav a:focus-visible {
+    background: var(--bg-surface-soft);
+    color: var(--primary-bright);
+    transform: translateY(-1px);
+    outline: none;
+}
+
+.exams-subnav a:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--border-focus);
+}
+
+.exams-subnav a.is-active {
+    color: #FFFFFF;
+    background: var(--grad-primary);
+    border-color: transparent;
+    box-shadow: 0 4px 14px var(--border-glow);
+}
+
+/* ---- Sections ------------------------------------------------------------- */
+
+.exams-section {
+    margin-bottom: clamp(2rem, 5vw, 3.25rem);
+    scroll-margin-top: calc(var(--pinnacle-header-height, 0px) + 4.75rem);
+}
+
+.exams-section__head {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    margin-bottom: 1.1rem;
+    flex-wrap: wrap;
+}
+
+.exams-section__icon {
+    flex-shrink: 0;
+    width: 2.6rem;
+    height: 2.6rem;
+    display: grid;
+    place-items: center;
+    font-size: 1.25rem;
+    border-radius: var(--radius-md);
+    background: var(--grad-accent);
+    box-shadow: 0 4px 14px var(--border-glow);
+}
+
+.exams-section__head h2 {
+    margin: 0;
+    font-family: 'Outfit', 'Poppins', sans-serif;
+    font-size: clamp(1.2rem, 3.4vw, 1.65rem);
+    color: var(--text-primary);
+    line-height: 1.25;
+}
+
+.exams-section__head p {
+    margin: 0.25rem 0 0;
+    color: var(--text-secondary);
+    font-size: 0.86rem;
+    line-height: 1.6;
+}
+
+.exams-badge {
+    display: inline-block;
+    margin-left: 0.4rem;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    vertical-align: middle;
+}
+
+.exams-badge--official {
+    color: #FFFFFF;
+    background: var(--grad-primary);
+}
+
+.exams-badge--institute {
+    color: #7c2d12;
+    background: #fed7aa;
+}
+
+html[data-theme="dark"] .exams-badge--institute {
+    color: #fed7aa;
+    background: rgba(249, 115, 22, 0.22);
+}
+
+/* Generic premium card */
+.exams-card {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--grad-card);
+    box-shadow: var(--shadow-sm);
+    padding: clamp(0.9rem, 2.6vw, 1.35rem);
+    transition: transform var(--transition-smooth), box-shadow var(--transition-smooth),
+        border-color var(--transition-smooth);
+}
+
+.exams-card--hover:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-bright);
+}
+
+.exams-note {
+    margin: 0.9rem 0 0;
+    padding: 0.7rem 0.9rem;
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--accent);
+    background: var(--bg-surface-soft);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+.exams-note strong {
+    color: var(--text-primary);
+}
+
+
+/* --------------------------------------------------------------------------
+   2.1 TIMETABLE
+   -------------------------------------------------------------------------- */
+
+.tt-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.1rem;
+    padding: 0.8rem 0.9rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.tt-toolbar__text {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    min-width: 0;
+    flex: 1 1 16rem;
+}
+
+.tt-toolbar__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.exams-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.6rem 1.05rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--bg-surface-soft);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.83rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+        border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.exams-btn:hover,
+.exams-btn:focus-visible {
+    transform: translateY(-2px);
+    border-color: var(--primary-bright);
+    color: var(--primary-bright);
+    box-shadow: var(--shadow-md);
+    outline: none;
+}
+
+.exams-btn:focus-visible {
+    box-shadow: 0 0 0 3px var(--border-glow);
+}
+
+.exams-btn--primary {
+    color: #FFFFFF;
+    background: var(--grad-primary);
+    border-color: transparent;
+    box-shadow: 0 6px 18px var(--border-glow);
+}
+
+.exams-btn--primary:hover,
+.exams-btn--primary:focus-visible {
+    color: #FFFFFF;
+    filter: brightness(1.07);
+    box-shadow: 0 10px 26px var(--border-glow);
+}
+
+.exams-btn--gate {
+    color: #ffffff;
+    background: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+    border-color: transparent;
+}
+
+/* Program switch */
+.tt-programs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 0.7rem;
+    margin-bottom: 1.2rem;
+}
+
+.tt-program {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border-radius: var(--radius-lg);
+    border: 1.5px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-smooth), box-shadow var(--transition-smooth),
+        border-color var(--transition-smooth), background-color var(--transition-smooth);
+}
+
+.tt-program:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.tt-program:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+}
+
+.tt-program[aria-pressed="true"] {
+    border-color: var(--primary-bright);
+    background: var(--bg-surface-soft);
+    box-shadow: 0 8px 24px var(--border-glow);
+}
+
+.tt-program__icon {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: grid;
+    place-items: center;
+    font-size: 1.2rem;
+    border-radius: var(--radius-md);
+    color: #ffffff;
+    background: var(--grad-primary);
+    box-shadow: 0 4px 12px var(--border-glow);
+}
+
+.tt-program__icon--gate {
+    background: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+}
+
+.tt-program strong {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.tt-program small {
+    display: block;
+    margin-top: 0.15rem;
+    color: var(--text-muted);
+    font-size: 0.73rem;
+    line-height: 1.4;
+}
+
+/* Month grid */
+.tt-months {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+    gap: 0.9rem;
+}
+
+.tt-month {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--grad-card);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-smooth), box-shadow var(--transition-smooth),
+        border-color var(--transition-smooth);
+}
+
+.tt-month:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-bright);
+}
+
+/* Calendar-style month header */
+.tt-month__head {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.7rem 0.9rem;
+    color: #ffffff;
+    background: var(--grad-primary);
+}
+
+.tt-month__head--gate {
+    background: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+}
+
+.tt-month__name {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+}
+
+.tt-month__year {
+    font-size: 0.72rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.tt-month__count {
+    flex-shrink: 0;
+    padding: 0.16rem 0.5rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.2);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.tt-month__body {
+    padding: 0.55rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+/* A single test row inside a month card */
+.tt-event {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.55rem;
+    border-radius: var(--radius-md);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-left: 3px solid var(--accent);
+    transition: transform var(--transition-fast), border-color var(--transition-fast),
+        box-shadow var(--transition-fast);
+}
+
+.tt-event:hover {
+    transform: translateX(2px);
+    box-shadow: var(--shadow-sm);
+    border-color: var(--border);
+}
+
+.tt-event--jee {
+    border-left-color: var(--primary-bright);
+}
+
+.tt-event--gate {
+    border-left-color: #7C3AED;
+}
+
+.tt-event--grand {
+    border-left-color: var(--warning);
+    background: color-mix(in srgb, var(--warning) 12%, var(--bg-surface));
+    border-color: color-mix(in srgb, var(--warning) 40%, transparent);
+}
+
+.tt-event--reconduct {
+    border-left-color: var(--accent-success);
+    background: color-mix(in srgb, var(--accent-success) 10%, var(--bg-surface));
+    border-color: color-mix(in srgb, var(--accent-success) 34%, transparent);
+}
+
+/* Calendar date chip */
+.tt-date {
+    flex-shrink: 0;
+    width: 3.05rem;
+    text-align: center;
+    padding: 0.3rem 0.15rem;
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface-soft);
+    border: 1px solid var(--border);
+    line-height: 1.15;
+}
+
+.tt-date__day {
+    display: block;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--primary-bright);
+}
+
+.tt-date__num {
+    display: block;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.tt-event__info {
+    min-width: 0;
+    flex: 1;
+}
+
+.tt-event__label {
+    display: block;
+    font-size: 0.79rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.3;
+}
+
+.tt-event__meta {
+    display: block;
+    margin-top: 0.1rem;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.tt-event__shift {
+    display: inline-block;
+    margin-top: 0.2rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--warning) 18%, transparent);
+    color: #92400e;
+    font-size: 0.63rem;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+html[data-theme="dark"] .tt-event__shift {
+    color: #fcd34d;
+    background: rgba(245, 158, 11, 0.18);
+}
+
+.tt-month__foot {
+    margin-top: auto;
+    padding: 0.5rem 0.55rem 0.1rem;
+    border-top: 1px dashed var(--border);
+    font-size: 0.67rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* Official examination callout inside a month */
+.tt-official {
+    margin: 0 0.1rem;
+    padding: 0.45rem 0.55rem;
+    border-radius: var(--radius-md);
+    border: 1px dashed color-mix(in srgb, var(--danger) 45%, transparent);
+    background: color-mix(in srgb, var(--danger) 9%, transparent);
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    line-height: 1.5;
+}
+
+.tt-official strong {
+    display: block;
+    color: var(--danger);
+    font-size: 0.73rem;
+    margin-bottom: 0.1rem;
+}
+
+/* Legend */
+.tt-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem 0.9rem;
+    margin-top: 1rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    font-size: 0.74rem;
+    color: var(--text-secondary);
+}
+
+.tt-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.tt-legend i {
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.tt-legend .lg-jee { background: var(--primary-bright); }
+.tt-legend .lg-gate { background: #7C3AED; }
+.tt-legend .lg-grand { background: var(--warning); }
+.tt-legend .lg-reconduct { background: var(--accent-success); }
+.tt-legend .lg-official { background: var(--danger); }
+
+
+/* --------------------------------------------------------------------------
+   2.2 NOTIFICATIONS
+   -------------------------------------------------------------------------- */
+
+.nt-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    margin-bottom: 1.2rem;
+    padding: clamp(0.85rem, 2.6vw, 1.15rem);
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--danger);
+    background: color-mix(in srgb, var(--danger) 12%, var(--bg-surface));
+    box-shadow: 0 8px 26px color-mix(in srgb, var(--danger) 22%, transparent);
+}
+
+.nt-alert__icon {
+    flex-shrink: 0;
+    width: 2.4rem;
+    height: 2.4rem;
+    display: grid;
+    place-items: center;
+    font-size: 1.15rem;
+    border-radius: 50%;
+    background: var(--danger);
+    color: #ffffff;
+    animation: ntPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes ntPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 color-mix(in srgb, var(--danger) 55%, transparent); }
+    50% { transform: scale(1.06); box-shadow: 0 0 0 9px transparent; }
+}
+
+.nt-alert__body {
+    min-width: 0;
+}
+
+.nt-alert__body p {
+    margin: 0;
+    color: var(--danger);
+    font-weight: 800;
+    font-size: clamp(0.9rem, 2.6vw, 1.02rem);
+    line-height: 1.55;
+}
+
+html[data-theme="dark"] .nt-alert__body p {
+    color: #fca5a5;
+}
+
+.nt-alert__body small {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+.nt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 0.95rem;
+}
+
+.nt-panel {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--grad-card);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+.nt-panel:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.nt-panel__head {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.8rem 0.95rem;
+    color: #ffffff;
+    background: var(--grad-primary);
+}
+
+.nt-panel__head--gate {
+    background: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+}
+
+.nt-panel__head h3 {
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.nt-panel__head small {
+    display: block;
+    font-size: 0.68rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.nt-panel__icon {
+    flex-shrink: 0;
+    width: 2.1rem;
+    height: 2.1rem;
+    display: grid;
+    place-items: center;
+    font-size: 1.05rem;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.nt-panel__body {
+    padding: 0.85rem 0.95rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+/* Hook for a labelled group of date cards inside a notification panel. */
+.nt-block {
+    min-width: 0;
+}
+
+.nt-block__label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0 0 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.nt-block__label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+/* Current month — dates in RED */
+.nt-block--current .nt-block__label {
+    color: var(--danger);
+}
+
+html[data-theme="dark"] .nt-block--current .nt-block__label {
+    color: #fca5a5;
+}
+
+.nt-cards {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.nt-card {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.6rem 0.7rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    border-left: 4px solid var(--primary-bright);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.nt-card:hover {
+    transform: translateX(3px);
+    box-shadow: var(--shadow-md);
+}
+
+.nt-card--gate {
+    border-left-color: #7C3AED;
+}
+
+.nt-card--current {
+    border: 1.5px solid var(--danger);
+    border-left: 4px solid var(--danger);
+    background: color-mix(in srgb, var(--danger) 8%, var(--bg-surface));
+}
+
+.nt-card--grand {
+    border: 1.5px solid var(--warning);
+    border-left: 4px solid var(--warning);
+    background: color-mix(in srgb, var(--warning) 12%, var(--bg-surface));
+}
+
+.nt-card__date {
+    flex-shrink: 0;
+    text-align: center;
+    min-width: 3.4rem;
+    padding: 0.3rem 0.3rem;
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface-soft);
+    border: 1px solid var(--border);
+    line-height: 1.15;
+}
+
+.nt-card--current .nt-card__date {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: #ffffff;
+}
+
+.nt-card--grand .nt-card__date {
+    background: var(--warning);
+    border-color: var(--warning);
+    color: #ffffff;
+}
+
+.nt-card__date b {
+    display: block;
+    font-size: 0.62rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.nt-card__date span {
+    display: block;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+/* Prominent RED date text for the current month */
+.nt-card--current .nt-card__label,
+.nt-card--current .nt-card__date-text {
+    color: var(--danger);
+    font-weight: 800;
+}
+
+html[data-theme="dark"] .nt-card--current .nt-card__label,
+html[data-theme="dark"] .nt-card--current .nt-card__date-text {
+    color: #fca5a5;
+}
+
+.nt-card__info {
+    min-width: 0;
+    flex: 1;
+}
+
+.nt-card__label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+}
+
+.nt-card__date-text {
+    display: block;
+    margin-top: 0.12rem;
+    font-size: 0.73rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.nt-pill {
+    flex-shrink: 0;
+    padding: 0.14rem 0.45rem;
+    border-radius: 999px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1.6;
+    white-space: nowrap;
+}
+
+.nt-pill--red {
+    color: #ffffff;
+    background: var(--danger);
+}
+
+.nt-pill--amber {
+    color: #ffffff;
+    background: var(--warning);
+}
+
+.nt-pill--green {
+    color: #ffffff;
+    background: var(--accent-success);
+}
+
+.nt-pill--mute {
+    color: var(--text-secondary);
+    background: var(--bg-surface-soft);
+    border: 1px solid var(--border);
+}
+
+.nt-empty {
+    padding: 0.7rem 0.75rem;
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--border);
+    background: var(--bg-surface-soft);
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    line-height: 1.55;
+}
+
+.nt-official-list {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.nt-official {
+    padding: 0.6rem 0.7rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--danger);
+    background: var(--bg-surface);
+}
+
+.nt-official strong {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    line-height: 1.3;
+}
+
+.nt-official span {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.73rem;
+    color: var(--danger);
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.nt-official small {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+}
+
+.nt-flag {
+    display: inline-block;
+    margin-left: 0.35rem;
+    padding: 0.08rem 0.4rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--warning) 22%, transparent);
+    color: #92400e;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    vertical-align: middle;
+}
+
+html[data-theme="dark"] .nt-flag {
+    color: #fcd34d;
+}
+
+
+/* --------------------------------------------------------------------------
+   2.3 GUIDELINES
+   -------------------------------------------------------------------------- */
+
+.gl-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 0.9rem;
+}
+
+.gl-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--grad-card);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-smooth), box-shadow var(--transition-smooth),
+        border-color var(--transition-smooth);
+}
+
+.gl-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.gl-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: var(--grad-accent);
+}
+
+.gl-card--warning::before { background: linear-gradient(90deg, #F59E0B, #F97316); }
+.gl-card--danger::before  { background: linear-gradient(90deg, #DC2626, #EA580C); }
+
+.gl-card__head {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.9rem 1rem 0.6rem;
+}
+
+.gl-card__icon {
+    flex-shrink: 0;
+    width: 2.3rem;
+    height: 2.3rem;
+    display: grid;
+    place-items: center;
+    font-size: 1.1rem;
+    border-radius: var(--radius-md);
+    background: var(--bg-surface-soft);
+    border: 1px solid var(--border);
+}
+
+.gl-card--warning .gl-card__icon {
+    background: color-mix(in srgb, var(--warning) 16%, transparent);
+    border-color: color-mix(in srgb, var(--warning) 40%, transparent);
+}
+
+.gl-card--danger .gl-card__icon {
+    background: color-mix(in srgb, var(--danger) 14%, transparent);
+    border-color: color-mix(in srgb, var(--danger) 38%, transparent);
+}
+
+.gl-card__head h3 {
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.25;
+}
+
+.gl-card__body {
+    padding: 0 1rem 1rem;
+}
+
+.gl-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.5rem;
+}
+
+.gl-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    line-height: 1.6;
+}
+
+.gl-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1.05rem;
+    height: 1.05rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--accent-success);
+    color: #ffffff;
+    font-size: 0.6rem;
+    font-weight: 800;
+}
+
+.gl-card--warning .gl-list li::before {
+    content: '!';
+    background: var(--warning);
+}
+
+.gl-card--danger .gl-list li::before {
+    content: '✕';
+    background: var(--danger);
+}
+
+/* Penalty table */
+.gl-penalty {
+    margin-top: 1.3rem;
+}
+
+.gl-table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    background: var(--bg-surface);
+}
+
+.exams-table {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.exams-table caption {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    background: var(--bg-surface-soft);
+    border-bottom: 1px solid var(--border);
+}
+
+.exams-table th,
+.exams-table td {
+    padding: 0.7rem 0.8rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border-subtle);
+    line-height: 1.55;
+}
+
+.exams-table thead th {
+    position: sticky;
+    top: 0;
+    background: var(--bg-surface-soft);
+    color: var(--text-primary);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.exams-table tbody tr:nth-child(even) {
+    background: color-mix(in srgb, var(--bg-surface-soft) 55%, transparent);
+}
+
+.exams-table tbody tr {
+    transition: background-color var(--transition-fast);
+}
+
+.exams-table tbody tr:hover {
+    background: color-mix(in srgb, var(--primary-bright) 9%, transparent);
+}
+
+.exams-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.exams-table td {
+    color: var(--text-secondary);
+}
+
+.exams-table td strong {
+    color: var(--text-primary);
+}
+
+.exams-table .cell-level {
+    white-space: nowrap;
+}
+
+.level-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.level-chip--warning {
+    color: #92400e;
+    background: #FDE68A;
+}
+
+.level-chip--danger {
+    color: #ffffff;
+    background: var(--danger);
+}
+
+.level-chip--critical {
+    color: #ffffff;
+    background: #7F1D1D;
+}
+
+html[data-theme="dark"] .level-chip--warning {
+    color: #fcd34d;
+    background: rgba(245, 158, 11, 0.2);
+}
+
+.exams-table .cell-fine {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.exams-validity {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.7rem;
+    margin-top: 1rem;
+}
+
+.exams-validity__item {
+    padding: 0.8rem 0.9rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.exams-validity__item strong {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--primary-bright);
+    margin-bottom: 0.25rem;
+}
+
+.exams-validity__item p {
+    margin: 0;
+    font-size: 0.79rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+
+/* --------------------------------------------------------------------------
+   2.4 SCHEMAS
+   -------------------------------------------------------------------------- */
+
+.sc-grid {
+    display: grid;
+    gap: 1.1rem;
+}
+
+.sc-block {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--grad-card);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.sc-block__head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding: 0.9rem 1rem;
+    color: #ffffff;
+    background: var(--grad-primary);
+}
+
+.sc-block__head--gate {
+    background: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+}
+
+.sc-block__head h3 {
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.02rem;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.sc-block__head small {
+    display: block;
+    font-size: 0.7rem;
+    opacity: 0.92;
+    font-weight: 500;
+}
+
+.sc-block__body {
+    padding: 1rem;
+}
+
+.sc-block__summary {
+    margin: 0 0 0.9rem;
+    font-size: 0.83rem;
+    line-height: 1.65;
+    color: var(--text-secondary);
+}
+
+.sc-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 0.55rem;
+    margin-bottom: 1rem;
+}
+
+.sc-meta__item {
+    padding: 0.6rem 0.7rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+}
+
+.sc-meta__item span {
+    display: block;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+}
+
+.sc-meta__item strong {
+    display: block;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+
+.sc-subhead {
+    margin: 1.1rem 0 0.55rem;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.sc-rules {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.45rem;
+}
+
+.sc-rules li {
+    position: relative;
+    padding: 0.6rem 0.7rem 0.6rem 2.1rem;
+    border-radius: var(--radius-md);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+.sc-rules li::before {
+    content: '▸';
+    position: absolute;
+    left: 0.75rem;
+    top: 0.58rem;
+    color: var(--accent);
+    font-weight: 800;
+}
+
+.sc-source {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+    padding: 0.65rem 0.8rem;
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--border);
+    background: var(--bg-surface-soft);
+    font-size: 0.74rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+}
+
+.sc-source a {
+    color: var(--primary-bright);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.exams-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+    padding: 0.55rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.83rem;
+    font-weight: 600;
+    transition: transform var(--transition-fast), border-color var(--transition-fast),
+        color var(--transition-fast);
+}
+
+.exams-back:hover,
+.exams-back:focus-visible {
+    transform: translateX(-3px);
+    border-color: var(--primary-bright);
+    color: var(--primary-bright);
+    outline: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   3. RESPONSIVE
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+    .tt-months {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+}
+
+/* The dropdown trigger is a <button>, so the existing responsive rules in
+   responsive.css (which only target `.nav-links a`) never reach it. Without
+   these the trigger would stay at 0.85rem on a 360px phone while its sibling
+   links shrink to 0.62rem, forcing the header to wrap and overflow. These
+   mirror the home.css / responsive.css values exactly. */
+@media (max-width: 768px) {
+    .nav-dropdown-trigger {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.4rem;
+    }
+
+    .nav-caret {
+        width: 0.36rem;
+        height: 0.36rem;
+        border-right-width: 1.5px;
+        border-bottom-width: 1.5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-dropdown-trigger {
+        font-size: 0.62rem;
+        padding: 0.15rem 0.24rem;
+    }
+
+    .nav-caret {
+        width: 0.3rem;
+        height: 0.3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .exams-wrap {
+        padding-left: 0.6rem;
+        padding-right: 0.6rem;
+    }
+
+    .exams-subnav {
+        top: calc(var(--pinnacle-header-height, 0px) + 0.35rem);
+        padding: 0.4rem;
+        gap: 0.3rem;
+    }
+
+    .exams-subnav a {
+        flex: 1 1 calc(50% - 0.3rem);
+        padding: 0.5rem 0.4rem;
+        font-size: 0.74rem;
+    }
+
+    .exams-section {
+        scroll-margin-top: calc(var(--pinnacle-header-height, 0px) + 6.5rem);
+    }
+
+    .tt-months,
+    .tt-programs,
+    .nt-grid,
+    .gl-grid,
+    .sc-meta,
+    .exams-validity {
+        grid-template-columns: 1fr;
+    }
+
+    .tt-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tt-toolbar__actions .exams-btn {
+        flex: 1 1 100%;
+    }
+
+    .nt-alert {
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+
+    .gl-table-scroll {
+        border-radius: var(--radius-md);
+    }
+}
+
+@media (max-width: 480px) {
+    .exams-section__head h2 {
+        font-size: 1.1rem;
+    }
+
+    .tt-event {
+        gap: 0.45rem;
+        padding: 0.45rem;
+    }
+
+    .tt-date {
+        width: 2.75rem;
+    }
+
+    .tt-date__num {
+        font-size: 0.95rem;
+    }
+
+    .tt-event__label {
+        font-size: 0.74rem;
+    }
+
+    .nt-card {
+        padding: 0.5rem 0.55rem;
+        gap: 0.5rem;
+    }
+
+    .nt-card__date {
+        min-width: 3rem;
+    }
+
+    .nt-card__label {
+        font-size: 0.76rem;
+    }
+}
+
+/* Wide screens: cap the sticky sub-nav so it does not stretch */
+@media (min-width: 1280px) {
+    .exams-subnav {
+        max-width: 100%;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   4. PRINT — clean timetable / guideline output
+   -------------------------------------------------------------------------- */
+
+@media print {
+    .exams-subnav,
+    .tt-toolbar,
+    .exams-back,
+    .nt-alert__icon,
+    .nav-scroll-btn {
+        display: none !important;
+    }
+
+    body.exams-page {
+        padding: 0;
+        background: #ffffff;
+    }
+
+    .exams-wrap {
+        max-width: none;
+        padding: 0;
+    }
+
+    .exams-section {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .tt-month,
+    .exams-card,
+    .nt-panel,
+    .gl-card,
+    .sc-block {
+        box-shadow: none !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .gl-table-scroll,
+    .exams-table {
+        overflow: visible !important;
+        min-width: 0 !important;
+    }
+
+    .exams-table thead th {
+        position: static;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   5. REDUCED MOTION
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .nav-dropdown-menu,
+    .nav-dropdown-trigger::after,
+    .nav-caret,
+    .nav-dropdown-item,
+    .tt-month,
+    .tt-event,
+    .exams-card,
+    .nt-panel,
+    .nt-card,
+    .gl-card,
+    .exams-btn,
+    .exams-back,
+    .exams-subnav a {
+        transition: none !important;
+        animation: none !important;
+    }
+
+    .nt-alert__icon {
+        animation: none !important;
+    }
+}

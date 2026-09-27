@@ -1,5 +1,37 @@
 let currentStudent=null;
 
+// The fee portal always runs on the 15 minute payment session. Without this,
+// the page inherits whatever session was already in sessionStorage (a 25
+// minute portal session from the student portal) or falls back to the shared
+// 25 minute idle placeholder, so the clock showed 25:00 until the student ID
+// was verified. Starting the payment session on load keeps the displayed
+// countdown at 15:00 for the whole time the student is on this page.
+document.addEventListener('DOMContentLoaded', function () {
+
+    if (!window.PinnacleSession) return;
+
+    let session = null;
+
+    try {
+        session = JSON.parse(
+            sessionStorage.getItem('pinnacle_portal_session')
+        );
+    } catch (error) {
+        session = null;
+    }
+
+    const livePaymentSession =
+        session &&
+        session.role === 'student' &&
+        session.type === 'payment' &&
+        session.expiresAt > Date.now();
+
+    if (!livePaymentSession) {
+
+        PinnacleSession.start('student', 'payment');
+    }
+});
+
 async function fetchStudentDetails(){
 
     const studentId =
