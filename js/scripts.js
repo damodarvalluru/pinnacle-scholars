@@ -351,6 +351,37 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('load', syncStickyHeaderOffset);
 window.addEventListener('resize', syncStickyHeaderOffset);
 
+// Mobile menu toggle
+function initMobileMenu() {
+    const toggleBtn = document.getElementById('mobileMenuToggle');
+    const navMenu = document.getElementById('mobileNavMenu');
+    if (!toggleBtn || !navMenu) return;
+    
+    toggleBtn.addEventListener('click', function() {
+        const isOpen = toggleBtn.getAttribute('aria-expanded') === 'true';
+        toggleBtn.setAttribute('aria-expanded', !isOpen);
+        navMenu.classList.toggle('mobile-menu-open', !isOpen);
+    });
+    
+    // Close menu when clicking nav links
+    navMenu.querySelectorAll('a, .nav-dropdown-trigger').forEach(function(el) {
+        el.addEventListener('click', function() {
+            toggleBtn.setAttribute('aria-expanded', 'false');
+            navMenu.classList.remove('mobile-menu-open');
+        });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!navMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
+            toggleBtn.setAttribute('aria-expanded', 'false');
+            navMenu.classList.remove('mobile-menu-open');
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', initMobileMenu);
+
 // Auto-toggle scroll button direction based on scroll position
 window.addEventListener('scroll', function() {
     const scrollBtn = document.getElementById('globalScrollBtn');

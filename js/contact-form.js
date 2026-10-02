@@ -76,10 +76,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 // The DB write always succeeds first on the backend, so the
                 // enquiry itself is never lost even if a notification channel
                 // is down — keep the visitor-facing message reassuring.
-                showContactStatus(
-                    "✅ Thank you! Your message has been sent successfully.",
-                    "success"
-                );
+                // Flip card to show success
+                const contactCard = document.querySelector('.contact-card');
+                if (contactCard) {
+                    contactCard.classList.add('flipped');
+                }
+                // Clear status box
+                statusBox.textContent = '';
+                statusBox.className = 'contact-status';
 
                 // Still log the real per-channel result to the console so
                 // whoever is testing the form (you) can see instantly if
