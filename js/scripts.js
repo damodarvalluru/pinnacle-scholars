@@ -100,20 +100,21 @@ function initHomeAnimations() {
 function syncStickyHeaderOffset() {
     const header = document.querySelector('body > header');
     const updates = document.querySelector('.notice-ticker-container');
-    if (!header || !updates) return;
+    if (!header) return;
 
-    const gap = 0;
-    const headerStackHeight = header.offsetHeight + gap;
-    const contentOffset = headerStackHeight + updates.offsetHeight;
+    const headerHeight = header.offsetHeight;
+    const updatesHeight = updates ? updates.offsetHeight : 0;
+    const headerStackHeight = headerHeight;
+    const contentOffset = headerStackHeight + updatesHeight;
 
-    document.documentElement.style.setProperty(
-        '--site-header-stack-height',
-        `${headerStackHeight}px`
-    );
-    document.documentElement.style.setProperty(
-        '--site-topbar-content-height',
-        `${contentOffset}px`
-    );
+    document.documentElement.style.setProperty('--site-header-stack-height', `${headerStackHeight}px`);
+    document.documentElement.style.setProperty('--site-topbar-content-height', `${contentOffset}px`);
+    document.documentElement.style.setProperty('--pinnacle-header-height', `${headerStackHeight}px`);
+
+    document.body.style.paddingTop = `${contentOffset}px`;
+    if (updates) {
+        updates.style.top = `${headerStackHeight}px`;
+    }
 }
 
 function initMasterYourMindMedia() {
@@ -337,6 +338,13 @@ function isolateRequestedExam() {
     });
 
     document.title = copy.title + ' | Pinnacle Scholars Academy';
+
+    // Direct entry to the requested test portal with its instructions screen
+    setTimeout(() => {
+        if (typeof startTest === 'function') {
+            startTest(requested);
+        }
+    }, 150);
 }
 
 // Initialize animations when DOM is ready
@@ -354,17 +362,18 @@ window.addEventListener('resize', syncStickyHeaderOffset);
 // Mobile menu toggle
 function initMobileMenu() {
     const toggleBtn = document.getElementById('mobileMenuToggle');
-    const navMenu = document.getElementById('mobileNavMenu');
+    const navMenu = document.getElementById('mobileNavMenu') || document.querySelector('.nav-links');
     if (!toggleBtn || !navMenu) return;
     
-    toggleBtn.addEventListener('click', function() {
+    toggleBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
         const isOpen = toggleBtn.getAttribute('aria-expanded') === 'true';
         toggleBtn.setAttribute('aria-expanded', !isOpen);
         navMenu.classList.toggle('mobile-menu-open', !isOpen);
     });
     
-    // Close menu when clicking nav links
-    navMenu.querySelectorAll('a, .nav-dropdown-trigger').forEach(function(el) {
+    // Close menu ONLY when clicking actual navigation links that navigate (not dropdown triggers)
+    navMenu.querySelectorAll('a').forEach(function(el) {
         el.addEventListener('click', function() {
             toggleBtn.setAttribute('aria-expanded', 'false');
             navMenu.classList.remove('mobile-menu-open');
@@ -374,6 +383,13 @@ function initMobileMenu() {
     // Close menu when clicking outside
     document.addEventListener('click', function(e) {
         if (!navMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
+            toggleBtn.setAttribute('aria-expanded', 'false');
+            navMenu.classList.remove('mobile-menu-open');
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
             toggleBtn.setAttribute('aria-expanded', 'false');
             navMenu.classList.remove('mobile-menu-open');
         }

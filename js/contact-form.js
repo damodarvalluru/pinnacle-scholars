@@ -1,26 +1,38 @@
 /* ==========================================================
    CONTACT FORM — FRONTEND LOGIC
    Validates the form, posts it to the backend contact route,
-   and shows an inline success/error status message. Uses the
-   same backend base URL already used by the rest of the site
-   (js/result-portal.js, js/enrollment.js, etc.).
+   and handles the 3D flip-card animation on successful submission.
    ========================================================== */
 
 const CONTACT_API_BASE = "https://pinnacle-backend-5i7n.onrender.com";
 
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("contactForm");
-    if (!form) return; // Contact section not present on this page
+    if (!form) return;
 
+    const card = document.getElementById("contactCard") || document.querySelector(".contact-card");
     const statusBox = document.getElementById("contactStatus");
     const submitBtn = document.getElementById("contactSubmitBtn");
     const dobInput = document.getElementById("contactDob");
+    const sendAnotherBtn = document.getElementById("contactSendAnotherBtn");
 
-    // Restrict the Date of Birth field to today and earlier — a date of
-    // birth can never be in the future. Setting `max` dynamically (rather
-    // than hardcoding it in the HTML) keeps it correct on every visit.
+    // Restrict Date of Birth to today and earlier
     if (dobInput) {
         dobInput.max = new Date().toISOString().split("T")[0];
+    }
+
+    // Reset and flip back to front when user wants to send another message
+    if (sendAnotherBtn) {
+        sendAnotherBtn.addEventListener("click", function () {
+            if (card) {
+                card.classList.remove("flipped");
+            }
+            form.reset();
+            if (statusBox) {
+                statusBox.textContent = "";
+                statusBox.className = "contact-status";
+            }
+        });
     }
 
     form.addEventListener("submit", async function (e) {
@@ -50,8 +62,6 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Future-date guard — mirrors the same check enforced on the
-        // backend (js/enrollment.js uses this exact pattern already).
         const selectedDob = new Date(dob);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -73,33 +83,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const data = await response.json();
 
             if (data.success) {
-                // The DB write always succeeds first on the backend, so the
-                // enquiry itself is never lost even if a notification channel
-                // is down — keep the visitor-facing message reassuring.
-                // Flip card to show success
-                const contactCard = document.querySelector('.contact-card');
-                if (contactCard) {
-                    contactCard.classList.add('flipped');
+                // Success: flip the card to the back to display success message
+                if (card) {
+                    card.classList.add("flipped");
                 }
-                // Clear status box
-                statusBox.textContent = '';
-                statusBox.className = 'contact-status';
-
-                // Still log the real per-channel result to the console so
-                // whoever is testing the form (you) can see instantly if
-                // email/WhatsApp delivery failed, without needing to check
-                // server logs. For a full live self-check any time, visit:
-                // https://pinnacle-backend-5i7n.onrender.com/api/contact/diagnostics
-                if (!data.emailSent || !data.whatsappSent) {
-                    console.warn("Contact form: one or more notification channels failed.", {
-                        emailSent: data.emailSent,
-                        emailError: data.emailError,
-                        whatsappSent: data.whatsappSent,
-                        whatsappError: data.whatsappError,
-                        diagnostics: `${CONTACT_API_BASE}/api/contact/diagnostics`
-                    });
+                if (statusBox) {
+                    statusBox.textContent = "";
+                    statusBox.className = "contact-status";
                 }
-
                 form.reset();
             } else {
                 showContactStatus(
@@ -120,6 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function showContactStatus(msg, type) {
+        if (!statusBox) return;
         statusBox.textContent = msg;
         statusBox.className = `contact-status show ${type}`;
     }

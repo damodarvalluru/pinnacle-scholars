@@ -34,7 +34,7 @@
         </h1>
     </div>
 
-    <nav class="nav-links" aria-label="Main navigation">
+    <nav class="nav-links" id="mobileNavMenu" aria-label="Main navigation">
         <a href="index.html">Home</a>
 
         <!-- SYLLABUS -->
@@ -99,8 +99,15 @@
                 <a class="nav-dropdown-item" role="menuitem" href="faculty-portal.html" target="_blank" rel="noopener noreferrer">
                     <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">👨‍🏫</span>
                     <span class="nav-dd-text">
-                        <strong>Faculty Login</strong>
+                        <strong>Faculty Portal</strong>
                         <small>Publish papers and review results</small>
+                    </span>
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="result-portal.html" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">📊</span>
+                    <span class="nav-dd-text">
+                        <strong>Result Portal</strong>
+                        <small>Check scorecards and monthly rankings</small>
                     </span>
                 </a>
                 <a class="nav-dropdown-item" role="menuitem" href="career-ai/index.html" target="_blank" rel="noopener noreferrer">
@@ -110,7 +117,7 @@
                         <small>Resume, mock interviews, jobs</small>
                     </span>
                 </a>
-                <a class="nav-dropdown-item" role="menuitem" href="index.html#portals" target="_blank" rel="noopener noreferrer">
+                <a class="nav-dropdown-item" role="menuitem" href="index.html#portals">
                     <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">🔗</span>
                     <span class="nav-dd-text">
                         <strong>All Portals</strong>
@@ -128,14 +135,14 @@
                 Examinations <span class="nav-caret" aria-hidden="true"></span>
             </button>
             <div class="nav-dropdown-menu" role="menu">
-                <a class="nav-dropdown-item" role="menuitem" href="index.html?exam=jee#take-test" target="_blank" rel="noopener noreferrer">
+                <a class="nav-dropdown-item" role="menuitem" href="index.html?exam=jee" target="_blank" rel="noopener noreferrer">
                     <span class="nav-dd-icon nav-dd-icon--jee" aria-hidden="true">📘</span>
                     <span class="nav-dd-text">
                         <strong>JEE Test</strong>
                         <small>75 questions · 300 marks · 180 min</small>
                     </span>
                 </a>
-                <a class="nav-dropdown-item" role="menuitem" href="index.html?exam=gate#take-test" target="_blank" rel="noopener noreferrer">
+                <a class="nav-dropdown-item" role="menuitem" href="index.html?exam=gate" target="_blank" rel="noopener noreferrer">
                     <span class="nav-dd-icon nav-dd-icon--gate" aria-hidden="true">⚙️</span>
                     <span class="nav-dd-text">
                         <strong>GATE Test</strong>
@@ -222,7 +229,8 @@
             <p class="tt-toolbar__text" id="ttProgramSummary">Showing every monthly test.</p>
             <div class="tt-toolbar__actions">
                 <button type="button" class="exams-btn" data-print-timetable>🖨️ Print / Save as PDF</button>
-                <a class="exams-btn exams-btn--primary" href="index.html#take-test">▶ Start a Test</a>
+                <a class="exams-btn exams-btn--primary" id="ttStartJeeBtn" href="index.html?exam=jee" title="Start Monthly JEE Test">▶ Start JEE Test</a>
+                <a class="exams-btn exams-btn--gate" id="ttStartGateBtn" href="index.html?exam=gate" title="Start Monthly GATE Test" style="background: linear-gradient(135deg, #0e7490, #06b6d4); color: #fff; text-decoration: none; padding: 0.55rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.4rem;">⚙️ Start GATE Test</a>
             </div>
         </div>
 

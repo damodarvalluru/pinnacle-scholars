@@ -191,6 +191,12 @@
         }
 
         row.appendChild(info);
+
+        const startLink = h('a', 'tt-event-start-btn', 'Start Test ▶');
+        startLink.href = 'index.html?exam=' + meta.program;
+        startLink.title = 'Start ' + meta.program.toUpperCase() + ' Test';
+        row.appendChild(startLink);
+
         return row;
     }
 
@@ -320,6 +326,21 @@
             summary.textContent = activeProgram === 'all'
                 ? 'Showing every monthly test, the December Grand Test and all re-conduct Saturdays.'
                 : 'Showing ' + activeProgram.toUpperCase() + ' monthly tests only.';
+        }
+
+        const jeeBtn = byId('ttStartJeeBtn');
+        const gateBtn = byId('ttStartGateBtn');
+        if (jeeBtn && gateBtn) {
+            if (activeProgram === 'jee') {
+                jeeBtn.style.display = 'inline-flex';
+                gateBtn.style.display = 'none';
+            } else if (activeProgram === 'gate') {
+                jeeBtn.style.display = 'none';
+                gateBtn.style.display = 'inline-flex';
+            } else {
+                jeeBtn.style.display = 'inline-flex';
+                gateBtn.style.display = 'inline-flex';
+            }
         }
     }
 

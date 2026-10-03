@@ -1,1 +1,613 @@
--NoNewline
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pinnacle Scholars Academy | Noida</title>
+    
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/premium-fx.css">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/contact-form.css">
+    <link rel="stylesheet" href="css/test.css">
+    <link rel="stylesheet" href="css/session-manager.css">
+    <link rel="stylesheet" href="css/portal-premium.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/examinations.css">
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" defer></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <script src="js/scripts.js"></script>
+    <script src="js/examination-data.js" defer></script>
+    <script src="js/nav-dropdown.js" defer></script>
+    <script src="js/celestial-intro.js" defer></script>
+    <script src="js/contact-form.js" defer></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        window.addEventListener('load', () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' }));
+    </script>
+</head>
+<body>
+
+    <!-- =========================
+WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
+========================= -->
+<div class="career-intro" id="welcomeIntro" aria-label="Pinnacle Scholars Academy opening experience" aria-live="polite">
+    <div class="intro-grid"></div>
+    <div class="intro-orb intro-orb-one"></div>
+    <div class="intro-orb intro-orb-two"></div>
+    <div class="intro-network"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="intro-copy">
+        <span class="intro-kicker">WELCOME TO</span>
+        <h1 aria-label="PINNACLE SCHOLARS ACADEMY" id="pinnacleDropTitle">
+            <!-- Populated dynamically by celestial-intro.js with letter-drop spans -->
+        </h1>
+        <p id="pinnacleDropTagline">NOIDA'S PREMIER ACADEMIC ACADEMY</p>
+    </div>
+</div>
+
+<!-- Floating Dual-Direction Circular Navigation Toggle -->
+<button class="nav-scroll-btn pointing-down" id="globalScrollBtn" onclick="handleNavigation()" title="Navigate Page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 6l6 6-6 6"/>
+    </svg>
+</button>
+
+<header>
+    <!-- Mobile Hamburger Toggle (Visible on Mobile only, to the left of Institute Name) -->
+    <button type="button" class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileNavMenu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+    </button>
+    <!-- UNIQUE BRAND HEADER CONTAINER WITH FALLING STAR ENGINE EFFECT -->
+<div class="brand-header-wrapper">
+    <!-- CSS Passive Star Nodes -->
+    <div class="falling-star star-1"></div>
+    <div class="falling-star star-2"></div>
+    <div class="falling-star star-3"></div>
+    <div class="falling-star star-4"></div>
+
+    <!-- MAIN BRAND HEADING -->
+    <h1 style="margin: 0; line-height: 1.15; text-transform: uppercase; pointer-events: auto;">
+        <!-- PINNACLE: Set in Cinzel font for deep institutional authority -->
+        <span style="font-family: 'Cinzel', serif; font-weight: 900; font-size: 32px; background: linear-gradient(135deg, #f403e8 20%, #ff00e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px;">PINNACLE</span>
+        <!-- SCHOLARS ACADEMY: Set in modern ultra-crisp Inter for stark stylistic contrast -->
+        <span style="font-family: 'Inter', sans-serif; font-weight: 300; font-size: 15px; color: #ed8936; letter-spacing: 6.5px; display: inline-block; margin-top: 2px; padding-left: 4px;">
+            SCHOLARS <span style="font-weight: 800; color: #0cf827; letter-spacing: 4px;">ACADEMY</span>
+        </span>
+    </h1>
+</div>   
+
+<nav class="nav-links" id="mobileNavMenu" aria-label="Main navigation">
+        <!-- SYLLABUS -->
+        <div class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+                Syllabus <span class="nav-caret" aria-hidden="true"></span>
+            </button>
+            <div class="nav-dropdown-menu" role="menu">
+                <a class="nav-dropdown-item" role="menuitem" href="syllabus-jee.html" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon nav-dd-icon--jee" aria-hidden="true">📘</span>
+                    <span class="nav-dd-text">
+                        <strong>JEE Syllabus 2026</strong>
+                        <small>Physics ┬╖ Chemistry ┬╖ Mathematics ΓÇö view &amp; download</small>
+                    </span>
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="syllabus-gate.html" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon nav-dd-icon--gate" aria-hidden="true">⚙️</span>
+                    <span class="nav-dd-text">
+                        <strong>GATE Syllabus 2026</strong>
+                        <small>General Aptitude ┬╖ Engg. Maths ┬╖ Core ΓÇö view &amp; download</small>
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <a href="#faculty-directory-section">Faculty Directory</a>
+
+        <!-- FEES -->
+        <div class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+                Fees <span class="nav-caret" aria-hidden="true"></span>
+            </button>
+            <div class="nav-dropdown-menu" role="menu">
+                <a class="nav-dropdown-item" role="menuitem" href="fees-payment.html" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon" aria-hidden="true">≡ƒÆ│</span>
+                    <span class="nav-dd-text">
+                        <strong>Pay Fees Online</strong>
+                        <small>Secure payment via Razorpay</small>
+                    </span>
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="student-portal.html" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">≡ƒº╛</span>
+                    <span class="nav-dd-text">
+                        <strong>Full Fee at Student Portal</strong>
+                        <small>Balance dues are collected here</small>
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <!-- PORTALS -->
+        <div class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+                Portals <span class="nav-caret" aria-hidden="true"></span>
+            </button>
+            <div class="nav-dropdown-menu" role="menu">
+                <a class="nav-dropdown-item" role="menuitem" href="student-portal.html" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">🎓</span>
+                    <span class="nav-dd-text">
+                        <strong>Student Login</strong>
+                        <small>Attendance, fees and progress</small>
+                    </span>
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="faculty-portal.html" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">👨‍🏫</span>
+                    <span class="nav-dd-text">
+                        <strong>Faculty Portal</strong>
+                        <small>Publish papers and review results</small>
+                    </span>
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="result-portal.html" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">📊</span>
+                    <span class="nav-dd-text">
+                        <strong>Result Portal</strong>
+                        <small>Check scorecards and monthly rankings</small>
+                    </span>
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="career-ai/index.html" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon nav-dd-icon--gate" aria-hidden="true">⚡</span>
+                    <span class="nav-dd-text">
+                        <strong>GATE AI Career Portal</strong>
+                        <small>Resume, mock interviews, jobs</small>
+                    </span>
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="#portals">
+                    <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">🔗</span>
+                    <span class="nav-dd-text">
+                        <strong>All Portals</strong>
+                        <small>Every login in one place</small>
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <a href="enrollment.html">Enroll</a>
+
+        <!-- EXAMINATIONS -->
+        <div class="nav-dropdown nav-dropdown--end">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+                Examinations <span class="nav-caret" aria-hidden="true"></span>
+            </button>
+            <div class="nav-dropdown-menu" role="menu">
+                <a class="nav-dropdown-item" role="menuitem" href="index.html?exam=jee" onclick="if(window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/')) { startTest('jee'); return false; }">
+                    <span class="nav-dd-icon nav-dd-icon--jee" aria-hidden="true">📘</span>
+                    <span class="nav-dd-text">
+                        <strong>JEE Test</strong>
+                        <small>75 questions ┬╖ 300 marks ┬╖ 180 min</small>
+                    </span>
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="index.html?exam=gate" onclick="if(window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/')) { startTest('gate'); return false; }">
+                    <span class="nav-dd-icon nav-dd-icon--gate" aria-hidden="true">⚙️</span>
+                    <span class="nav-dd-text">
+                        <strong>GATE Test</strong>
+                        <small>Aptitude + core ┬╖ 180 min</small>
+                    </span>
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="result-portal.html" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">📊</span>
+                    <span class="nav-dd-text">
+                        <strong>Results</strong>
+                        <small>Scorecards and monthly ranking</small>
+                    </span>
+                </a>
+
+                <div class="nav-dropdown-sep" role="separator"></div>
+
+                <a class="nav-dropdown-item" role="menuitem" href="examinations.html?view=timetables" target="_blank" rel="noopener noreferrer" data-enhance="next-test">
+                    <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">🗓️</span>
+                    <span class="nav-dd-text">
+                        <strong>Timetables</strong>
+                        <small>Monthly test dates</small>
+                    </span>
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="examinations.html?view=notifications" target="_blank" rel="noopener noreferrer" data-enhance="reconduct">
+                    <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">📢</span>
+                    <span class="nav-dd-text">
+                        <strong>Notifications</strong>
+                        <small>Re-conduct and exam notices</small>
+                    </span>
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="examinations.html?view=guidelines" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">📋</span>
+                    <span class="nav-dd-text">
+                        <strong>Guidelines</strong>
+                        <small>Rules, conduct and penalties</small>
+                    </span>
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="examinations.html?view=schemas" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-dd-icon nav-dd-icon--plain" aria-hidden="true">🧮</span>
+                    <span class="nav-dd-text">
+                        <strong>Schemas</strong>
+                        <small>JEE &amp; GATE marking schemes</small>
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <a href="career-ai/index.html" class="nav-link-career-ai">ΓÜí AI Career Enhancement</a>
+        <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">≡ƒîÖ Dark Mode</button>
+</nav>
+</header>
+
+<!-- LIVE MOVING NOTICE SECTION (KEPT DIRECTLY BELOW THE BRAND/NAV BLOCK) -->
+<div class="notice-ticker-container">
+    <div class="notice-ticker-title">📢 LATEST UPDATES</div>
+    <div class="notice-ticker-viewport">
+        <div class="notice-ticker-track">
+            
+            <span class="ticker-item">
+                ≡ƒÜÇ <strong>PLACEMENT DRIVE :</strong> Tech Solutions registration ends soon. 
+                <a href="https://github.com" target="_blank" class="ticker-link">Apply via Matrix Portal ΓåÆ</a>
+            </span>
+            
+            <span class="ticker-item">
+                &#128220; <strong>ACADEMIC PROSPECTUS :</strong> Academic Prospectus has been officially finalized. 
+                <a onclick="downloadBrochure()" class="ticker-link">Download Academic Brochure ΓåÆ</a>
+            </span>
+
+            <span class="ticker-item">
+                &#128214;  <strong>ACADEMIC ENROLLMENT :</strong> Academic Enrollment Ends soon. 
+                <a href="#" onclick="window.location.href='enrollment.html'" target="_blank" class="ticker-link">Enroll via portal ΓåÆ</a>
+            </span>
+            
+            <span class="ticker-item">
+                ≡ƒÆ│ <strong>FEE REMINDER:</strong> Complete pending tuition balances to maintain live class links. 
+                <a href="#" onclick="window.location.href='fees-payment.html'" target="_blank" class="ticker-link">Pay Fast via Razorpay ΓåÆ</a>
+            </span>
+            
+            <span class="ticker-item">
+                ≡ƒÄô <strong>RESULTS :</strong> Students can check their Monthly test results at anytime. 
+                <a href="#" onclick="navigateTo('results')" class="ticker-link">Check Result ΓåÆ</a>
+            </span>
+
+            <span class="ticker-item">
+                 <strong> *** IMPORTANT NOTE :</strong> Students can pay the partial fees via fees payment portals only , 
+                 as Full Fees will be collected at student portal. ***         
+            </span>
+        </div>
+    </div>
+</div>
+
+<section class="hero master-your-mind" id="brouchure-section" aria-label="Master Your Mind">
+    <video class="master-your-mind-video" autoplay muted playsinline preload="metadata"
+        poster="https://assets.mixkit.co/videos/8802/8802-thumb-720-0.jpg"
+        aria-hidden="true">
+        <source src="https://assets.mixkit.co/videos/8802/8802-720.mp4" type="video/mp4">
+    </video>
+    <div class="master-your-mind-overlay"></div>
+    <audio id="welcomeVoiceAudio" preload="auto">
+        <source src="audio/welcome_voice.wav" type="audio/wav">
+    </audio>
+    <audio id="masterMindAudio" loop preload="auto">
+        <source src="audio/academy_bgm_track.mp3" type="audio/mpeg">
+        <source src="https://assets.mixkit.co/music/preview/mixkit-inspiring-innovation-1100.mp3" type="audio/mpeg">
+    </audio>
+    <div class="hero-grid"></div>
+    <!-- Professional Floating Hero Orb -->
+<div class="hero-brochure-orb"
+     data-aos="zoom-in-left"
+     data-aos-delay="700"
+     onclick="downloadBrochure()"
+     title="Download Academic Brochure">
+
+    <div class="hero-brochure-core">
+        <div class="icon">≡ƒÄô</div>
+        <div class="title">
+            DOWNLOAD<br>
+            ACADEMIC BROCHURE<br>
+            2026
+        </div>
+    </div>
+
+</div>
+    <h1 data-aos="fade-down" data-aos-duration="1000">Master Your Future in Noida</h1>
+    <p data-aos="fade-up" data-aos-delay="300">Premium Coaching for Intermediate Excellence & M.Tech Specialization</p>
+    <div class="hero-btns" data-aos="zoom-in" data-aos-delay="600">
+        <button onclick="navigateTo('student')" class="cta-btn">Student Portal</button>
+        <button onclick="navigateTo('faculty')" class="cta-btn" style="background: var(--secondary);">Faculty Portal</button>
+        <button onclick="window.location.href='career-ai/index.html'" class="cta-btn career-ai-hero-btn">ΓÜí AI Career Enhancement (GATE)</button>
+        <button onclick="location.href='#faculty-directory-section'" class="cta-btn" style="background: #805ad5;">Faculty Directory</button>
+        <button onclick="window.location.href='fees-payment.html'" class="cta-btn" style="background: #38a169;">Pay Fees</button>
+    </div>
+</section>
+
+<section id="overview" style="text-align: center; padding-bottom: 30px;">
+    <div data-aos="fade-up" style="max-width: 800px; margin: 0 auto;">
+        <h2>Why Pinnacle Scholars Academy?</h2>
+        <p class="overview-highlight">Noida's Premier Hub for Academic Breakthroughs and Competitive Mastery.</p>
+        <p style="font-size: 1.05rem; margin-bottom: 40px;">
+            At Pinnacle Scholars Academy, we don't just teachΓÇöwe build paths to premier institutions. By combining rigorous conceptual frameworks with real-time analytics, competitive testing systems, and elite mentorship from top-tier academic experts, we bridge the gap between high potential and legendary results. Whether you are cracking national-level engineering ranks or pioneering advanced M.Tech specializations, your peak performance begins here.
+        </p>
+    </div>
+    <div class="grid">
+        <div class="card" data-aos="fade-up" data-aos-delay="100">
+            <h3 style="color: var(--accent); margin-bottom: 10px;">Γ£¿ 94% Success Rate</h3>
+            <p style="margin: 0; font-size: 0.95rem;">A legacy of top-tier results in both Board examinations and national engineering entrance brackets year over year.</p>
+        </div>
+        <div class="card" data-aos="fade-up" data-aos-delay="200">
+            <h3 style="color: var(--accent); margin-bottom: 10px;">≡ƒºá Elite Faculty Team</h3>
+            <p style="margin: 0; font-size: 0.95rem;">Learn directly from PhD researchers, domain specialists, and IIT alumni dedicated to simplified complex learning.</p>
+        </div>
+        <div class="card" data-aos="fade-up" data-aos-delay="300">
+            <h3 style="color: var(--accent); margin-bottom: 10px;">📊 Smart Test Analytics</h3>
+            <p style="margin: 0; font-size: 0.95rem;">Identify clear subject weaknesses instantly using automated weekly CBT exam portals and custom metrics trackers.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Self-Rotating Compact Brochure Token Shape Placement Component -->
+
+
+<!-- Faculty Directory Section -->
+<section id="faculty-directory-section">
+    <h2 data-aos="fade-right">Faculty Directory</h2>
+    <p>View profiling registry, core accomplishments, and accurate dynamic tenure tracking metadata values directly from verified system files.</p>
+    <div class="grid" id="facultyDirectoryGrid">
+        <!-- Built-in legacy fallback elements -->
+        <div class="card" data-aos="zoom-in-up">
+            <h3 style="color: var(--accent); margin-bottom:5px;">Dr. Amit Sharma</h3>
+            <p style="margin:0;"><strong>Domain:</strong> Quantum Physics</p>
+            <p style="margin:0;"><strong>Qualifications:</strong> PhD in Quantum Physics</p>
+            <p style="margin:0;"><strong>Tenure Length:</strong> 15 Years Exp.</p>
+        </div>
+        <div class="card" data-aos="zoom-in-up" data-aos-delay="200">
+            <h3 style="color: var(--accent); margin-bottom:5px;">Prof. S. Verma</h3>
+            <p style="margin:0;"><strong>Domain:</strong> Structural Analysis</p>
+            <p style="margin:0;"><strong>Qualifications:</strong> M.Tech IIT-D</p>
+            <p style="margin:0;"><strong>Tenure Length:</strong> Core Specialist</p>
+        </div>
+    </div>
+</section>
+
+<section id="take-test">
+    <h2 data-aos="fade-right" id="takeTestTitle">Examination Center</h2>
+    <p data-aos="fade-right" id="takeTestIntro">Select your domain to begin your Monthly assessment or practice test.</p>
+    <div class="grid">
+        <div class="card" data-aos="flip-left" data-aos-delay="100" data-exam-card="jee">
+            <h3>JEE Format (Intermediate)</h3>
+            <p>Mathematics, Physics, & Chemistry. Multiple Choice & Numerical types.</p><br>
+            <button class="portal-btn" style="background: var(--accent);" onclick="startTest('jee')">Start Monthly JEE Test</button>
+        </div>
+        <div class="card" data-aos="flip-left" data-aos-delay="300" data-exam-card="gate">
+            <h3>GATE Format (M.Tech)</h3>
+            <p>Technical Core &amp; General Aptitude. High-level problem solving.</p><br>
+            <button class="portal-btn" style="background: var(--accent);" onclick="startTest('gate')">Start Monthly GATE Test</button>
+        </div>
+    </div>
+</section>
+
+<section id="syllabus">
+    <h2 data-aos="fade-right">Course Syllabus</h2>
+    <div class="grid">
+        <div class="card" data-aos="fade-up">
+            <h3>Intermediate (Inter)</h3>
+            <ul>
+                <li>MPC / BiPC Core Modules</li>
+                <li>JEE & NEET Integrated Prep</li>
+                <li>Board Exam Mastery (Class 11 & 12)</li>
+            </ul>
+            <button class="portal-btn" style="background: var(--accent); margin-top: 12px;"
+                onclick="window.open('syllabus-jee.html','_blank','noopener')">📘 Open JEE Syllabus 2026</button>
+           <div style="
+    font-size: 0.88rem;
+    color: #718096;
+    background: #fffaf0;
+    border-left: 3px solid #f59e0b;
+    padding: 10px 12px;
+    margin-top: 15px;
+    border-radius: 6px;
+    line-height: 1.6;
+    position: relative;
+    z-index: 999;
+">
+    <strong>ΓÜá∩╕Å Notice:</strong>
+    Please download the latest syllabus from the official
+
+    <button
+        onclick="window.open('https://www.nta.ac.in/', '_blank')"
+        style="
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            color: #2563eb;
+            font-weight: bold;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: inherit;
+        "
+    >
+        NTA Official Website
+    </button>
+</div>
+        </div>
+        <div class="card" data-aos="fade-up" data-aos-delay="200">
+            <h3>M.Tech Specialized</h3>
+            <ul>
+                <li>Advanced Research Methodologies</li>
+                <li>GATE Technical Subject Depth</li>
+                <li>Industry Project Mentorship</li>
+            </ul>
+            <button class="portal-btn" style="background: var(--accent); margin-top: 12px;"
+                onclick="window.open('syllabus-gate.html','_blank','noopener')">⚙️ Open GATE Syllabus 2026</button>
+            <p style="font-size: 0.88rem; color: #718096; background: #fffaf0; border-left: 3px solid var(--accent); padding: 8px 12px; margin-top: 15px; border-radius: 4px;">
+                <strong>ΓÜá∩╕Å Notice:</strong> Please download the latest syllabus from the official <strong>GATE organizing IIT website</strong>, as the organizing institute or topic weights may change.
+            </p>
+        </div>
+        
+    </div>
+</section>
+
+<section id="fees">
+    <h2 data-aos="zoom-in">Fee Structure & Norms</h2>
+    <div class="grid">
+        <div class="card" data-aos="fade-right">
+            <h3>Fee Policy</h3>
+            <p>Transparent pricing with monthly installment options. Merit-based scholarships available for top 10% performers.</p>
+            <button onclick="window.location.href='fees-payment.html'" class="portal-btn" style="background: #38a169; margin-top: 15px;">Quick Fee Payment Gateway</button>
+        </div>
+        <div class="card" data-aos="fade-left">
+            <h3>Institute Norms</h3>
+            <p>92% attendance requirement, strictly enforced academic integrity, and professional conduct code for all students.</p>
+        </div>
+    </div>
+</section>
+
+<section id="schedule">
+    <h2 data-aos="fade-up">Timings & Scheduling</h2>
+    <div class="grid">
+        <div class="card" data-aos="fade-right">
+            <h3>Class Timings</h3>
+            <p>Morning: 8:00 AM - 1:00 PM<br>Evening: 4:00 PM - 8:00 PM</p>
+        </div>
+        <div class="card" data-aos="fade-left">
+            <h3>Results Portal</h3>
+            <p>Track Monthly mock tests and semester analytics in real-time through our secure portal.</p>
+        </div>
+    </div>
+</section>
+
+<section id="portals" class="portal-links" data-aos="zoom-out">
+    <div class="portal-bg-blocks">
+        <div class="p-block block-1"></div>
+        <div class="p-block block-2"></div>
+        <div class="p-block block-3"></div>
+    </div>
+
+    <h2>Access Portals</h2>
+    <p>Login to manage your academic journey.</p>
+    <div class="portal-buttons">
+    <button class="portal-btn" onclick="navigateTo('student')">Student Login</button>
+    <button class="portal-btn" style="background: var(--secondary);" onclick="navigateTo('faculty')">Faculty Login</button>
+    <button class="portal-btn" style="background: var(--accent);" onclick="navigateTo('results')">Check Results</button>
+    <button class="portal-btn" style="background: linear-gradient(135deg, #7c3aed, #06b6d4);" onclick="window.location.href='career-ai/index.html'">ΓÜí GATE AI Career Portal</button>
+</div>
+</section>
+
+<section class="contact-section" id="contact-us">
+    <!-- Technical Vector Outlines & Watermarks matching Result Portal design language -->
+    <div class="bg-objects" aria-hidden="true">
+        <svg class="geo-object cone" viewBox="0 0 100 100"><path d="M 50,5 L 5,85 L 95,85 Z M 5,85 Q 50,70 95,85" /></svg>
+        <svg class="geo-object sphere" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" /><ellipse cx="50" cy="50" rx="45" ry="15" /></svg>
+        <svg class="geo-object compass" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" /><path d="M 50,5 L 50,95 M 5,50 L 95,50 M 18,18 L 82,82 M 18,82 L 82,18" /></svg>
+        <svg class="geo-object analytics" viewBox="0 0 200 100">
+            <path d="M 20,80 Q 60,20 100,50 T 180,30" stroke-width="2"/>
+            <circle cx="60" cy="38" r="4" fill="#fff"/>
+            <circle cx="100" cy="50" r="4" fill="#fff"/>
+        </svg>
+    </div>
+    <div class="portal-glow-ring" aria-hidden="true"></div>
+    <div class="contact-orb orb-1"></div>
+    <div class="contact-orb orb-2"></div>
+
+    <div class="contact-heading">
+        <h2>Get In Touch</h2>
+        <div class="subtitle">Pinnacle Scholars Academy</div>
+        <p class="info-text">Have a question about admissions, fees, or results? Send us a message and our team will reach out to you shortly.</p>
+    </div>
+
+    <!-- Central Interactive Flip Card Wrapper -->
+    <div class="contact-card-wrapper">
+        <div class="contact-card" id="contactCard">
+            <div class="contact-card-inner">
+                <!-- FRONT FACE: Contact Form -->
+                <div class="contact-card-front">
+                    <form id="contactForm" class="contact-form-grid" novalidate>
+                        <div class="form-group contact-field">
+                            <label for="contactName">Name</label>
+                            <input type="text" id="contactName" name="name" placeholder="Your full name" autocomplete="name" required>
+                        </div>
+
+                        <div class="form-group contact-field">
+                            <label for="contactMobile">Mobile Number</label>
+                            <input type="tel" id="contactMobile" name="mobile" placeholder="e.g. 9876543210" autocomplete="tel" required>
+                        </div>
+
+                        <div class="form-group contact-field">
+                            <label for="contactEmail">Email</label>
+                            <input type="email" id="contactEmail" name="email" placeholder="you@example.com" autocomplete="email" required>
+                        </div>
+
+                        <div class="form-group contact-field">
+                            <label for="contactLocation">Location</label>
+                            <input type="text" id="contactLocation" name="location" placeholder="City / Town" autocomplete="address-level2" required>
+                        </div>
+
+                        <div class="form-group contact-field">
+                            <label for="contactDob">Date of Birth</label>
+                            <input type="date" id="contactDob" name="dob" required>
+                        </div>
+
+                        <div class="form-group contact-field full-width">
+                            <label for="contactMessage">Message</label>
+                            <textarea id="contactMessage" name="message" placeholder="Tell us how we can help..." required></textarea>
+                        </div>
+
+                        <button type="submit" id="contactSubmitBtn" class="btn contact-submit-btn">Send Message</button>
+
+                        <div id="contactStatus" class="contact-status"></div>
+
+                        <div class="card-footer-decor">
+                            <span>🎓</span>
+                            <span>✨</span>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- BACK FACE: Submission Success Screen -->
+                <div class="contact-card-back" id="contactCardBack">
+                    <div class="academy-mark">✓</div>
+                    <h2>Message sent successfully!</h2>
+                    <div class="subtitle">Enquiry Recorded</div>
+                    <p class="info-text">Thank you for reaching out! Your enquiry has been received and our academic counsellors will contact you shortly.</p>
+                    <button type="button" class="btn contact-another-btn" id="contactSendAnotherBtn">Send Another Message</button>
+                    <div class="card-footer-decor">
+                        <span>🎓</span>
+                        <span>✨</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="visitor-section">
+    <div class="visitor-overlay"></div>
+    <div class="visitor-content">
+        <h2 class="visitor-title">
+            Our Growing Community
+        </h2>
+        <p class="visitor-subtitle">
+            Thank you for being a part of Pinnacle Scholars Academy
+        </p>
+        <div class="visitor-counter-box">
+            <div class="pulse-ring"></div>
+            <h1 id="visitor-count">0</h1>
+            <span>Total Visitors</span>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>┬⌐ 2026 Pinnacle Scholars Academy, Noida. Empowering Futures.</p>
+</footer>
+</body>
+</html>

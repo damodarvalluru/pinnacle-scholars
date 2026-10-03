@@ -2049,3 +2049,26 @@ html[data-theme="dark"] .level-chip--warning {
         animation: none !important;
     }
 }
+
+
+/* Start Test button in timetable event row */
+.tt-event-start-btn {
+    margin-left: auto;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    background: rgba(14, 165, 233, 0.14);
+    color: var(--primary-bright, #0284c7);
+    border: 1px solid rgba(14, 165, 233, 0.35);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    align-self: center;
+    cursor: pointer;
+}
+.tt-event-start-btn:hover {
+    background: var(--primary-bright, #0284c7);
+    color: #fff;
+    transform: translateY(-1px);
+}
