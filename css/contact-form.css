@@ -53,6 +53,60 @@
     line-height: 1.6;
 }
 
+/* Result Portal decorative layers, scoped to this section.
+   index.html reuses the Result Portal's vector-outline markup
+   (.bg-objects / .geo-object / .portal-glow-ring). Those rules live in
+   css/result-portal.css, which this page does not load, so without them the
+   unsized inline SVGs fell into normal flow and pushed the heading and the
+   form down the page. The values below mirror css/result-portal.css; only the
+   containing block differs, because the section — not the viewport — is what
+   should clip them. */
+.contact-section .bg-objects,
+.contact-section .portal-glow-ring {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.contact-section .geo-object {
+    position: absolute;
+    stroke: var(--primary-bright);
+    fill: none;
+    opacity: 0.13;
+}
+
+.contact-section .cone {
+    top: 10%;
+    left: 8%;
+    width: 140px;
+}
+
+.contact-section .sphere {
+    right: 8%;
+    bottom: 12%;
+    width: 160px;
+}
+
+.contact-section .compass {
+    top: 15%;
+    right: 12%;
+    width: 120px;
+}
+
+.contact-section .analytics {
+    bottom: 12%;
+    left: 10%;
+    width: 220px;
+}
+
+/* Keep the readable content above the decorative outlines. */
+.contact-heading,
+.contact-card-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
 /* 3D Flip Card Structure */
 .contact-card-wrapper {
     perspective: 1200px;
@@ -68,6 +122,14 @@
     transform-style: preserve-3d;
     transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 22px;
+    /* premium-fx.css also puts `backdrop-filter: blur(16px)` on .contact-card,
+       and a backdrop-filter forces `transform-style: preserve-3d` to compute
+       to `flat`. The flip still painted correctly, but the flattened context
+       stopped hit-testing the back face: clicks on "Send Another Message"
+       landed on the invisible front-face textarea instead. The faces are
+       opaque, so the blur behind them was never visible anyway. */
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
 }
 
 .contact-card.flipped {

@@ -837,6 +837,50 @@
         sync();
     }
 
+    /* ======================================================================
+       MOBILE MENU TOGGLE
+       ----------------------------------------------------------------------
+       Same situation as the theme toggle above: css/responsive.css turns the
+       header nav into a full-width sheet below 768px that is revealed by
+       .mobile-menu-open, so this page needs the hamburger that index.html
+       gets from js/scripts.js. Loading scripts.js just for it would also pull
+       in the home-page intro, audio and ticker code, so the identical wiring
+       is reproduced here instead. The button markup and the CSS come from the
+       shared stylesheets, and the dropdown panels themselves are still driven
+       by js/nav-dropdown.js.
+       ====================================================================== */
+
+    function initMobileMenu() {
+        const toggleBtn = document.getElementById('mobileMenuToggle');
+        const navMenu = document.getElementById('mobileNavMenu');
+        if (!toggleBtn || !navMenu) return;
+
+        const setOpen = (open) => {
+            toggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            navMenu.classList.toggle('mobile-menu-open', open);
+        };
+
+        toggleBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            setOpen(toggleBtn.getAttribute('aria-expanded') !== 'true');
+        });
+
+        // Close on navigation, but not on a dropdown trigger — the trigger
+        // toggles its own submenu and the sheet has to stay open for it.
+        navMenu.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', () => setOpen(false));
+        });
+
+        document.addEventListener('click', (event) => {
+            if (navMenu.contains(event.target) || toggleBtn.contains(event.target)) return;
+            setOpen(false);
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') setOpen(false);
+        });
+    }
+
     /* ------------------------------------------------------------------ boot */
 
     function init() {
@@ -858,6 +902,7 @@
         initSectionNav();
         initPrint();
         initThemeToggle();
+        initMobileMenu();
     }
 
     if (document.readyState === 'loading') {

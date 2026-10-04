@@ -254,6 +254,13 @@
         background: rgba(255, 255, 255, 0.04) !important;
     }
 
+    /* The panel is inline on mobile instead of floating, so its ::before sheen
+       — which is sized for the desktop panel — would wash across the whole
+       sheet, tinting the plain links and the theme button too. */
+    .nav-dropdown-menu::before {
+        display: none;
+    }
+
     .theme-toggle-btn {
         font-size: 0.75rem;
         padding: 0.35rem 0.7rem;
@@ -327,7 +334,10 @@
     }
 
     .brand-header-wrapper {
-        max-width: 38%;
+        /* The mobile nav is a fixed sheet, so the brand row is free to use the
+           whole width. A percentage cap here used to clip the institute name
+           on narrow phones. */
+        max-width: none;
     }
 
     .nav-links {
@@ -455,7 +465,7 @@
     }
 
     .brand-header-wrapper {
-        max-width: 34%;
+        max-width: none;
     }
 
     .brand-header-wrapper h1 span:first-child {

@@ -102,8 +102,11 @@ function syncStickyHeaderOffset() {
     const updates = document.querySelector('.notice-ticker-container');
     if (!header) return;
 
-    const headerHeight = header.offsetHeight;
-    const updatesHeight = updates ? updates.offsetHeight : 0;
+    // Fractional heights, not offsetHeight: the rendered header is 93.48px on
+    // a desktop viewport, and rounding it up front left the strip overlapping
+    // the hero by the fraction that was dropped.
+    const headerHeight = header.getBoundingClientRect().height;
+    const updatesHeight = updates ? updates.getBoundingClientRect().height : 0;
     const headerStackHeight = headerHeight;
     const contentOffset = headerStackHeight + updatesHeight;
 
@@ -1855,7 +1858,7 @@ function downloadBrochure() {
                     onclick="printProspectus()"
                     class="vault-btn vault-btn-print">
 
-                     🖨️ Download A4 Academic Brochure
+                     🖨️ Download
 
                 </button>
 
