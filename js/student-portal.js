@@ -162,8 +162,11 @@
         });
     }
 
-    (function() {
+    // This file is loaded in <head> before #portalGeometryCanvas exists, so the
+    // background is started once the DOM is parsed instead of at parse time.
+    function startPortalGeometryBackground() {
         const canvas = document.getElementById('portalGeometryCanvas');
+        if (!canvas) return;
         const ctx = canvas.getContext('2d');
 
         let shapesArray = [];
@@ -295,10 +298,16 @@
 
         buildRenderEnvironment();
         coreEngineLoop();
-    })();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', startPortalGeometryBackground);
+    } else {
+        startPortalGeometryBackground();
+    }
 
     // Removes the decorative briefcase-arrival overlay from paint once its
-    // fade-out animation finishes. Purely cosmetic cleanup �?" does not touch
+    // fade-out animation finishes. Purely cosmetic cleanup - it does not touch
     // login/dashboard logic, and the overlay never blocks clicks either way
     // since it is pointer-events:none for its entire lifetime.
     (function cleanupBriefcaseIntro() {

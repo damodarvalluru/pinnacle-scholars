@@ -145,21 +145,47 @@ const INTERNSHIPS_DATA = [
 
 /* ==========================================================================
    INTERNSHIPS SECTION — RENDERING, PROFILE-BASED FILTERING & LIVE REFRESH
-   Data currently ships as a curated, regularly-updatable dataset. The
-   functions below are written against a stable shape (id, title,
-   organization, skills, location, stipend/eligibility, deadline, url) so a
-   real internship API/backend can be swapped in later by replacing
-   fetchInternshipsFromSource() without touching the rendering layer.
+   INTERNSHIPS_DATA above is only the curated fallback shipped with the project
+   and is never labelled as live. Listings are pulled from the CareerAI
+   aggregation API (server/server.js -> /api/internships), so the rendering
+   layer keeps working against the same stable shape (id, title, organization,
+   skills, location, duration/eligibility, deadline, url) it always used.
    ========================================================================== */
-let internshipsLastSynced = new Date();
+let INTERNSHIPS_LIST = [...INTERNSHIPS_DATA];
+let internshipsLastSynced = null;
+let internshipsFeedState = { kind: "loading", message: "", liveCount: 0, total: 0 };
 
-async function fetchInternshipsFromSource() {
-    // Placeholder data-service boundary: swap this body for a real fetch()
-    // call to a backend/API endpoint when one is available. Falls back to
-    // the curated dataset so the section never breaks.
-    return new Promise(resolve => {
-        setTimeout(() => resolve([...INTERNSHIPS_DATA]), 600);
-    });
+/**
+ * Pulls internships from the live aggregation API.
+ * @returns {Promise<{ok:boolean, list?:Array, liveCount?:number, syncedAt?:Date, message?:string}>}
+ */
+async function fetchInternshipsFromSource({ bustCache = false } = {}) {
+    if (typeof fetchLiveInternships !== "function") {
+        return { ok: false, message: "Live internship feed is not configured on this page." };
+    }
+
+    const payload = await fetchLiveInternships({ useCache: !bustCache });
+
+    if (!payload || payload.fallback) {
+        return { ok: false, message: payload && payload.error ? payload.error : "The live internship source could not be reached." };
+    }
+
+    const list = Array.isArray(payload.internships) ? payload.internships : [];
+    const liveCount = Number(payload.liveCount) || 0;
+
+    if (!list.length) {
+        return { ok: false, message: "The live internship source returned no listings right now." };
+    }
+    if (!liveCount) {
+        return { ok: false, list: list, message: "Live internship sources are unreachable — showing curated reference listings." };
+    }
+
+    return {
+        ok: true,
+        list: list,
+        liveCount: liveCount,
+        syncedAt: payload.refreshedAt ? new Date(payload.refreshedAt) : new Date()
+    };
 }
 
 function scoreInternshipMatch(item) {
@@ -173,8 +199,30 @@ function scoreInternshipMatch(item) {
     return Math.min(score, 97);
 }
 
-function initInternshipsSection() {
-    renderInternshipsGrid(INTERNSHIPS_DATA);
+async function initInternshipsSection({ bustCache = false } = {}) {
+    const container = document.getElementById("internships-grid");
+    if (!container) return;
+
+    internshipsFeedState = { kind: "loading", message: "", liveCount: 0, total: 0 };
+    if (typeof renderLoadingState === "function") renderLoadingState(container, "Fetching live internships…");
+    updateInternshipsSyncLabel();
+
+    const result = await fetchInternshipsFromSource({ bustCache }).catch(err => ({
+        ok: false,
+        message: err && err.message ? err.message : "Unexpected error while fetching internships."
+    }));
+
+    if (result.ok) {
+        INTERNSHIPS_LIST = result.list;
+        internshipsLastSynced = result.syncedAt || new Date();
+        internshipsFeedState = { kind: "live", message: "", liveCount: result.liveCount, total: result.list.length };
+    } else {
+        INTERNSHIPS_LIST = (result.list && result.list.length) ? result.list : [...INTERNSHIPS_DATA];
+        internshipsLastSynced = new Date();
+        internshipsFeedState = { kind: "unavailable", message: result.message, liveCount: 0, total: 0 };
+    }
+
+    renderInternshipsGrid(getFilteredInternships());
     updateInternshipsSyncLabel();
 }
 
@@ -182,7 +230,7 @@ function getFilteredInternships() {
     const query = document.getElementById("internship-search-input") ? document.getElementById("internship-search-input").value.toLowerCase() : "";
     const type = document.getElementById("internship-filter-type") ? document.getElementById("internship-filter-type").value : "All";
 
-    return INTERNSHIPS_DATA.filter(item => {
+    return INTERNSHIPS_LIST.filter(item => {
         const matchesQuery = item.title.toLowerCase().includes(query) || item.organization.toLowerCase().includes(query) || item.skills.some(s => s.toLowerCase().includes(query));
         const matchesType = type === "All" || item.type === type;
         return matchesQuery && matchesType;
@@ -196,6 +244,7 @@ function filterInternshipsList() {
 function renderInternshipsGrid(list) {
     const container = document.getElementById("internships-grid");
     if (!container) return;
+    if (internshipsFeedState.kind === "loading") return;
 
     if (!list || list.length === 0) {
         container.innerHTML = `
@@ -250,26 +299,36 @@ function renderInternshipsGrid(list) {
 
 function updateInternshipsSyncLabel() {
     const label = document.getElementById("internships-sync-label");
-    if (label) label.textContent = `Last synced: ${internshipsLastSynced.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    if (!label) return;
+
+    const time = feedClock(internshipsLastSynced);
+    if (internshipsFeedState.kind === "loading") {
+        label.textContent = "Fetching latest listings…";
+        return;
+    }
+    if (internshipsFeedState.kind === "live") {
+        label.innerHTML = `<span class="feed-state feed-state-live">● Live feed</span>` +
+            `<span class="feed-detail">${internshipsFeedState.liveCount} live · ${internshipsFeedState.total} total · last synced ${time}</span>`;
+    } else {
+        label.innerHTML = `<span class="feed-state feed-state-off">● Live source unavailable</span>` +
+            `<span class="feed-detail">${internshipsFeedState.message}${time ? ` · attempted ${time}` : " · not yet synced"}</span>`;
+    }
 }
 
 async function refreshInternshipsData() {
     const btn = document.getElementById("internships-refresh-btn");
-    const label = document.getElementById("internships-sync-label");
     if (btn) { btn.disabled = true; btn.textContent = "⏳ Syncing..."; }
-    if (label) label.textContent = "Fetching latest listings...";
 
     try {
-        const freshList = await fetchInternshipsFromSource();
-        internshipsLastSynced = new Date();
-        renderInternshipsGrid(freshList);
+        await initInternshipsSection({ bustCache: true });
         if (typeof generateDeadlineNotifications === "function") {
             generateDeadlineNotifications();
             if (typeof renderNotificationsList === "function") renderNotificationsList();
         }
     } catch (err) {
+        const label = document.getElementById("internships-sync-label");
         if (label) label.textContent = "Sync failed — showing last known listings.";
-        renderInternshipsGrid(INTERNSHIPS_DATA);
+        renderInternshipsGrid(getFilteredInternships());
     } finally {
         if (btn) { btn.disabled = false; btn.textContent = "↻ Refresh Listings"; }
         updateInternshipsSyncLabel();

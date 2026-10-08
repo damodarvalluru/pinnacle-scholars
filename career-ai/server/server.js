@@ -5,6 +5,7 @@ const cors = require("cors");
 const fetch = require("node-fetch");
 const path = require("path");
 const fs = require("fs");
+const vm = require("vm");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -38,7 +39,12 @@ function loadJson(relativePath) {
     try {
         const raw = fs.readFileSync(path.join(__dirname, "..", relativePath), "utf8");
         const match = raw.match(/(?:const|let|var)\s+\w+\s*=\s*(\[[\s\S]*?\]);/);
-        if (match) return JSON.parse(match[1]);
+        if (!match) return [];
+        // The datasets are JS array literals (unquoted keys, JS strings), so they
+        // cannot be handed to JSON.parse. Evaluating the matched literal in an
+        // empty, timeout-bounded context returns the array without exposing any
+        // Node globals (require/process/fs) to the evaluated code.
+        return vm.runInNewContext(match[1], Object.create(null), { timeout: 1000 });
     } catch (_) {}
     return [];
 }
@@ -233,7 +239,7 @@ app.get("/api/jobs", async (req, res) => {
         skillLevel: req.query.level || "Intermediate"
     };
     const cacheKey = `jobs-${JSON.stringify(profile)}`;
-    const cached = getCache(cacheKey);
+    const cached = req.query.refresh === "1" ? null : getCache(cacheKey);
     if (cached) return res.json(cached);
 
     const fallback = loadJson("js/jobs.js");
@@ -269,7 +275,7 @@ app.get("/api/internships", async (req, res) => {
         skillLevel: req.query.level || "Intermediate"
     };
     const cacheKey = `internships-${JSON.stringify(profile)}`;
-    const cached = getCache(cacheKey);
+    const cached = req.query.refresh === "1" ? null : getCache(cacheKey);
     if (cached) return res.json(cached);
 
     const fallback = loadJson("js/internships.js");

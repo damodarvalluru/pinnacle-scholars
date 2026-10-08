@@ -362,3 +362,91 @@ const JOBS_DATA = [
         nextSkillsToLearn: ["Spring Boot", "Microservices", "API Gateways"]
     }
 ];
+
+/* ==========================================================================
+   LIVE JOBS FEED
+   The array above is only the curated fallback shipped with the project; it is
+   never labelled as live. Listings are pulled from the CareerAI aggregation API
+   (server/server.js -> /api/jobs), which merges Remotive, Arbeitnow and Adzuna
+   with the curated set and reports how many came from a live source.
+   ========================================================================== */
+let JOBS_LIST = [...JOBS_DATA];
+let jobsFeedState = { kind: "loading", message: "", liveCount: 0, total: 0, syncedAt: null };
+
+function renderJobsFeedStatus() {
+    const state = jobsFeedState;
+    ["home-jobs-status", "jobs-status"].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (state.kind === "loading") {
+            el.innerHTML = `<span class="feed-state feed-state-busy">⟳ Fetching live job listings…</span>`;
+        } else if (state.kind === "live") {
+            el.innerHTML = `<span class="feed-state feed-state-live">● Live feed</span>` +
+                `<span class="feed-detail">${state.liveCount} live · ${state.total} total · synced ${feedClock(state.syncedAt)}</span>`;
+        } else {
+            el.innerHTML = `<span class="feed-state feed-state-off">● Live source unavailable</span>` +
+                `<span class="text-muted">${state.message}</span>` +
+                `<button type="button" class="btn btn-secondary btn-sm feed-retry" onclick="initJobsSection({bustCache:true})">Retry ↺</button>`;
+        }
+    });
+}
+
+async function fetchJobsFromSource({ bustCache = false } = {}) {
+    if (typeof fetchLiveJobs !== "function") {
+        return { ok: false, message: "Live job feed is not configured on this page." };
+    }
+
+    const payload = await fetchLiveJobs({ useCache: !bustCache });
+
+    if (!payload || payload.fallback) {
+        return { ok: false, message: payload && payload.error ? payload.error : "The live job source could not be reached." };
+    }
+
+    const list = Array.isArray(payload.jobs) ? payload.jobs : [];
+    const liveCount = Number(payload.liveCount) || 0;
+
+    if (!list.length) {
+        return { ok: false, message: "The live job source returned no listings right now." };
+    }
+    if (!liveCount) {
+        return { ok: false, list: list, message: "Live job sources are unreachable — showing curated reference listings." };
+    }
+
+    return {
+        ok: true,
+        list: list,
+        liveCount: liveCount,
+        syncedAt: payload.refreshedAt ? new Date(payload.refreshedAt) : new Date()
+    };
+}
+
+async function initJobsSection({ bustCache = false } = {}) {
+    const home = document.getElementById("home-featured-jobs-container");
+    const explore = document.getElementById("explore-jobs-grid");
+    if (!home && !explore) return;
+
+    jobsFeedState = { kind: "loading", message: "", liveCount: 0, total: 0, syncedAt: null };
+    renderJobsFeedStatus();
+    if (typeof renderLoadingState === "function") {
+        renderLoadingState(home, "Fetching live job listings…");
+        renderLoadingState(explore, "Fetching live job listings…");
+    }
+
+    const result = await fetchJobsFromSource({ bustCache }).catch(err => ({
+        ok: false,
+        message: err && err.message ? err.message : "Unexpected error while fetching jobs."
+    }));
+
+    if (result.ok) {
+        JOBS_LIST = result.list;
+        jobsFeedState = { kind: "live", message: `Live · ${result.liveCount} fetched`, liveCount: result.liveCount, total: result.list.length, syncedAt: result.syncedAt };
+    } else {
+        JOBS_LIST = (result.list && result.list.length) ? result.list : [...JOBS_DATA];
+        jobsFeedState = { kind: "unavailable", message: result.message, liveCount: 0, total: 0, syncedAt: null };
+    }
+    renderJobsFeedStatus();
+
+    renderHomeFeaturedJobs();
+    renderExploreJobs();
+    if (typeof renderCareerDashboard === "function") renderCareerDashboard();
+}

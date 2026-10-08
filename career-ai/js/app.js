@@ -10,8 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     renderResumeSamples();
     initCodingPlayground();
     generateAdaptiveQuestions("Intermediate", "B.Tech");
-    renderHomeFeaturedJobs();
-    renderExploreJobs();
+    if (typeof initJobsSection === "function") { initJobsSection(); }
+    else { renderHomeFeaturedJobs(); renderExploreJobs(); }
     initCareerProfile();
     initMobileNavigation();
     initExitIntent();
@@ -166,17 +166,24 @@ function initHeroParticles() {
 function renderHomeFeaturedJobs() {
     const container = document.getElementById("home-featured-jobs-container");
     if (!container) return;
+    if (jobsFeedState.kind === "loading") return;
 
     container.innerHTML = "";
-    getProfileRankedJobs().slice(0, 6).forEach(job => {
+    const ranked = getProfileRankedJobs();
+    if (ranked.length === 0) {
+        if (typeof renderEmptyState === "function") renderEmptyState(container, "No job listings are available right now.");
+        return;
+    }
+    ranked.slice(0, 6).forEach(job => {
         const card = createJobCardElement(job);
         container.appendChild(card);
     });
 }
 
-function renderExploreJobs(filteredList = JOBS_DATA) {
+function renderExploreJobs(filteredList = JOBS_LIST) {
     const container = document.getElementById("explore-jobs-grid");
     if (!container) return;
+    if (jobsFeedState.kind === "loading") return;
 
     container.innerHTML = "";
     if (filteredList.length === 0) {
@@ -190,7 +197,7 @@ function renderExploreJobs(filteredList = JOBS_DATA) {
         return;
     }
 
-    const displayList = filteredList === JOBS_DATA ? getProfileRankedJobs() : filteredList;
+    const displayList = filteredList === JOBS_LIST ? getProfileRankedJobs() : filteredList;
     displayList.forEach(job => {
         const card = createJobCardElement(job);
         container.appendChild(card);
@@ -257,7 +264,7 @@ function calculateJobMatchScore(job) {
     return Math.min(score, 96);
 }
 
-function getProfileRankedJobs() { return [...JOBS_DATA].sort((a, b) => calculateJobMatchScore(b) - calculateJobMatchScore(a)); }
+function getProfileRankedJobs() { return [...JOBS_LIST].sort((a, b) => calculateJobMatchScore(b) - calculateJobMatchScore(a)); }
 
 function filterJobsList() {
     const query = document.getElementById("job-search-input") ? document.getElementById("job-search-input").value.toLowerCase() : "";
@@ -265,7 +272,7 @@ function filterJobsList() {
     const workType = document.getElementById("job-filter-worktype") ? document.getElementById("job-filter-worktype").value : "All";
     const level = document.getElementById("job-filter-level") ? document.getElementById("job-filter-level").value : "All";
 
-    const filtered = JOBS_DATA.filter(job => {
+    const filtered = JOBS_LIST.filter(job => {
         const matchesQuery = job.title.toLowerCase().includes(query) || job.organization.toLowerCase().includes(query) || job.requiredSkills.some(s => s.toLowerCase().includes(query));
         const matchesSector = sector === "All" || job.sector === sector;
         const matchesWorkType = workType === "All" || job.workType === workType;
@@ -278,7 +285,7 @@ function filterJobsList() {
 }
 
 function openJobModal(jobId) {
-    const job = JOBS_DATA.find(j => j.id === jobId);
+    const job = JOBS_LIST.find(j => j.id === jobId);
     if (!job) return;
 
     const modalBody = document.getElementById("modal-body-content");

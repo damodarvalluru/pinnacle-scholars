@@ -34,7 +34,11 @@ async function apiFetch(endpoint, { useCache = true, timeout = 15000 } = {}) {
     const timer = setTimeout(() => controller.abort(), timeout);
 
     try {
-        const res = await fetch(`${API_BASE}${endpoint}`, { signal: controller.signal });
+        const res = await fetch(`${API_BASE}${endpoint}`, {
+            signal: controller.signal,
+            // An explicit refresh must not be answered from the browser cache.
+            cache: useCache ? "default" : "no-store"
+        });
         clearTimeout(timer);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
@@ -82,12 +86,14 @@ function renderSourceBadge(source, liveCount) {
     return `<span class="badge badge-success source-badge">${label}</span>`;
 }
 
-async function fetchLiveJobs() {
-    return apiFetch(`/api/jobs?${getProfileQueryParams()}`);
+async function fetchLiveJobs(options) {
+    const bust = !!options && options.useCache === false;
+    return apiFetch(`/api/jobs?${getProfileQueryParams()}${bust ? "&refresh=1" : ""}`, options);
 }
 
-async function fetchLiveInternships() {
-    return apiFetch(`/api/internships?${getProfileQueryParams()}`);
+async function fetchLiveInternships(options) {
+    const bust = !!options && options.useCache === false;
+    return apiFetch(`/api/internships?${getProfileQueryParams()}${bust ? "&refresh=1" : ""}`, options);
 }
 
 async function fetchLiveCourses() {
@@ -99,3 +105,8 @@ async function fetchDeadlines() {
 }
 
 function invalidateApiCache() { apiCache.clear(); }
+
+/** Formats a sync timestamp for the feed status labels. */
+function feedClock(date) {
+    return date instanceof Date && !isNaN(date) ? date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
+}

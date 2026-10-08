@@ -179,6 +179,29 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
             </div>
         </div>
 
+        <!-- PROGRAMS -->
+        <div class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+                Programs <span class="nav-caret" aria-hidden="true"></span>
+            </button>
+            <div class="nav-dropdown-menu" role="menu">
+                <a class="nav-dropdown-item" role="menuitem" href="programs.html?program=intermediate">
+                    <span class="nav-dd-icon nav-dd-icon--jee" aria-hidden="true">📘</span>
+                    <span class="nav-dd-text">
+                        <strong>Intermediate (JEE &amp; NEET)</strong>
+                        <small>Eligibility, fees, schedule &amp; syllabus</small>
+                    </span>
+                </a>
+                <a class="nav-dropdown-item" role="menuitem" href="programs.html?program=gate">
+                    <span class="nav-dd-icon nav-dd-icon--gate" aria-hidden="true">⚙️</span>
+                    <span class="nav-dd-text">
+                        <strong>GATE (M.Tech)</strong>
+                        <small>Eligibility, fees, schedule &amp; syllabus</small>
+                    </span>
+                </a>
+            </div>
+        </div>
+
         <a href="enrollment.html">Enroll</a>
 
         <!-- EXAMINATIONS -->
@@ -287,9 +310,10 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
 </div>
 
 <section class="hero master-your-mind" id="brouchure-section" aria-label="Master Your Mind">
-    <video class="master-your-mind-video" autoplay muted playsinline preload="metadata"
+    <video class="master-your-mind-video" autoplay muted playsinline controls preload="metadata"
         poster="https://assets.mixkit.co/videos/8802/8802-thumb-720-0.jpg"
-        aria-hidden="true">
+        aria-label="Master Your Mind academy introduction video"
+        title="Master Your Mind - academy introduction video">
         <source src="https://assets.mixkit.co/videos/8802/8802-720.mp4" type="video/mp4">
     </video>
     <div class="master-your-mind-overlay"></div>
@@ -485,12 +509,14 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
     </div>
 </section>
 
-<section id="portals" class="portal-links" data-aos="zoom-out">
+<section id="portals" class="portal-links">
     <div class="portal-bg-blocks">
         <div class="p-block block-1"></div>
         <div class="p-block block-2"></div>
         <div class="p-block block-3"></div>
     </div>
+
+    <div data-aos="zoom-in">
 
     <h2>Access Portals</h2>
     <p>Login to manage your academic journey.</p>
@@ -500,6 +526,8 @@ WELCOME INTRO SCREEN (CAREER AI VISUAL SYSTEM & ANIMATION)
     <button class="portal-btn" style="background: var(--accent);" onclick="navigateTo('results')">Check Results</button>
     <button class="portal-btn" style="background: linear-gradient(135deg, #7c3aed, #06b6d4);" onclick="window.location.href='career-ai/index.html'">⚡ GATE AI Career Portal</button>
 </div>
+
+    </div>
 </section>
 
 <section class="contact-section" id="contact-us">

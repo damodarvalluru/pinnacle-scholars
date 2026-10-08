@@ -1,0 +1,661 @@
+/* ==========================================================================
+   PINNACLE SCHOLARS ACADEMY - PROGRAMMES PAGE
+   --------------------------------------------------------------------------
+   Styles for programs.html (Intermediate / GATE switchable programmes view).
+
+   The header, nav dropdowns and mobile sheet are shared with index.html and
+   examinations.html and come from css/examinations.css + css/responsive.css;
+   only the page body is defined here.
+
+   Every colour is taken from the theme variables so the page follows the
+   dark-mode toggle without a second palette.
+   ========================================================================== */
+
+.programs-page {
+    padding-top: var(--pinnacle-header-height, 96px);
+}
+
+.prog-wrap {
+    width: min(1180px, 100% - 2rem);
+    margin-inline: auto;
+    padding-block: 2.5rem 4rem;
+}
+
+/* ============================================================== HERO ==== */
+
+.prog-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    padding: 2.25rem 1.75rem;
+    margin-bottom: 1.75rem;
+    text-align: center;
+    background:
+        radial-gradient(circle at 18% 12%, rgba(244, 3, 232, 0.16), transparent 55%),
+        radial-gradient(circle at 82% 88%, rgba(12, 248, 39, 0.14), transparent 55%),
+        var(--pinnacle-card-bg, var(--card-bg, #ffffff));
+    border: 1px solid var(--pinnacle-border, rgba(127, 127, 127, 0.25));
+    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.14);
+}
+
+.prog-hero__kicker {
+    margin: 0 0 0.5rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #ed8936;
+}
+
+.prog-hero h1 {
+    margin: 0 0 0.65rem;
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.5rem, 3.4vw, 2.3rem);
+    line-height: 1.2;
+    color: var(--text-color, #1a1a2e);
+}
+
+.prog-hero > p:not(.prog-hero__kicker) {
+    margin: 0 auto 1.5rem;
+    max-width: 62ch;
+    font-size: 0.98rem;
+    line-height: 1.65;
+    color: var(--text-muted, #55596b);
+}
+
+/* --------------------------------------------- programme switch buttons */
+
+.prog-switch {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.prog-switch__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 1.15rem;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text-color, #1a1a2e);
+    background: var(--pinnacle-surface, rgba(127, 127, 127, 0.09));
+    border: 1px solid var(--pinnacle-border, rgba(127, 127, 127, 0.28));
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.prog-switch__btn:hover,
+.prog-switch__btn:focus-visible {
+    transform: translateY(-2px);
+    border-color: #f403e8;
+    box-shadow: 0 8px 22px rgba(244, 3, 232, 0.22);
+}
+
+.prog-switch__btn strong {
+    display: block;
+    font-size: 0.92rem;
+    line-height: 1.2;
+}
+
+.prog-switch__btn small {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text-muted, #55596b);
+}
+
+/* The active programme is marked with aria-current, so the styling follows
+   the state the script sets rather than a class that could drift out of sync
+   with the URL. */
+.prog-switch__btn[aria-current='true'] {
+    background: linear-gradient(135deg, #f403e8, #ff00e1);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 10px 26px rgba(244, 3, 232, 0.32);
+}
+
+.prog-switch__btn[aria-current='true'] small {
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.prog-switch__btn[aria-current='true'] .prog-switch__icon {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+/* ---------------------------------------------------------- hero stats */
+
+.prog-hero__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+}
+
+.prog-stat {
+    padding: 0.85rem 0.75rem;
+    border-radius: 12px;
+    background: var(--pinnacle-surface, rgba(127, 127, 127, 0.09));
+    border: 1px solid var(--pinnacle-border, rgba(127, 127, 127, 0.22));
+}
+
+.prog-stat__label {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted, #55596b);
+    margin-bottom: 0.3rem;
+}
+
+.prog-stat__value {
+    display: block;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-color, #1a1a2e);
+}
+
+/* ========================================================= SUB NAV ==== */
+
+.prog-subnav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-bottom: 2rem;
+    padding: 0.55rem;
+    border-radius: 14px;
+    background: var(--pinnacle-surface, rgba(127, 127, 127, 0.09));
+    border: 1px solid var(--pinnacle-border, rgba(127, 127, 127, 0.22));
+}
+
+.prog-subnav a {
+    padding: 0.4rem 0.8rem;
+    border-radius: 9px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--text-color, #1a1a2e);
+    transition: background 0.18s ease, color 0.18s ease;
+}
+
+.prog-subnav a:hover,
+.prog-subnav a:focus-visible {
+    background: #f403e8;
+    color: #fff;
+}
+
+/* ======================================================== SECTIONS ==== */
+
+.prog-section {
+    /* Clears the fixed header when a sub-nav link jumps to a section. */
+    scroll-margin-top: calc(var(--pinnacle-header-height, 96px) + 1.5rem);
+    margin-bottom: 2.25rem;
+}
+
+.prog-section__head {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    margin-bottom: 1.1rem;
+}
+
+.prog-section__icon {
+    flex: 0 0 auto;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: grid;
+    place-items: center;
+    font-size: 1.2rem;
+    border-radius: 11px;
+    background: linear-gradient(135deg, rgba(244, 3, 232, 0.16), rgba(12, 248, 39, 0.14));
+    border: 1px solid var(--pinnacle-border, rgba(127, 127, 127, 0.22));
+}
+
+.prog-section__head h2 {
+    margin: 0 0 0.3rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+    color: var(--text-color, #1a1a2e);
+}
+
+.prog-section__head p {
+    margin: 0;
+    max-width: 70ch;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--text-muted, #55596b);
+}
+
+.prog-note {
+    padding: 0.9rem 1.05rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: var(--text-muted, #55596b);
+    background: var(--pinnacle-surface, rgba(127, 127, 127, 0.08));
+    border-left: 3px solid #ed8936;
+}
+
+.prog-note strong {
+    color: var(--text-color, #1a1a2e);
+}
+
+/* ------------------------------------------------------------- cards */
+
+.prog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.prog-card {
+    padding: 1.1rem 1.15rem;
+    border-radius: 14px;
+    background: var(--pinnacle-card-bg, var(--card-bg, #ffffff));
+    border: 1px solid var(--pinnacle-border, rgba(127, 127, 127, 0.22));
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.prog-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.14);
+}
+
+.prog-card h3 {
+    margin: 0 0 0.35rem;
+    font-size: 1rem;
+    color: var(--text-color, #1a1a2e);
+}
+
+.prog-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-muted, #55596b);
+}
+
+/* The domain code is the exact string sent to the API, so it is shown as
+   monospace and is not allowed to wrap mid-token. */
+.prog-card__code {
+    display: inline-block;
+    margin: 0.55rem 0 0;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.76rem;
+    letter-spacing: 0.04em;
+    color: #f403e8;
+    background: rgba(244, 3, 232, 0.1);
+    border: 1px dashed rgba(244, 3, 232, 0.45);
+    white-space: nowrap;
+}
+
+.prog-card__fee {
+    display: block;
+    margin-top: 0.6rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0f9d58;
+}
+
+/* --------------------------------------------------------- fee table */
+
+.prog-fees {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    border-radius: 14px;
+    border: 1px solid var(--pinnacle-border, rgba(127, 127, 127, 0.22));
+}
+
+.prog-fees table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.87rem;
+    min-width: 520px;
+}
+
+.prog-fees caption {
+    padding: 0.8rem 1rem;
+    font-size: 0.78rem;
+    text-align: left;
+    color: var(--text-muted, #55596b);
+    background: var(--pinnacle-surface, rgba(127, 127, 127, 0.09));
+}
+
+.prog-fees th,
+.prog-fees td {
+    padding: 0.7rem 1rem;
+    text-align: left;
+    border-top: 1px solid var(--pinnacle-border, rgba(127, 127, 127, 0.18));
+}
+
+.prog-fees thead th {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted, #55596b);
+}
+
+.prog-fees td:last-child,
+.prog-fees th:last-child {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.prog-fees__amount {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    color: #0f9d58;
+}
+
+/* -------------------------------------------------------- test list */
+
+.prog-tests {
+    display: grid;
+    gap: 0.6rem;
+    margin-bottom: 1.1rem;
+}
+
+.prog-test {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    background: var(--pinnacle-surface, rgba(127, 127, 127, 0.08));
+    border: 1px solid var(--pinnacle-border, rgba(127, 127, 127, 0.22));
+    border-left: 3px solid #0cf827;
+}
+
+.prog-test--grand {
+    border-left-color: #ed8936;
+}
+
+.prog-test__name {
+    font-weight: 600;
+    color: var(--text-color, #1a1a2e);
+}
+
+.prog-test__when {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted, #55596b);
+}
+
+.prog-test__tag {
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+    background: #0f9d58;
+}
+
+.prog-test--grand .prog-test__tag {
+    background: #ed8936;
+}
+
+.prog-empty {
+    padding: 1rem 1.05rem;
+    border-radius: 12px;
+    font-size: 0.86rem;
+    color: var(--text-muted, #55596b);
+    background: var(--pinnacle-surface, rgba(127, 127, 127, 0.08));
+    border: 1px dashed var(--pinnacle-border, rgba(127, 127, 127, 0.32));
+}
+
+/* --------------------------------------------------- syllabus links */
+
+.prog-syllabus {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+.prog-syl-link {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem 1.1rem;
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--text-color, #1a1a2e);
+    background: var(--pinnacle-card-bg, var(--card-bg, #ffffff));
+    border: 1px solid var(--pinnacle-border, rgba(127, 127, 127, 0.22));
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.prog-syl-link:hover,
+.prog-syl-link:focus-visible {
+    transform: translateY(-3px);
+    border-color: #f403e8;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.14);
+}
+
+.prog-syl-link__icon {
+    flex: 0 0 auto;
+    width: 2.6rem;
+    height: 2.6rem;
+    display: grid;
+    place-items: center;
+    font-size: 1.3rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(244, 3, 232, 0.18), rgba(12, 248, 39, 0.14));
+}
+
+.prog-syl-link strong {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 0.15rem;
+}
+
+.prog-syl-link small {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-muted, #55596b);
+}
+
+/* ------------------------------------------------------------ buttons */
+
+.prog-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.1rem;
+}
+
+.prog-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.6rem 1.15rem;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--text-color, #1a1a2e);
+    background: var(--pinnacle-surface, rgba(127, 127, 127, 0.11));
+    border: 1px solid var(--pinnacle-border, rgba(127, 127, 127, 0.28));
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.prog-btn:hover,
+.prog-btn:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+}
+
+.prog-btn--primary {
+    color: #fff;
+    background: linear-gradient(135deg, #f403e8, #ff00e1);
+    border-color: transparent;
+}
+
+.prog-btn--gate {
+    color: #fff;
+    background: linear-gradient(135deg, #0e7490, #06b6d4);
+    border-color: transparent;
+}
+
+.prog-btn--lg {
+    padding: 0.85rem 1.9rem;
+    font-size: 0.95rem;
+}
+
+/* ---------------------------------------------------------- CTA block */
+
+.prog-apply {
+    text-align: center;
+    padding: 2.25rem 1.5rem;
+    border-radius: 20px;
+    margin-top: 1rem;
+    background:
+        radial-gradient(circle at 20% 10%, rgba(12, 248, 39, 0.14), transparent 55%),
+        radial-gradient(circle at 80% 90%, rgba(244, 3, 232, 0.16), transparent 55%),
+        var(--pinnacle-card-bg, var(--card-bg, #ffffff));
+    border: 1px solid var(--pinnacle-border, rgba(127, 127, 127, 0.25));
+}
+
+.prog-apply h2 {
+    margin: 0 0 0.5rem;
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+    color: var(--text-color, #1a1a2e);
+}
+
+.prog-apply p {
+    margin: 0 auto 1.4rem;
+    max-width: 56ch;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--text-muted, #55596b);
+}
+
+.prog-back {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--text-muted, #55596b);
+}
+
+.prog-back:hover,
+.prog-back:focus-visible {
+    color: #f403e8;
+}
+
+/* ---------------------------------------------------------- responsive */
+
+@media (max-width: 768px) {
+    .programs-page {
+        /* The mobile header wraps the brand onto two rows, so the offset that
+           css/examinations.css applies to the exams page is not enough here. */
+        padding-top: var(--pinnacle-header-height, 130px);
+    }
+
+    .prog-wrap {
+        width: min(1180px, 100% - 1.4rem);
+        padding-block: 1.5rem 3rem;
+    }
+
+    .prog-hero {
+        padding: 1.6rem 1.1rem;
+        border-radius: 16px;
+    }
+
+    .prog-switch {
+        gap: 0.55rem;
+    }
+
+    .prog-switch__btn {
+        flex: 1 1 100%;
+        justify-content: center;
+    }
+
+    .prog-subnav {
+        justify-content: flex-start;
+        gap: 0.3rem;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .prog-subnav a {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        font-size: 0.78rem;
+        padding: 0.4rem 0.7rem;
+    }
+
+    .prog-grid,
+    .prog-syllabus {
+        grid-template-columns: 1fr;
+    }
+
+    .prog-section__head {
+        gap: 0.65rem;
+    }
+
+    .prog-fees th,
+    .prog-fees td {
+        padding: 0.6rem 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .prog-hero__stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .prog-btn {
+        flex: 1 1 100%;
+        justify-content: center;
+    }
+}
+
+/* ------------------------------------------------------------- print */
+
+@media print {
+    .prog-switch,
+    .prog-subnav,
+    .prog-cta-row,
+    .prog-back {
+        display: none;
+    }
+
+    .prog-card,
+    .prog-test,
+    .prog-fees {
+        break-inside: avoid;
+    }
+}
+
+/* --------------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+    .prog-switch__btn,
+    .prog-card,
+    .prog-syl-link,
+    .prog-btn,
+    .prog-subnav a {
+        transition: none;
+    }
+
+    .prog-switch__btn:hover,
+    .prog-card:hover,
+    .prog-syl-link:hover,
+    .prog-btn:hover {
+        transform: none;
+    }
+}

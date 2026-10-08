@@ -229,6 +229,8 @@
                         <p class="section-desc">Current high-opportunity roles verified from live tech databases.</p>
                     </div>
 
+                    <div id="home-jobs-status" class="feed-status" aria-live="polite"></div>
+
                     <div class="jobs-grid" id="home-featured-jobs-container">
                         <!-- Populated by JavaScript -->
                     </div>
@@ -293,6 +295,8 @@
                         </select>
                     </div>
 
+                    <div id="jobs-status" class="feed-status" aria-live="polite"></div>
+
                     <div class="jobs-grid" id="explore-jobs-grid">
                         <!-- Rendered by js/app.js -->
                     </div>
@@ -323,7 +327,7 @@
                     </div>
 
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.6rem;">
-                        <span id="internships-sync-label" class="text-muted" style="font-size:0.82rem;">Last synced: just now</span>
+                        <span id="internships-sync-label" class="text-muted" style="font-size:0.82rem;">Sync pending</span>
                         <button class="btn btn-secondary btn-sm" id="internships-refresh-btn" onclick="refreshInternshipsData()">↻ Refresh Listings</button>
                     </div>
 
@@ -690,6 +694,7 @@
     </footer>
 
     <!-- JS MODULES -->
+    <script src="js/api.js"></script>
     <script src="js/jobs.js"></script>
     <script src="js/courses.js"></script>
     <script src="js/internships.js"></script>

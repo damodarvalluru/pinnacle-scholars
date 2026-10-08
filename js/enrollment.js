@@ -1,5 +1,11 @@
  // --- INTEGRATED 2D LIVE PARTICLE BACKGROUND SIMULATION ---
+    // This file is loaded in <head> before #bg-canvas exists. The canvas is
+    // therefore set up once the DOM is parsed; the rest of this file only
+    // declares functions or registers DOMContentLoaded listeners, so it stays
+    // safe to evaluate at parse time.
+    function startEnrollmentBackground() {
     const canvas = document.getElementById('bg-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let particles = [];
 
@@ -66,6 +72,13 @@
         requestAnimationFrame(animateBackground);
     }
     animateBackground();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', startEnrollmentBackground);
+    } else {
+        startEnrollmentBackground();
+    }
    // --- DATA LOGIC & CORE PROCESSING ENGINES ---
        async function enrollStudent() {
 
