@@ -244,7 +244,13 @@
 
     function onFocusIn(event) {
         const drop = event.target.closest ? event.target.closest('.nav-dropdown') : null;
-        if (drop) open(drop);
+        if (!drop) return;
+        // A tap focuses the trigger before it clicks, and opening here would
+        // make the following click toggle the fresh menu straight back shut.
+        // :focus-visible only matches keyboard focus, so pointer/touch taps
+        // fall through to the click handler, which opens the menu instead.
+        if (!event.target.matches || !event.target.matches(':focus-visible')) return;
+        open(drop);
     }
 
     function onFocusOut(event) {
