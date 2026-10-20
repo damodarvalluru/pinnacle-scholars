@@ -166,6 +166,40 @@
         return button;
     }
 
+    /* The community visitor counter lives inside the footer now instead of a
+       standalone section above it. It is home-page only, matching its previous
+       placement; js/scripts.js still drives the count via #visitor-count. */
+    function buildVisitor() {
+        var section = el("section", "visitor-section pinnacle-footer__visitors", {
+            "aria-label": "Community visitor counter"
+        });
+
+        var overlay = el("div", "visitor-overlay");
+        section.appendChild(overlay);
+
+        var content = el("div", "visitor-content");
+        var title = el("h2", "visitor-title");
+        title.textContent = "Our Growing Community";
+        var subtitle = el("p", "visitor-subtitle");
+        subtitle.textContent = "Thank you for being a part of " + FULL_NAME;
+
+        var box = el("div", "visitor-counter-box");
+        var ring = el("div", "pulse-ring");
+        var count = el("h1", "", { id: "visitor-count" });
+        count.textContent = "0";
+        var label = el("span");
+        label.textContent = "Total Visitors";
+        box.appendChild(ring);
+        box.appendChild(count);
+        box.appendChild(label);
+
+        content.appendChild(title);
+        content.appendChild(subtitle);
+        content.appendChild(box);
+        section.appendChild(content);
+        return section;
+    }
+
     function render() {
         var host = document.querySelector("footer.pinnacle-footer, #siteFooter, footer");
         if (!host) {
@@ -187,6 +221,10 @@
             inner.appendChild(buildColumn(column, home));
         });
         host.appendChild(inner);
+
+        if (home) {
+            host.appendChild(buildVisitor());
+        }
 
         var bar = el("div", "pinnacle-footer__bar");
         var copy = el("p", "pinnacle-footer__copy");

@@ -254,3 +254,95 @@ body {
 .home-link a:hover {
     color: #1D4ED8;
 }
+
+/* Payment History inside the fee portal */
+.payment-history-wrap {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(29, 78, 216, 0.15);
+}
+
+.payment-history-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #212529;
+    margin-bottom: 0.5rem;
+}
+
+.payment-history-hint,
+.payment-history-empty {
+    font-size: 0.92rem;
+    color: #6C757D;
+    margin: 0.5rem 0;
+}
+
+.payment-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.payment-history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1.5px solid rgba(29, 78, 216, 0.15);
+    border-radius: var(--radius-md);
+}
+
+.payment-history-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.payment-history-amount {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #1D4ED8;
+}
+
+.payment-history-meta {
+    font-size: 0.85rem;
+    color: #495057;
+}
+
+.payment-history-txn {
+    font-size: 0.75rem;
+    color: #6C757D;
+    word-break: break-all;
+}
+
+.payment-history-btn {
+    flex-shrink: 0;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #1D4ED8 0%, #3B82F6 100%);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(29, 78, 216, 0.25);
+}
+
+.payment-history-btn:hover {
+    transform: translateY(-1px);
+}
+
+@media (max-width: 480px) {
+    .payment-history-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .payment-history-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

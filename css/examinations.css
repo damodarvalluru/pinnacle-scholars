@@ -1867,6 +1867,19 @@ html[data-theme="dark"] .level-chip--warning {
         border-right-width: 1.5px;
         border-bottom-width: 1.5px;
     }
+
+    /* On phones the header collapses to the full-width mobile menu, where the
+       dropdown triggers and the plain links sit in one vertical list. The
+       compact-presentation block in responsive.css shrinks only `.nav-links a`
+       (to 0.68rem / 0.62rem) while the trigger keeps its 0.92rem menu size
+       from responsive.css line 230, so the plain links rendered visibly smaller
+       than the dropdown buttons beside them. These high-specificity rules pull
+       the plain links level with the triggers at every phone width. */
+    .nav-links.mobile-menu-open > a,
+    .nav-links.mobile-menu-open .nav-dropdown-trigger {
+        font-size: 0.92rem;
+        padding: 0.65rem 0.85rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1878,6 +1891,12 @@ html[data-theme="dark"] .level-chip--warning {
     .nav-caret {
         width: 0.3rem;
         height: 0.3rem;
+    }
+
+    .nav-links.mobile-menu-open > a,
+    .nav-links.mobile-menu-open .nav-dropdown-trigger {
+        font-size: 0.92rem;
+        padding: 0.65rem 0.85rem;
     }
 }
 

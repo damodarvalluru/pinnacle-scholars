@@ -53,6 +53,7 @@
             document.getElementById('dispStatus').style.color = "#38a169";
             document.getElementById('portalPaymentButton').style.display = "none";
         }
+        loadPortalHistories(user);
     }
     catch(error) {
         loginBtn.disabled = false;
@@ -63,6 +64,204 @@
         );
     }
 }
+
+    // Converts the stored DOB into the plain YYYY-MM-DD form the backend
+    // compares against the DATE column. The login response provides dob_date
+    // (already the DB's calendar date), so that is preferred. The fallback
+    // reads the local getters because the API serialises a raw DATE as a JS
+    // Date at local midnight — a UTC conversion would shift it back a day.
+    function portalDobForQuery(user) {
+        if (!user) return '';
+        if (typeof user.dob_date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(user.dob_date)) {
+            return user.dob_date;
+        }
+        const dob = user.dob;
+        if (!dob) return '';
+        if (typeof dob === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dob)) return dob;
+        const d = new Date(dob);
+        if (isNaN(d.getTime())) return String(dob);
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function escapePortalHtml(value) {
+        return String(value === undefined || value === null ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function portalFormatDateTime(value) {
+        if (!value) return '';
+        const d = new Date(value);
+        if (isNaN(d.getTime())) return String(value);
+        return d.toLocaleString('en-IN', {
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+    }
+
+    async function loadPortalHistories(user) {
+        const dob = portalDobForQuery(user);
+        const studentId = user.student_id;
+        await Promise.all([
+            loadPortalPaymentHistory(studentId, dob, user),
+            loadPortalResultHistory(studentId, dob)
+        ]);
+    }
+
+    async function loadPortalPaymentHistory(studentId, dob, user) {
+        const hint = document.getElementById('portalPaymentHistoryHint');
+        const list = document.getElementById('portalPaymentHistoryList');
+        if (!hint || !list) return;
+        try {
+            const res = await fetch(
+                'https://pinnacle-backend-5i7n.onrender.com/api/payments/history/' +
+                encodeURIComponent(studentId) + '?dob=' + encodeURIComponent(dob)
+            );
+            const data = await res.json();
+            if (!data.success) {
+                hint.textContent = data.message || 'Unable to load payment history.';
+                return;
+            }
+            const payments = data.payments || [];
+            if (payments.length === 0) {
+                hint.textContent = 'No payments recorded yet.';
+                return;
+            }
+            hint.textContent = payments.length + ' payment' + (payments.length > 1 ? 's' : '') + ' recorded.';
+            list.innerHTML = payments.map(p => `
+                <div class="portal-history-item">
+                    <div class="portal-history-info">
+                        <span class="portal-history-amount">₹${Number(p.amount_paid || 0).toFixed(2)}</span>
+                        <span class="portal-history-meta">${escapePortalHtml(p.payment_type || 'Payment')} · ${escapePortalHtml(p.payment_status || '')}</span>
+                        <span class="portal-history-meta">${escapePortalHtml(portalFormatDateTime(p.paid_at))}</span>
+                        <span class="portal-history-txn">Txn: ${escapePortalHtml(p.razorpay_payment_id || 'N/A')}</span>
+                    </div>
+                    <button type="button" class="portal-history-btn"
+                        data-payment-id="${escapePortalHtml(p.razorpay_payment_id || '')}"
+                        data-amount="${escapePortalHtml(p.amount_paid || 0)}"
+                        data-type="${escapePortalHtml(p.payment_type || 'Fee Payment')}"
+                        data-order-id="${escapePortalHtml(p.razorpay_order_id || '')}"
+                        onclick="portalDownloadReceipt(this)">Download Receipt</button>
+                </div>`).join('');
+        } catch (err) {
+            console.error(err);
+            hint.textContent = 'Unable to load payment history.';
+        }
+    }
+
+    // Re-generates a receipt for a previously verified payment. Uses the same
+    // receipt-generator.js helper as the fee portal, so the document matches.
+    function portalDownloadReceipt(btn) {
+        if (!activeSessionUserObject || !window.downloadPaymentReceipt) return;
+        downloadPaymentReceipt({
+            name: activeSessionUserObject.name,
+            studentId: activeSessionUserObject.student_id,
+            domain: activeSessionUserObject.domain,
+            paymentId: btn.dataset.paymentId,
+            orderId: btn.dataset.orderId,
+            amount: Number(btn.dataset.amount || 0),
+            paymentType: btn.dataset.type || 'Fee Payment'
+        });
+    }
+
+    async function loadPortalResultHistory(studentId, dob) {
+        const hint = document.getElementById('portalResultHistoryHint');
+        const list = document.getElementById('portalResultHistoryList');
+        if (!hint || !list) return;
+        try {
+            const res = await fetch(
+                'https://pinnacle-backend-5i7n.onrender.com/api/tests/result/' +
+                encodeURIComponent(studentId) + '?dob=' + encodeURIComponent(dob)
+            );
+            const data = await res.json();
+            if (!data.success) {
+                hint.textContent = data.message || 'Unable to load result history.';
+                return;
+            }
+            const results = data.results || [];
+            if (results.length === 0) {
+                hint.textContent = 'No test results recorded yet.';
+                return;
+            }
+            hint.textContent = results.length + ' result' + (results.length > 1 ? 's' : '') + ' recorded.';
+            list.innerHTML = results.map(r => `
+                <div class="portal-history-item portal-history-item--result">
+                    <div class="portal-history-info">
+                        <span class="portal-history-amount">${escapePortalHtml(r.score)} / ${escapePortalHtml(r.total_marks)}</span>
+                        <span class="portal-history-meta">Test ID: ${escapePortalHtml(r.test_id)}</span>
+                        <span class="portal-history-meta">${escapePortalHtml(portalFormatDateTime(r.submitted_at))}</span>
+                    </div>
+                    <button type="button" class="portal-history-btn"
+                        data-test-id="${escapePortalHtml(r.test_id)}"
+                        onclick="togglePortalReview(this, '${escapePortalHtml(studentId)}', '${escapePortalHtml(dob)}')">Review Answers</button>
+                    <div class="portal-review-panel" hidden></div>
+                </div>`).join('');
+        } catch (err) {
+            console.error(err);
+            hint.textContent = 'Unable to load result history.';
+        }
+    }
+
+    async function togglePortalReview(btn, studentId, dob) {
+        const item = btn.closest('.portal-history-item');
+        const panel = item ? item.querySelector('.portal-review-panel') : null;
+        if (!panel) return;
+        if (!panel.hidden) {
+            panel.hidden = true;
+            btn.textContent = 'Review Answers';
+            return;
+        }
+        const testId = btn.dataset.testId;
+        btn.disabled = true;
+        btn.textContent = 'Loading…';
+        panel.hidden = false;
+        panel.innerHTML = '<p class="portal-history-hint">Loading review…</p>';
+        try {
+            const res = await fetch(
+                'https://pinnacle-backend-5i7n.onrender.com/api/tests/review/' +
+                encodeURIComponent(studentId) + '/' + encodeURIComponent(testId) +
+                '?dob=' + encodeURIComponent(dob)
+            );
+            const data = await res.json();
+            if (!data.success) {
+                panel.innerHTML = '<p class="portal-history-hint">' +
+                    escapePortalHtml(data.message || 'Unable to load review.') + '</p>';
+                btn.disabled = false;
+                btn.textContent = 'Hide Review';
+                return;
+            }
+            if (!data.answersStored) {
+                panel.innerHTML = '<p class="portal-history-hint">Answer details were not stored for this attempt, so a detailed review is unavailable.</p>';
+                btn.disabled = false;
+                btn.textContent = 'Hide Review';
+                return;
+            }
+            const review = data.review || [];
+            panel.innerHTML = review.map(q => {
+                const cls = q.givenAnswer === null ? 'is-skipped' : (q.isCorrect ? 'is-correct' : 'is-wrong');
+                const given = q.givenAnswer === null ? 'Not answered' : q.givenAnswer;
+                return `
+                    <div class="portal-review-question ${cls}">
+                        <p class="portal-review-q"><strong>Q${q.index + 1}.</strong> ${escapePortalHtml(q.question)}</p>
+                        <p class="portal-review-a">Your answer: <span>${escapePortalHtml(given)}</span></p>
+                        <p class="portal-review-a">Correct answer: <span>${escapePortalHtml(q.correctAnswer)}</span></p>
+                    </div>`;
+            }).join('');
+            btn.disabled = false;
+            btn.textContent = 'Hide Review';
+        } catch (err) {
+            console.error(err);
+            panel.innerHTML = '<p class="portal-history-hint">Unable to load review.</p>';
+            btn.disabled = false;
+            btn.textContent = 'Hide Review';
+        }
+    }
     function executeStudentPortalPayment() {
         const payBtn = document.getElementById("portalPaymentButton");
         payBtn.disabled = true;

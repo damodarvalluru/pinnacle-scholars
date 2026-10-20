@@ -301,9 +301,31 @@
         setBusy(true, 'Building ' + examLabel + ' PDF…');
 
         const finish = () => {
+            sheet.classList.remove('is-capturing');
+            if (shield && shield.parentNode) shield.parentNode.removeChild(shield);
             sheet.remove();
             setBusy(false);
         };
+
+        // html2canvas clones the node into an isolated iframe and captures it
+        // relative to its origin. The sheet is parked at z-index -1 so it never
+        // flashes on screen, but that also lets the live page paint over it; for
+        // the instant of capture it is lifted to the top layer at full opacity.
+        // Without this the clone could be captured as an empty white rectangle.
+        // An opaque shield covers the sheet so the student never sees it appear.
+        sheet.classList.add('is-capturing');
+
+        const shield = document.createElement('div');
+        shield.className = 'syl-pdf-shield';
+        shield.setAttribute('aria-hidden', 'true');
+        const shieldLabel = document.createElement('span');
+        shieldLabel.className = 'syl-progress__text';
+        shieldLabel.textContent = 'Building ' + examLabel + ' PDF…';
+        shield.appendChild(shieldLabel);
+        document.body.appendChild(shield);
+
+        const width = sheet.scrollWidth;
+        const height = sheet.scrollHeight;
 
         try {
             window.html2pdf()
@@ -311,7 +333,17 @@
                     margin: [8, 8, 10, 8],
                     filename: fileName,
                     image: { type: 'jpeg', quality: 0.97 },
-                    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        backgroundColor: '#ffffff',
+                        width: width,
+                        height: height,
+                        windowWidth: width,
+                        windowHeight: height,
+                        scrollX: 0,
+                        scrollY: 0
+                    },
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
                 })
                 .from(sheet)

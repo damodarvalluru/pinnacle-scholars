@@ -134,6 +134,8 @@ fetchBtn.innerText = "Fetch Details";
 
 fetchBtn.innerText = "Fetch Details";
 
+        loadPaymentHistory(studentId);
+
     } catch(error){
         fetchBtn.disabled = false;
 
@@ -151,6 +153,140 @@ fetchBtn.innerText = "Fetch Details";
     }
 }
 
+/*
+PAYMENT HISTORY
+Lists every recorded payment for the fetched student. The date of birth field
+on the page is the proof of ownership the backend requires, so receipts are
+only ever loaded for the student who proves their own identity.
+*/
+async function loadPaymentHistory(studentId){
+
+    const wrap =
+        document.getElementById('paymentHistoryWrap');
+
+    const list =
+        document.getElementById('paymentHistoryList');
+
+    const hint =
+        document.getElementById('paymentHistoryHint');
+
+    if(!wrap || !list) return;
+
+    const dob =
+        (document.getElementById('historyDob')?.value || '').trim();
+
+    if(!dob){
+
+        if(hint){
+            hint.style.display = 'block';
+            hint.innerText = 'Enter your date of birth above and fetch your details to view previous payments.';
+        }
+        list.innerHTML = '';
+        return;
+    }
+
+    if(hint) hint.style.display = 'none';
+    list.innerHTML = '<p class="payment-history-empty">Loading payment history…</p>';
+
+    try{
+
+        const response = await fetch(
+            `https://pinnacle-backend-5i7n.onrender.com/api/payments/history/${encodeURIComponent(studentId)}?dob=${encodeURIComponent(dob)}`
+        );
+
+        const data = await response.json();
+
+        if(!data.success || !Array.isArray(data.payments)){
+            list.innerHTML = '<p class="payment-history-empty">Unable to load payment history for these details.</p>';
+            return;
+        }
+
+        if(data.payments.length === 0){
+            list.innerHTML = '<p class="payment-history-empty">No payments recorded yet.</p>';
+            return;
+        }
+
+        const student = data.student || {};
+        const paidSoFar = Number(student.fees_paid || 0);
+        let runningTotal = paidSoFar;
+
+        list.innerHTML = '';
+
+        data.payments.forEach(function(payment, index){
+
+            const amount = Number(payment.amount_paid || 0);
+            const remainingAfter = Math.max(0, runningTotal - amount);
+            const row = document.createElement('div');
+            row.className = 'payment-history-item';
+
+            const info = document.createElement('div');
+            info.className = 'payment-history-info';
+
+            const dateLabel = payment.paid_at
+                ? new Date(payment.paid_at).toLocaleString('en-IN')
+                : 'N/A';
+
+            const amountLabel = '₹' + amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            info.innerHTML =
+                '<span class="payment-history-amount">' + amountLabel + '</span>' +
+                '<span class="payment-history-meta">' + escapePaymentHtml(payment.payment_type || 'Fee Payment') +
+                ' · ' + escapePaymentHtml(dateLabel) + '</span>' +
+                '<span class="payment-history-txn">Txn: ' + escapePaymentHtml(payment.razorpay_payment_id || 'N/A') + '</span>';
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'payment-history-btn';
+            btn.innerText = 'Download Receipt';
+
+            btn.addEventListener('click', function(){
+
+                if(!window.downloadPaymentReceipt){
+                    alert('Receipt library unavailable.');
+                    return;
+                }
+
+                const receiptDetails = {
+                    name: student.name,
+                    studentId: student.student_id,
+                    domain: student.domain,
+                    paymentId: payment.razorpay_payment_id,
+                    orderId: payment.razorpay_order_id,
+                    amount: amount,
+                    previousPaid: remainingAfter,
+                    totalPaid: runningTotal,
+                    remainingFees: remainingAfter,
+                    paymentType: payment.payment_type || 'Fee Payment',
+                    reference: 'PSA-' + payment.razorpay_payment_id,
+                    dateTime: dateLabel
+                };
+
+                window.downloadPaymentReceipt(receiptDetails);
+            });
+
+            row.appendChild(info);
+            row.appendChild(btn);
+            list.appendChild(row);
+
+            runningTotal = remainingAfter;
+        });
+
+    } catch(error){
+
+        console.log('Payment History Error', error);
+        list.innerHTML = '<p class="payment-history-empty">Unable to load payment history right now.</p>';
+    }
+}
+
+function escapePaymentHtml(value){
+    return String(value === null || value === undefined ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 function togglePartialBox(){
 
     const type=
@@ -162,7 +298,6 @@ function togglePartialBox(){
     ?'block'
     :'none';
 }
-
 function continuePayment(){
     const payBtn =
 document.getElementById('payBtn');
@@ -474,6 +609,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     payBtn.click();
                 }
             }
+        });
+    }
+
+    // Re-read the history once a date of birth is supplied, so a student can
+    // view their receipts without having to fetch the details again.
+    const historyDobInput = document.getElementById("historyDob");
+    if (historyDobInput) {
+        historyDobInput.addEventListener("change", function () {
+            const studentIdInput = document.getElementById("studentId");
+            const studentId = studentIdInput ? studentIdInput.value.trim() : "";
+            if (studentId) loadPaymentHistory(studentId);
         });
     }
 

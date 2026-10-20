@@ -856,7 +856,7 @@ mark.syl-hit {
 .syl-pdf-sheet {
     position: fixed;
     top: 0;
-    left: -12000px;
+    left: 0;
     width: 190mm;
     padding: 0;
     background: #ffffff;
@@ -864,8 +864,37 @@ mark.syl-hit {
     font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
     font-size: 10.5pt;
     line-height: 1.5;
+    /* The sheet is captured at the viewport origin, then revealed only for the
+       instant html2canvas needs it. --pdf-sheet-visible is toggled by
+       js/syllabus-page.js around the capture: while hidden it is painted behind
+       the live page (z-index -1) so nothing flashes on screen, and during the
+       capture it is lifted to a top layer at full opacity. An off-screen
+       translate (the previous -12000px approach) made html2canvas clone the
+       node outside its capture frame and produced a blank, white PDF. */
     z-index: -1;
     pointer-events: none;
+}
+
+.syl-pdf-sheet.is-capturing {
+    z-index: 2147483000;
+    top: 0;
+    left: 0;
+}
+
+/* Opaque shield shown for the instant the sheet is rasterised. The sheet has to
+   sit on-screen at the top layer for html2canvas to capture it, so this shield
+   is layered directly above it: the student sees a neutral cover instead of a
+   flash of the PDF sheet. html2canvas captures only the sheet node and never
+   this sibling, so the shield cannot appear in the file. */
+.syl-pdf-shield {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483001;
+    background: var(--bg-app, #f8fafc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
 }
 
 .syl-pdf-sheet .syl-wrap {

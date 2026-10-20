@@ -118,6 +118,18 @@
             <button id="portalPaymentButton" class="btn" style="background: #38a169; width: auto; padding: 10px 25px; margin-top: 10px;" onclick="executeStudentPortalPayment()">Pay Online Now</button>
         </div>
 
+        <div class="info-card" id="portalPaymentHistoryCard">
+            <h3 style="margin-top: 0; color: #1a365d;">Payment History</h3>
+            <p class="portal-history-hint" id="portalPaymentHistoryHint">Loading payment history…</p>
+            <div class="portal-history-list" id="portalPaymentHistoryList"></div>
+        </div>
+
+        <div class="info-card" id="portalResultHistoryCard">
+            <h3 style="margin-top: 0; color: #1a365d;">Result History</h3>
+            <p class="portal-history-hint" id="portalResultHistoryHint">Loading result history…</p>
+            <div class="portal-history-list" id="portalResultHistoryList"></div>
+        </div>
+
         <button class="btn" onclick="PinnacleSession.logout(); location.reload()" style="padding: 10px 20px; width: auto;">Logout Session</button>
     </div>
 <footer style="position: relative; z-index: 5; padding: 20px 0; width: 100%;">

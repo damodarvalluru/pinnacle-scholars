@@ -314,3 +314,145 @@ body {
     transform: translateY(-2px) !important;
     box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5) !important;
 }
+
+/* Portal history (payments, results) and answer review */
+.info-card .portal-history-hint {
+    display: block;
+    font-size: 0.95rem;
+    color: #64748B;
+    margin: 0 0 1rem;
+}
+
+.portal-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.portal-history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.15rem;
+    background: rgba(248, 250, 252, 0.9);
+    border: 1.5px solid rgba(59, 130, 246, 0.2);
+    border-radius: var(--radius-md);
+}
+
+.portal-history-item--result {
+    flex-wrap: wrap;
+}
+
+.portal-history-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.portal-history-amount {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #1E3A8A;
+}
+
+.info-card .portal-history-meta {
+    display: block;
+    font-size: 0.85rem;
+    color: #475569;
+    margin: 0;
+    justify-content: flex-start;
+}
+
+.portal-history-txn {
+    font-size: 0.78rem;
+    color: #64748B;
+    word-break: break-all;
+}
+
+.portal-history-btn {
+    flex-shrink: 0;
+    padding: 0.6rem 1.1rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.portal-history-btn:hover {
+    transform: translateY(-1px);
+}
+
+.portal-history-btn:disabled {
+    opacity: 0.65;
+    cursor: default;
+}
+
+.portal-review-panel {
+    flex-basis: 100%;
+    width: 100%;
+    margin-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.portal-review-question {
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-md);
+    border-left: 4px solid #94A3B8;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.portal-review-question.is-correct {
+    border-left-color: #16A34A;
+    background: rgba(22, 163, 74, 0.07);
+}
+
+.portal-review-question.is-wrong {
+    border-left-color: #DC2626;
+    background: rgba(220, 38, 38, 0.07);
+}
+
+.portal-review-question.is-skipped {
+    border-left-color: #F59E0B;
+    background: rgba(245, 158, 11, 0.07);
+}
+
+.info-card .portal-review-q {
+    display: block;
+    font-size: 0.95rem;
+    color: #1E293B;
+    margin: 0 0 0.4rem;
+    justify-content: flex-start;
+}
+
+.info-card .portal-review-a {
+    display: block;
+    font-size: 0.88rem;
+    color: #475569;
+    margin: 0;
+    justify-content: flex-start;
+}
+
+.info-card .portal-review-a span {
+    font-weight: 700;
+    color: #1E293B;
+}
+
+@media (max-width: 480px) {
+    .portal-history-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .portal-history-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

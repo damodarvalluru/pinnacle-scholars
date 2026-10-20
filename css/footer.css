@@ -221,6 +221,48 @@
     color: var(--text-secondary);
 }
 
+/* ---- Community visitor counter (moved into the footer) ------------------ */
+
+#siteFooter .pinnacle-footer__visitors,
+#siteFooter .visitor-section {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto clamp(1.5rem, 3vw, 2.25rem);
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2rem);
+    text-align: center;
+    background: var(--bg-surface-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+#siteFooter .pinnacle-footer__visitors .visitor-title {
+    font-size: clamp(1.35rem, 3vw, 1.9rem);
+    margin: 0 0 0.4rem;
+}
+
+#siteFooter .pinnacle-footer__visitors .visitor-subtitle {
+    margin: 0 0 1.35rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+#siteFooter .pinnacle-footer__visitors .visitor-counter-box {
+    padding: 1.35rem 2.5rem;
+}
+
+#siteFooter .pinnacle-footer__visitors #visitor-count {
+    font-size: clamp(2.2rem, 6vw, 3rem);
+}
+
+@media (max-width: 480px) {
+    #siteFooter .pinnacle-footer__visitors .visitor-counter-box {
+        padding: 1rem 1.5rem;
+    }
+}
+
 #siteFooter .pinnacle-footer__top {
     display: inline-flex;
     align-items: center;

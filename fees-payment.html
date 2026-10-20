@@ -88,6 +88,16 @@ for(let i=0;i<40;i++){
         </div>
     </div>
 
+    <div class="input-box">
+
+        <label>Date of Birth (to view payment history)</label>
+
+        <input
+            type="date"
+            id="historyDob"
+        >
+    </div>
+
     <button
         class="fetch-btn" id="fetchBtn"
         onclick="fetchStudentDetails()"
@@ -141,6 +151,14 @@ for(let i=0;i<40;i++){
         </div>
 
         <div id="receiptDownloadArea" aria-live="polite" style="display:none;"></div>
+
+        <div class="payment-history-wrap" id="paymentHistoryWrap">
+            <h3 class="payment-history-title">Payment History</h3>
+            <p class="payment-history-hint" id="paymentHistoryHint">
+                Enter your date of birth above and fetch your details to view previous payments.
+            </p>
+            <div id="paymentHistoryList" class="payment-history-list"></div>
+        </div>
 
     </div>
 
