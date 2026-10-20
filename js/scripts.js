@@ -282,37 +282,6 @@ function initMasterYourMindMedia() {
         });
     }
 
-    // Visible mute / unmute control for the introduction video. The element
-    // ships muted because browsers only autoplay silenced media, so the button
-    // lets the student turn the picture's own sound on (or back off) on demand.
-    const soundToggle = document.getElementById('videoSoundToggle');
-    if (video && soundToggle) {
-        const icon = soundToggle.querySelector('.video-sound-toggle__icon');
-        const label = soundToggle.querySelector('.video-sound-toggle__label');
-
-        const renderSoundState = () => {
-            const muted = video.muted;
-            soundToggle.setAttribute('aria-pressed', muted ? 'false' : 'true');
-            soundToggle.setAttribute('aria-label', muted ? 'Unmute introduction video' : 'Mute introduction video');
-            soundToggle.setAttribute('title', muted ? 'Unmute introduction video' : 'Mute introduction video');
-            if (icon) icon.textContent = muted ? '🔇' : '🔊';
-            if (label) label.textContent = muted ? 'Sound off' : 'Sound on';
-        };
-
-        soundToggle.addEventListener('click', () => {
-            video.muted = !video.muted;
-            if (!video.muted) {
-                // Some clips are bundled at full volume; keep the picture sound
-                // at a comfortable level rather than blasting the student.
-                if (video.volume === 0 || video.volume === 1) video.volume = 0.6;
-                video.play().catch(() => {});
-            }
-            renderSoundState();
-        });
-
-        renderSoundState();
-    }
-
     // Retry once more after the opening intro completes, so the welcome voice +
     // music start automatically where the browser allows it.
     if (document.getElementById('welcomeIntro')) {

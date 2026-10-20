@@ -38,6 +38,9 @@ async function fetchStudentDetails(){
     document.getElementById('studentId')
     .value.trim();
 
+    const dob =
+    (document.getElementById('historyDob')?.value || '').trim();
+
     const fetchBtn =
 document.getElementById('fetchBtn');
 
@@ -53,6 +56,14 @@ fetchBtn.innerText = "Fetch Details";
     return;
 }
 
+if(!dob){
+    fetchBtn.disabled = false;
+
+fetchBtn.innerText = "Fetch Details";
+    alert("Enter Date of Birth");
+    return;
+}
+
 try {
 
     const controller = new AbortController();
@@ -61,8 +72,12 @@ try {
         controller.abort();
     }, 15000);
 
+    // The date of birth is part of the credentials, so the DOB-guarded history
+    // endpoint is the single source of truth here: it verifies student_id + dob
+    // and returns both the fee summary and every recorded payment. One request
+    // therefore drives the fee details and the payment history together.
     const response = await fetch(
-        `https://pinnacle-backend-5i7n.onrender.com/api/students/${studentId}`,
+        `https://pinnacle-backend-5i7n.onrender.com/api/payments/history/${encodeURIComponent(studentId)}?dob=${encodeURIComponent(dob)}`,
         {
             signal: controller.signal
         }
@@ -77,11 +92,11 @@ try{
     throw new Error("Invalid backend response");
 }
 
-        if(!data.success){
+        if(!data.success || !data.student){
             fetchBtn.disabled = false;
 
 fetchBtn.innerText = "Fetch Details";
-            alert("Student Not Found");
+            alert("Invalid Student ID or Date of Birth");
             return;
         }
 
@@ -134,7 +149,7 @@ fetchBtn.innerText = "Fetch Details";
 
 fetchBtn.innerText = "Fetch Details";
 
-        loadPaymentHistory(studentId);
+        loadPaymentHistory(studentId, data);
 
     } catch(error){
         fetchBtn.disabled = false;
@@ -157,9 +172,11 @@ fetchBtn.innerText = "Fetch Details";
 PAYMENT HISTORY
 Lists every recorded payment for the fetched student. The date of birth field
 on the page is the proof of ownership the backend requires, so receipts are
-only ever loaded for the student who proves their own identity.
+only ever loaded for the student who proves their own identity. When
+fetchStudentDetails() already retrieved the history (as part of its single
+credentialed request) it passes that payload in, so no second request is made.
 */
-async function loadPaymentHistory(studentId){
+async function loadPaymentHistory(studentId, preloadedData){
 
     const wrap =
         document.getElementById('paymentHistoryWrap');
@@ -175,7 +192,7 @@ async function loadPaymentHistory(studentId){
     const dob =
         (document.getElementById('historyDob')?.value || '').trim();
 
-    if(!dob){
+    if(!preloadedData && !dob){
 
         if(hint){
             hint.style.display = 'block';
@@ -190,11 +207,16 @@ async function loadPaymentHistory(studentId){
 
     try{
 
-        const response = await fetch(
-            `https://pinnacle-backend-5i7n.onrender.com/api/payments/history/${encodeURIComponent(studentId)}?dob=${encodeURIComponent(dob)}`
-        );
+        let data = preloadedData;
 
-        const data = await response.json();
+        if(!data){
+
+            const response = await fetch(
+                `https://pinnacle-backend-5i7n.onrender.com/api/payments/history/${encodeURIComponent(studentId)}?dob=${encodeURIComponent(dob)}`
+            );
+
+            data = await response.json();
+        }
 
         if(!data.success || !Array.isArray(data.payments)){
             list.innerHTML = '<p class="payment-history-empty">Unable to load payment history for these details.</p>';
@@ -589,6 +611,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const studentIdInput = document.getElementById("studentId");
     if (studentIdInput) {
         studentIdInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                const fetchBtn = document.getElementById("fetchBtn");
+                if (fetchBtn && !fetchBtn.disabled) {
+                    fetchBtn.click();
+                }
+            }
+        });
+    }
+
+    const dobInput = document.getElementById("historyDob");
+    if (dobInput) {
+        dobInput.addEventListener("keydown", function (event) {
             if (event.key === "Enter") {
                 event.preventDefault();
                 const fetchBtn = document.getElementById("fetchBtn");

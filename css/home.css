@@ -601,65 +601,6 @@ body {
     background: linear-gradient(135deg, #0f766e, #0891b2);
 }
 
-/* Visible mute / unmute control for the hero introduction video. Sits on the
-   media layer, top-right so it never collides with the centred hero copy or the
-   native control bar along the bottom of the player. */
-.video-sound-toggle {
-    position: absolute;
-    right: 1.5rem;
-    top: 6.5rem;
-    z-index: 12;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.55rem 0.9rem;
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    border-radius: 999px;
-    background: rgba(15, 23, 42, 0.6);
-    color: #fff;
-    font: inherit;
-    font-size: 0.78rem;
-    font-weight: 600;
-    cursor: pointer;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    transition: background-color var(--transition-fast), border-color var(--transition-fast),
-        transform var(--transition-fast);
-    -webkit-tap-highlight-color: transparent;
-}
-
-.video-sound-toggle:hover,
-.video-sound-toggle:focus-visible {
-    background: rgba(15, 23, 42, 0.8);
-    border-color: rgba(255, 255, 255, 0.6);
-    outline: none;
-    transform: translateY(-1px);
-}
-
-.video-sound-toggle[aria-pressed="true"] {
-    background: linear-gradient(135deg, #0f766e, #0891b2);
-    border-color: rgba(255, 255, 255, 0.45);
-}
-
-.video-sound-toggle__icon {
-    font-size: 0.95rem;
-    line-height: 1;
-}
-
-@media (max-width: 768px) {
-    .video-sound-toggle {
-        right: 0.75rem;
-        top: auto;
-        bottom: 5.5rem;
-        padding: 0.45rem 0.7rem;
-        font-size: 0.68rem;
-    }
-
-    .video-sound-toggle__label {
-        display: none;
-    }
-}
-
 /* ===== COSMIC WARP BACKGROUND (animated stars + shooting light rays) ===== */
 
 /* Layer 1: far starfield — small, slow-drifting, softly twinkling */
