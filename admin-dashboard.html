@@ -11,10 +11,13 @@
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/premium-fx.css">
     <link rel="stylesheet" href="css/admin.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- V2 glass re-skin: loaded after the original admin styles. -->
+    <link rel="stylesheet" href="css/admin-dashboard-v2.css">
     <script src="js/admin-dashboard.js" defer></script>
+    <script src="js/admin-dashboard-v2.js" defer></script>
 </head>
-<body class="admin-dashboard-page">
+<body class="admin-dashboard-page adm-v2">
 
     <!-- Shared icon sprite: keeps navigation icons consistent and lightweight. -->
     <svg class="admin-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -79,6 +82,11 @@
                 </div>
             </nav>
 
+            <div class="adm-v2-plan" aria-hidden="true">
+                <div class="adm-v2-plan__row"><strong>Business plan</strong><span>13 of 20 seats</span></div>
+                <div class="adm-v2-plan__track"><span class="adm-v2-plan__fill"></span></div>
+            </div>
+
             <div class="admin-sidebar__footer">
                 <span class="admin-sidebar__avatar" aria-hidden="true">AD</span>
                 <span class="admin-sidebar__user"><strong>Administrator</strong><span>Secure session</span></span>
@@ -100,6 +108,7 @@
                 <span class="admin-pill" id="adminSessionPill" aria-live="polite"><i aria-hidden="true"></i> Admin session active</span>
                 <a class="admin-icon-btn" href="index.html" title="View website" aria-label="View website"><svg aria-hidden="true"><use href="#i-external"></use></svg></a>
                 <button class="admin-icon-btn" id="adminLogoutBtn" type="button" title="Log out" aria-label="Log out"><svg aria-hidden="true"><use href="#i-logout"></use></svg></button>
+                <span class="adm-v2-avatar" aria-hidden="true">AD</span>
             </div>
         </header>
 

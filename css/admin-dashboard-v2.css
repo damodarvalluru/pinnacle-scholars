@@ -1,0 +1,831 @@
+/* ==========================================================================
+   Admin Dashboard V2 — visual-only glass re-skin
+   Loaded AFTER admin.css. Every rule is scoped to .adm-v2 so the existing
+   dashboard markup, classes, handlers, API calls and session flow stay intact.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design tokens
+   -------------------------------------------------------------------------- */
+.adm-v2 {
+    --bg-0: #031b30;
+    --bg-1: #042a48;
+    --bg-2: #0a4a6e;
+    --bg-3: #1d7f9e;
+    --bg-4: #5facbf;
+
+    --glass-bg: linear-gradient(160deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, .08));
+    --glass-bg-strong: linear-gradient(160deg, rgba(255, 255, 255, .30), rgba(255, 255, 255, .12));
+    --sidebar-bg: linear-gradient(180deg, rgba(25, 95, 123, .82), rgba(10, 45, 72, .90));
+    --glass-border: rgba(255, 255, 255, .28);
+    --glass-border-soft: rgba(255, 255, 255, .14);
+    --glass-blur: 22px;
+
+    --shadow-panel: 0 20px 50px rgba(0, 12, 30, .45), inset 0 1px 0 rgba(255, 255, 255, .35);
+    --shadow-card: 0 12px 30px rgba(0, 12, 30, .30), inset 0 1px 0 rgba(255, 255, 255, .40);
+
+    --text: #ffffff;
+    --text-60: rgba(255, 255, 255, .60);
+    --text-40: rgba(255, 255, 255, .40);
+    --accent: #19b4e8;
+    --accent-2: #2d86d8;
+    --active-grad: linear-gradient(90deg, #0a7fc4, #19b4e8);
+    --positive: #34d399;
+    --negative: #fb7185;
+    --warning: #fbbf24;
+    --dark-btn: #0b1220;
+
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 28px;
+    --radius-pill: 999px;
+    --ease: cubic-bezier(.22, 1, .36, 1);
+    --font: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+    color-scheme: dark;
+}
+
+/* --------------------------------------------------------------------------
+   2. Page shell + drifting deep-blue background
+   -------------------------------------------------------------------------- */
+.adm-v2.admin-dashboard-page {
+    display: flex;
+    gap: 16px;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh;
+    padding: 16px;
+    overflow: hidden;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    background:
+        radial-gradient(900px 600px at 85% 8%, rgba(95, 172, 191, .55), transparent 60%),
+        radial-gradient(700px 520px at 10% 95%, rgba(29, 127, 158, .45), transparent 60%),
+        radial-gradient(600px 400px at 55% 55%, rgba(25, 180, 232, .18), transparent 70%),
+        linear-gradient(135deg, var(--bg-0), var(--bg-1) 40%, var(--bg-2));
+    background-attachment: fixed;
+}
+
+.adm-v2::before {
+    content: "";
+    position: fixed;
+    inset: -20%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(40% 40% at 30% 30%, rgba(95, 172, 191, .25), transparent 70%),
+        radial-gradient(35% 35% at 75% 70%, rgba(45, 134, 216, .22), transparent 70%);
+    animation: adm-drift 22s ease-in-out infinite alternate;
+}
+
+/* Keep the main column above the ambient layer without touching the
+   sidebar drawer, modal or toast positioning from admin.css. */
+.adm-v2 > .admin-main {
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes adm-drift {
+    to { transform: translate3d(4%, -3%, 0) scale(1.08); }
+}
+
+/* --------------------------------------------------------------------------
+   3. Glass primitive (with non-backdrop-filter fallback)
+   -------------------------------------------------------------------------- */
+.adm-v2 .glass,
+.adm-v2 .admin-sidebar,
+.adm-v2 .admin-topbar,
+.adm-v2 .admin-content,
+.adm-v2 .admin-card,
+.adm-v2 .admin-stat-card,
+.adm-v2 .admin-modal__card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-card);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .adm-v2 .glass,
+    .adm-v2 .admin-sidebar,
+    .adm-v2 .admin-topbar,
+    .adm-v2 .admin-content,
+    .adm-v2 .admin-card,
+    .adm-v2 .admin-stat-card,
+    .adm-v2 .admin-modal__card {
+        background: rgba(14, 64, 96, .88);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   4. Sidebar — floating glass navigation panel
+   -------------------------------------------------------------------------- */
+.adm-v2 .admin-sidebar {
+    position: relative;
+    top: auto;
+    flex: 0 0 260px;
+    width: 260px;
+    height: calc(100vh - 32px);
+    height: calc(100dvh - 32px);
+    padding: 14px;
+    border-radius: var(--radius-xl);
+    background: var(--sidebar-bg);
+    box-shadow: var(--shadow-panel);
+    overflow: hidden;
+    /* Opacity-only entrance: a transform keyframe here would override the
+       off-canvas drawer transform in the responsive rules below. */
+    animation: adm-fade .6s var(--ease) both;
+    transition: flex-basis .35s var(--ease), width .35s var(--ease), transform .35s var(--ease);
+}
+
+.adm-v2 .admin-sidebar__inner {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.adm-v2 .admin-sidebar__inner::-webkit-scrollbar { display: none; }
+
+.adm-v2 .admin-sidebar__brand {
+    gap: 10px;
+    padding: 4px 4px 16px;
+    border-bottom: 1px solid var(--glass-border-soft);
+}
+
+.adm-v2 .admin-sidebar__mark {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, rgba(255, 255, 255, .32), rgba(255, 255, 255, .12));
+    border: 1px solid var(--glass-border);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45);
+}
+
+.adm-v2 .admin-sidebar__mark svg { width: 19px; height: 19px; }
+
+.adm-v2 .admin-sidebar__brand-copy strong {
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.adm-v2 .admin-sidebar__brand-copy > span {
+    font-size: 10px;
+    letter-spacing: .1em;
+    color: var(--text-40);
+}
+
+.adm-v2 .admin-sidebar__collapse {
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, .12);
+    color: var(--text-60);
+}
+
+.adm-v2 .admin-sidebar__collapse:hover { color: #fff; background: rgba(255, 255, 255, .22); }
+
+.adm-v2 .admin-nav-group { padding-top: 0; border-top: 0; }
+
+.adm-v2 .admin-nav-group__title {
+    margin: 18px 10px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--text-40);
+}
+
+.adm-v2 .admin-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    color: var(--text-60);
+    font-size: 13px;
+    font-weight: 500;
+    background: transparent;
+    box-shadow: none;
+    animation: adm-slide-left .5s var(--ease) both;
+    animation-delay: calc(var(--i, 0) * 40ms + 250ms);
+    transition: background .25s var(--ease), color .25s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+
+.adm-v2 .admin-nav-item::before { display: none; }
+
+.adm-v2 .admin-nav-item__icon {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    transition: transform .25s var(--ease);
+}
+
+.adm-v2 .admin-nav-item__icon svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.75;
+}
+
+.adm-v2 .admin-nav-item:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, .12);
+    transform: translateX(4px);
+}
+
+.adm-v2 .admin-nav-item:hover .admin-nav-item__icon { transform: scale(1.1); }
+
+.adm-v2 .admin-nav-item.is-active {
+    color: #fff;
+    background: var(--active-grad);
+    border-color: rgba(255, 255, 255, .45);
+    box-shadow:
+        0 0 0 1px rgba(25, 180, 232, .5),
+        0 8px 24px rgba(25, 180, 232, .40),
+        inset 0 1px 0 rgba(255, 255, 255, .4);
+}
+
+.adm-v2 .admin-nav-item.is-active:hover { transform: translateX(4px); }
+
+.adm-v2 .adm-v2-badge {
+    display: grid;
+    place-items: center;
+    min-width: 20px;
+    height: 20px;
+    margin-left: auto;
+    padding: 0 5px;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, .22);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+/* Bottom plan card + existing secure-session footer */
+.adm-v2 .adm-v2-plan {
+    margin-top: auto;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, .10);
+    border: 1px solid var(--glass-border-soft);
+}
+
+.adm-v2 .adm-v2-plan__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 11px;
+}
+
+.adm-v2 .adm-v2-plan__row strong { font-size: 12px; font-weight: 600; color: #fff; }
+.adm-v2 .adm-v2-plan__row span { color: var(--text-60); }
+
+.adm-v2 .adm-v2-plan__track {
+    height: 6px;
+    margin-top: 10px;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, .20);
+    overflow: hidden;
+}
+
+.adm-v2 .adm-v2-plan__fill {
+    display: block;
+    width: 65%;
+    height: 100%;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(90deg, #5cc8f5, #19b4e8);
+    animation: adm-fill 1.2s .8s var(--ease) both;
+}
+
+.adm-v2 .admin-sidebar__footer {
+    margin-top: .75rem;
+    padding: .9rem .45rem .15rem;
+    border-top: 1px solid var(--glass-border-soft);
+}
+
+.adm-v2 .admin-sidebar__user strong { font-size: 12px; }
+.adm-v2 .admin-sidebar__user > span { font-size: 10px; color: var(--text-40); }
+.adm-v2 .admin-sidebar__status { background: var(--positive); }
+
+/* Collapsed desktop sidebar (existing toggle still drives this class) */
+.adm-v2 .admin-sidebar.is-collapsed { flex-basis: 88px; width: 88px; }
+
+.adm-v2 .admin-sidebar.is-collapsed .admin-sidebar__brand,
+.adm-v2 .admin-sidebar.is-collapsed .admin-sidebar__footer {
+    justify-content: center;
+    padding-inline: 0;
+}
+
+.adm-v2 .admin-sidebar.is-collapsed .admin-sidebar__brand-copy,
+.adm-v2 .admin-sidebar.is-collapsed .admin-nav-group__title,
+.adm-v2 .admin-sidebar.is-collapsed .admin-nav-item__label,
+.adm-v2 .admin-sidebar.is-collapsed .admin-sidebar__user,
+.adm-v2 .admin-sidebar.is-collapsed .admin-sidebar__status,
+.adm-v2 .admin-sidebar.is-collapsed .adm-v2-plan { display: none; }
+
+.adm-v2 .admin-sidebar.is-collapsed .admin-nav-item { justify-content: center; padding: 0; }
+.adm-v2 .admin-sidebar.is-collapsed .admin-nav-item:hover { transform: none; }
+.adm-v2 .admin-sidebar.is-collapsed .adm-v2-badge { display: none; }
+
+/* --------------------------------------------------------------------------
+   5. Right column: glass top bar + scrollable main panel
+   -------------------------------------------------------------------------- */
+.adm-v2 .admin-main {
+    display: grid;
+    grid-template-rows: 56px minmax(0, 1fr);
+    gap: 16px;
+    min-width: 0;
+    min-height: 0;
+}
+
+.adm-v2 .admin-topbar {
+    position: relative;
+    top: auto;
+    z-index: 15;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 56px;
+    padding: 0 14px;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-card);
+    animation: adm-rise .6s .08s var(--ease) both;
+}
+
+.adm-v2 .admin-topbar__titles h1 {
+    font-family: var(--font);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+}
+
+.adm-v2 .admin-topbar__titles p {
+    margin-top: 1px;
+    font-size: 11px;
+    color: var(--text-40);
+}
+
+.adm-v2 .admin-pill {
+    padding: .42rem .75rem;
+    background: rgba(255, 255, 255, .14);
+    border: 1px solid var(--glass-border-soft);
+    color: var(--text-60);
+    font-size: 11px;
+}
+
+.adm-v2 .admin-pill i {
+    background: var(--positive);
+    box-shadow: 0 0 0 4px rgba(52, 211, 153, .18);
+    animation: adm-pulse 2s infinite;
+}
+
+.adm-v2 .admin-icon-btn,
+.adm-v2 .admin-menu-toggle,
+.adm-v2 .adm-v2-avatar {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .14);
+    border: 1px solid var(--glass-border-soft);
+    color: var(--text);
+    transition: transform .25s var(--ease), box-shadow .25s var(--ease), background .25s var(--ease);
+}
+
+.adm-v2 .admin-icon-btn:hover,
+.adm-v2 .admin-menu-toggle:hover {
+    transform: translateY(-2px) scale(1.05);
+    background: rgba(255, 255, 255, .22);
+    box-shadow: 0 8px 18px rgba(0, 12, 30, .30);
+}
+
+.adm-v2 .adm-v2-avatar {
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #19b4e8, #2d86d8);
+    border-color: rgba(255, 255, 255, .45);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.adm-v2 .admin-content {
+    min-height: 0;
+    max-width: none;
+    margin: 0;
+    padding: 24px;
+    border-radius: var(--radius-xl);
+    background: var(--glass-bg-strong);
+    box-shadow: var(--shadow-panel);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, .30) transparent;
+    animation: adm-rise .7s .16s var(--ease) both;
+}
+
+.adm-v2 .admin-content::-webkit-scrollbar { width: 6px; height: 6px; }
+.adm-v2 .admin-content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .30); border-radius: var(--radius-pill); }
+.adm-v2 .admin-content::-webkit-scrollbar-track { background: transparent; }
+
+/* --------------------------------------------------------------------------
+   6. Section headings, hero and buttons
+   -------------------------------------------------------------------------- */
+.adm-v2 .admin-section-head,
+.adm-v2 .admin-hero {
+    color: var(--text);
+}
+
+.adm-v2 .admin-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--text-40);
+}
+
+.adm-v2 .admin-section-head h2,
+.adm-v2 .admin-hero h2 {
+    font-family: var(--font);
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    color: #fff;
+}
+
+.adm-v2 .admin-section-head p,
+.adm-v2 .admin-hero p {
+    font-size: 13px;
+    color: var(--text-60);
+}
+
+.adm-v2 .admin-hero {
+    padding: 22px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(120deg, rgba(25, 180, 232, .22), rgba(45, 134, 216, .10));
+    border: 1px solid var(--glass-border-soft);
+    box-shadow: var(--shadow-card);
+}
+
+.adm-v2 .admin-hero__sync { color: var(--text-60); font-size: 11px; }
+.adm-v2 .admin-hero__sync::before { background: var(--positive); box-shadow: 0 0 0 4px rgba(52, 211, 153, .18); }
+
+.adm-v2 .admin-btn,
+.adm-v2 .admin-auth-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    padding: 0 16px;
+    border-radius: var(--radius-pill);
+    background: var(--dark-btn);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, .12);
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 8px 18px rgba(0, 12, 30, .28);
+    transition: transform .25s var(--ease), box-shadow .25s var(--ease), background .25s var(--ease);
+}
+
+.adm-v2 .admin-btn:hover,
+.adm-v2 .admin-auth-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(0, 12, 30, .38);
+}
+
+.adm-v2 .admin-btn:active,
+.adm-v2 .admin-auth-submit:active { transform: translateY(0) scale(.98); }
+
+.adm-v2 .admin-btn--ghost,
+.adm-v2 .admin-btn--glass,
+.adm-v2 .admin-btn--light {
+    background: rgba(255, 255, 255, .12);
+    color: #fff;
+    border-color: var(--glass-border);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28);
+}
+
+.adm-v2 .admin-btn--light:hover,
+.adm-v2 .admin-btn--glass:hover,
+.adm-v2 .admin-btn--ghost:hover {
+    background: rgba(255, 255, 255, .20);
+}
+
+.adm-v2 .admin-btn--danger { background: linear-gradient(135deg, #b91c1c, #fb7185); }
+
+/* --------------------------------------------------------------------------
+   7. Stat cards, grids and charts
+   -------------------------------------------------------------------------- */
+.adm-v2 .admin-stat-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.adm-v2 .admin-stat-card,
+.adm-v2 .admin-card {
+    color: var(--text);
+    border-radius: var(--radius-lg);
+    animation: adm-rise .6s var(--ease) both;
+    animation-delay: calc(var(--i, 0) * 80ms + 350ms);
+    transition: transform .3s var(--ease), box-shadow .3s var(--ease), background .3s var(--ease);
+}
+
+.adm-v2 .admin-stat-card:hover,
+.adm-v2 .admin-card:hover {
+    transform: translateY(-5px);
+    background: var(--glass-bg-strong);
+    box-shadow: 0 22px 44px rgba(0, 12, 30, .40), inset 0 1px 0 rgba(255, 255, 255, .5);
+}
+
+.adm-v2 .admin-stat-card { padding: 20px; }
+.adm-v2 .admin-stat-card::after { display: none; }
+
+.adm-v2 .admin-stat-card__icon {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, .22);
+    border: 1px solid var(--glass-border-soft);
+    font-size: 1rem;
+}
+
+.adm-v2 .admin-stat-card__trend { color: var(--positive); font-size: 12px; }
+
+.adm-v2 .admin-stat-card__value {
+    margin-top: 14px;
+    font-family: var(--font);
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -.02em;
+}
+
+.adm-v2 .admin-stat-card__label { margin-top: 4px; font-size: 13px; color: var(--text-60); }
+.adm-v2 .admin-stat-card__foot { margin-top: 8px; font-size: 11px; color: var(--text-40); }
+
+.adm-v2 .admin-grid { gap: 16px; }
+.adm-v2 .admin-grid--charts { grid-template-columns: 2fr 1fr; }
+.adm-v2 .admin-grid--two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.adm-v2 .admin-card { padding: 20px; }
+
+.adm-v2 .admin-card__head {
+    padding: 0 0 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, .12);
+    background: transparent;
+}
+
+.adm-v2 .admin-card__head h3 { font-family: var(--font); font-size: 14px; font-weight: 700; color: #fff; }
+.adm-v2 .admin-card__head p { font-size: 11px; color: var(--text-40); }
+.adm-v2 .admin-card__body { padding: 16px 0 0; }
+.adm-v2 .admin-card__body--flush { padding: 0; }
+
+.adm-v2 .admin-bar-row { grid-template-columns: minmax(90px, 1fr) 3fr auto; font-size: 12px; }
+.adm-v2 .admin-bar-row > span:first-child { color: var(--text-60); }
+.adm-v2 .admin-bar-row strong { color: #fff; }
+.adm-v2 .admin-bar-track { background: rgba(255, 255, 255, .18); }
+
+.adm-v2 .admin-bar-fill {
+    background: linear-gradient(180deg, #5cc8f5, #2d86d8);
+    transform-origin: bottom;
+    animation: adm-grow .8s var(--ease) both;
+    animation-delay: calc(var(--i, 0) * 80ms + 500ms);
+}
+
+.adm-v2 .admin-donut {
+    background: conic-gradient(var(--accent) 0 var(--donut-a, 0%), var(--accent-2) var(--donut-a, 0%) var(--donut-b, 0%), #7c3aed var(--donut-b, 0%) var(--donut-c, 0%), rgba(255, 255, 255, .18) var(--donut-c, 0%) 100%);
+}
+
+.adm-v2 .admin-donut::after { background: rgba(11, 32, 52, .88); }
+.adm-v2 .admin-donut__label strong { font-family: var(--font); font-size: 24px; color: #fff; }
+.adm-v2 .admin-donut__label span { color: var(--text-40); }
+.adm-v2 .admin-legend { color: var(--text-60); font-size: 12px; }
+.adm-v2 .admin-legend span:last-child { color: #fff; }
+
+/* --------------------------------------------------------------------------
+   8. Filters, inputs, tables, notes and states
+   -------------------------------------------------------------------------- */
+.adm-v2 .admin-filters {
+    padding: 0 0 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, .12);
+    background: transparent;
+}
+
+.adm-v2 .admin-filter-field label { color: var(--text-40); font-size: 10px; letter-spacing: .1em; }
+
+.adm-v2 .admin-filter-field input,
+.adm-v2 .admin-filter-field select,
+.adm-v2 .admin-field__input input {
+    height: 40px;
+    padding: 0 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--glass-border-soft);
+    background: rgba(255, 255, 255, .14);
+    color: #fff;
+    font-family: var(--font);
+    font-size: 12px;
+}
+
+.adm-v2 .admin-filter-field input::placeholder { color: rgba(255, 255, 255, .45); }
+
+.adm-v2 .admin-filter-field input:focus,
+.adm-v2 .admin-filter-field select:focus,
+.adm-v2 .admin-field__input input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(25, 180, 232, .30);
+    outline: 0;
+}
+
+.adm-v2 .admin-filter-field option { background: #0a2e4c; color: #fff; }
+
+.adm-v2 .admin-table th,
+.adm-v2 .admin-table td { border-bottom-color: rgba(255, 255, 255, .10); }
+
+.adm-v2 .admin-table th {
+    background: rgba(255, 255, 255, .08);
+    color: var(--text-40);
+    font-size: 11px;
+    letter-spacing: .1em;
+}
+
+.adm-v2 .admin-table td { color: var(--text-60); }
+.adm-v2 .admin-table td strong { color: #fff; }
+.adm-v2 .admin-table td small { color: var(--text-40); }
+.adm-v2 .admin-table tbody tr:hover { background: rgba(255, 255, 255, .08); }
+
+.adm-v2 .admin-badge {
+    border: 1px solid transparent;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.adm-v2 .admin-badge--success { background: rgba(52, 211, 153, .20); color: #6ee7b7; border-color: rgba(52, 211, 153, .30); }
+.adm-v2 .admin-badge--warning { background: rgba(251, 191, 36, .20); color: #fde68a; border-color: rgba(251, 191, 36, .30); }
+.adm-v2 .admin-badge--danger { background: rgba(251, 113, 133, .20); color: #fda4af; border-color: rgba(251, 113, 133, .30); }
+.adm-v2 .admin-badge--info { background: rgba(25, 180, 232, .20); color: #7dd3fc; border-color: rgba(25, 180, 232, .30); }
+.adm-v2 .admin-badge--violet { background: rgba(124, 58, 237, .20); color: #c4b5fd; border-color: rgba(124, 58, 237, .30); }
+
+.adm-v2 .admin-note {
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, .08);
+    border: 1px solid var(--glass-border-soft);
+    color: var(--text-60);
+    font-size: 12px;
+}
+
+.adm-v2 .admin-empty { color: var(--text-40); padding: 40px 16px; }
+.adm-v2 .admin-empty strong { color: var(--text-60); }
+.adm-v2 .admin-empty p { color: var(--text-40); }
+
+.adm-v2 .admin-loading {
+    color: var(--text-40);
+    background: linear-gradient(90deg, rgba(255, 255, 255, .08) 25%, rgba(255, 255, 255, .22) 50%, rgba(255, 255, 255, .08) 75%);
+    background-size: 200% 100%;
+    border-radius: var(--radius-sm);
+    animation: adm-shimmer 1.4s linear infinite;
+}
+
+.adm-v2 .admin-modal__card { color: #fff; border-radius: var(--radius-lg); }
+.adm-v2 .admin-modal__head { border-bottom-color: var(--glass-border-soft); }
+.adm-v2 #adminToast {
+    background: rgba(11, 18, 32, .92);
+    color: #fff;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-panel);
+}
+
+/* --------------------------------------------------------------------------
+   9. Animations
+   -------------------------------------------------------------------------- */
+@keyframes adm-rise {
+    from { opacity: 0; transform: translateY(18px) scale(.985); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes adm-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes adm-slide-left {
+    from { opacity: 0; transform: translateX(-14px); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes adm-grow {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+}
+
+@keyframes adm-fill { from { width: 0; } }
+
+@keyframes adm-shimmer {
+    from { background-position: -200% 0; }
+    to { background-position: 200% 0; }
+}
+
+@keyframes adm-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(25, 180, 232, .55); }
+    70% { box-shadow: 0 0 0 10px rgba(25, 180, 232, 0); }
+}
+
+.adm-v2 .admin-section.adm-enter { animation: adm-rise .45s var(--ease) both; }
+
+/* --------------------------------------------------------------------------
+   10. Responsive: tablet drawer, mobile stacking
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+    .adm-v2.admin-dashboard-page { padding: 12px; }
+
+    .adm-v2 .admin-sidebar,
+    .adm-v2 .admin-sidebar.is-collapsed {
+        position: fixed;
+        inset: 12px auto 12px 12px;
+        z-index: 30;
+        width: 272px;
+        flex-basis: 272px;
+        height: calc(100dvh - 24px);
+        transform: translateX(-110%);
+        transition: transform .35s var(--ease);
+    }
+
+    .adm-v2 .admin-sidebar.is-open,
+    .adm-v2 .admin-sidebar.is-collapsed.is-open { transform: translateX(0); }
+
+    .adm-v2 .admin-sidebar__collapse { display: none; }
+    .adm-v2 .admin-sidebar.is-collapsed .admin-sidebar__brand { justify-content: flex-start; gap: 10px; }
+    .adm-v2 .admin-sidebar.is-collapsed .admin-sidebar__brand-copy,
+    .adm-v2 .admin-sidebar.is-collapsed .admin-nav-group__title,
+    .adm-v2 .admin-sidebar.is-collapsed .admin-nav-item__label,
+    .adm-v2 .admin-sidebar.is-collapsed .admin-sidebar__user,
+    .adm-v2 .admin-sidebar.is-collapsed .admin-sidebar__status,
+    .adm-v2 .admin-sidebar.is-collapsed .adm-v2-plan { display: revert; }
+    .adm-v2 .admin-sidebar.is-collapsed .admin-nav-item { justify-content: flex-start; padding: 0 12px; }
+    .adm-v2 .admin-sidebar.is-collapsed .admin-nav-item:hover { transform: translateX(4px); }
+    .adm-v2 .admin-sidebar.is-collapsed .adm-v2-badge { display: grid; }
+
+    .adm-v2 .admin-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 25;
+        display: none;
+        background: rgba(3, 15, 28, .62);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+    }
+
+    .adm-v2 .admin-backdrop.is-open { display: block; }
+    .adm-v2 .admin-menu-toggle { display: inline-grid; }
+
+    .adm-v2 .admin-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .adm-v2 .admin-grid--charts,
+    .adm-v2 .admin-grid--two { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 640px) {
+    .adm-v2.admin-dashboard-page { padding: 10px; gap: 10px; }
+    .adm-v2 .admin-main { grid-template-rows: 52px minmax(0, 1fr); gap: 10px; }
+    .adm-v2 .admin-topbar { height: 52px; padding: 0 10px; }
+    .adm-v2 .admin-topbar__titles p { display: none; }
+    .adm-v2 .admin-pill { display: none; }
+    .adm-v2 .admin-content { padding: 16px; border-radius: 22px; }
+    .adm-v2 .admin-section-head h2,
+    .adm-v2 .admin-hero h2 { font-size: 22px; }
+    .adm-v2 .admin-hero { padding: 16px; }
+    .adm-v2 .admin-hero__actions { flex-direction: column; }
+    .adm-v2 .admin-stat-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .adm-v2 .admin-card { padding: 16px; }
+    .adm-v2 .admin-stat-card__value { font-size: 24px; }
+}
+
+@media (max-width: 560px) {
+    .adm-v2 .admin-sidebar,
+    .adm-v2 .admin-sidebar.is-collapsed { width: calc(100vw - 32px); flex-basis: calc(100vw - 32px); }
+    .adm-v2 .adm-v2-avatar { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   11. Reduced motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    .adm-v2 *,
+    .adm-v2 *::before,
+    .adm-v2 *::after {
+        animation: none !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
