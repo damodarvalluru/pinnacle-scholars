@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Dashboard | Pinnacle Scholars Academy</title>
+
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/premium-fx.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script src="js/admin-dashboard.js" defer></script>
+</head>
+<body class="admin-dashboard-page">
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="admin-sidebar__brand">
+            <span class="admin-sidebar__mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 20 6v5.5c0 5.2-3.3 8.9-8 10-4.7-1.1-8-4.8-8-10V6l8-3.5Z"/><path d="m9 12.1 2 2 4-4.2"/></svg>
+            </span>
+            <span><strong>Pinnacle Academy</strong><span>ADMIN CONSOLE</span></span>
+        </div>
+
+        <nav aria-label="Admin dashboard sections">
+            <div class="admin-nav-group">
+                <p class="admin-nav-group__title">Overview</p>
+                <button class="admin-nav-item is-active" type="button" data-section="overview"><span>📊</span><span>Dashboard</span></button>
+                <button class="admin-nav-item" type="button" data-section="students"><span>🎓</span><span>Students</span></button>
+                <button class="admin-nav-item" type="button" data-section="faculty"><span>👨‍🏫</span><span>Faculty</span></button>
+            </div>
+            <div class="admin-nav-group">
+                <p class="admin-nav-group__title">Academics</p>
+                <button class="admin-nav-item" type="button" data-section="exams"><span>📝</span><span>Exam Management</span></button>
+                <button class="admin-nav-item" type="button" data-section="performance"><span>🏆</span><span>Performance</span></button>
+                <button class="admin-nav-item" type="button" data-section="syllabus"><span>📚</span><span>Syllabus</span></button>
+                <button class="admin-nav-item" type="button" data-section="timetables"><span>🗓️</span><span>Timetables &amp; Guidelines</span></button>
+                <button class="admin-nav-item" type="button" data-section="programs"><span>🎯</span><span>Programs</span></button>
+            </div>
+            <div class="admin-nav-group">
+                <p class="admin-nav-group__title">Administration</p>
+                <button class="admin-nav-item" type="button" data-section="fees"><span>💳</span><span>Fee Management</span></button>
+                <button class="admin-nav-item" type="button" data-section="messages"><span>✉️</span><span>Contact Messages</span></button>
+                <button class="admin-nav-item" type="button" data-section="gate-jee"><span>🏅</span><span>GATE &amp; JEE Stats</span></button>
+                <button class="admin-nav-item" type="button" data-section="settings"><span>⚙️</span><span>Settings</span></button>
+            </div>
+        </nav>
+    </aside>
+
+    <div class="admin-backdrop" id="adminBackdrop"></div>
+
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <button class="admin-menu-toggle" id="adminMenuToggle" type="button" aria-label="Toggle admin navigation">☰</button>
+            <div class="admin-topbar__titles">
+                <h1 id="adminPageTitle">Dashboard</h1>
+                <p id="adminPageSubtitle">Live records from the academy database</p>
+            </div>
+            <div class="admin-topbar__actions">
+                <span class="admin-pill"><i aria-hidden="true"></i> Admin session active</span>
+                <a class="admin-icon-btn" href="index.html" title="View website" aria-label="View website">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></svg>
+                </a>
+                <button class="admin-icon-btn" id="adminLogoutBtn" type="button" title="Log out" aria-label="Log out">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <div class="admin-content" id="adminContent">
+
+            <!-- 1. OVERVIEW -->
+            <section class="admin-section" id="section-overview">
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Live database snapshot</span><h2>Academy Overview</h2><p>Counts are read directly from the academy tables.</p></div>
+                </div>
+                <div class="admin-stat-grid" id="ovStats"><div class="admin-loading">Loading statistics…</div></div>
+                <div class="admin-grid admin-grid--charts">
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Students by program</h3><p>From student domain records</p></div>
+                        <div class="admin-card__body" id="ovDomainBars"><div class="admin-loading">Loading…</div></div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Published exams by type</h3><p>From published test papers</p></div>
+                        <div class="admin-card__body" id="ovTypeDonut"><div class="admin-loading">Loading…</div></div>
+                    </div>
+                </div>
+                <div class="admin-grid admin-grid--two" style="margin-top:1.1rem">
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Recent registrations</h3><p>Latest student records</p></div>
+                        <div class="admin-card__body admin-card__body--flush" id="ovRecentStudents"><div class="admin-loading">Loading…</div></div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Recent activity</h3><p>Latest exams and messages</p></div>
+                        <div class="admin-card__body admin-card__body--flush" id="ovRecentExams"></div>
+                        <div class="admin-card__body admin-card__body--flush" id="ovRecentMessages"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. STUDENTS -->
+            <section class="admin-section" id="section-students" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Records</span><h2>Student Statistics</h2><p>Registered students, profiles and fee position.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="students">Export CSV</button>
+                </div>
+                <div class="admin-card">
+                    <form class="admin-filters" id="studentsFilters">
+                        <div class="admin-filter-field"><label for="stQ">Search</label><input id="stQ" data-param="q" placeholder="ID, name or domain"></div>
+                        <div class="admin-filter-field"><label for="stDomain">Program</label><input id="stDomain" data-param="domain" placeholder="e.g. MPC-JEE"></div>
+                        <div class="admin-filter-field"><label for="stStatus">Fee status</label><select id="stStatus" data-param="status"><option value="">All</option><option value="paid">Fully paid</option><option value="partial">Partial</option><option value="unpaid">Unpaid</option></select></div>
+                        <div class="admin-filter-field"><label for="stSort">Sort by</label><select id="stSort" data-param="sort"><option value="student_id">Student ID</option><option value="name">Name</option><option value="enrollment_date">Enrollment date</option><option value="fees_paid">Fees paid</option><option value="remaining_fees">Remaining fees</option></select></div>
+                        <div class="admin-filter-field"><label for="stOrder">Order</label><select id="stOrder" data-param="order"><option value="asc">Ascending</option><option value="desc">Descending</option></select></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="studentsCount">Loading records…</div></div>
+                    <div class="admin-table-wrap" id="studentsTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 3. FACULTY -->
+            <section class="admin-section" id="section-faculty" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">People</span><h2>Faculty Management</h2><p>Existing faculty records and exams published by each member.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="faculty">Export CSV</button>
+                </div>
+                <div class="admin-card">
+                    <form class="admin-filters" id="facultyFilters">
+                        <div class="admin-filter-field"><label for="fcQ">Search</label><input id="fcQ" data-param="q" placeholder="ID, name, email or mobile"></div>
+                        <div class="admin-filter-field"><label for="fcDomain">Domain</label><input id="fcDomain" data-param="domain" placeholder="e.g. maths"></div>
+                        <div class="admin-filter-field"><label for="fcSort">Sort by</label><select id="fcSort" data-param="sort"><option value="faculty_id">Faculty ID</option><option value="name">Name</option><option value="domain">Domain</option><option value="enrollment_date">Enrollment date</option></select></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="facultyCount">Loading records…</div></div>
+                    <div class="admin-table-wrap" id="facultyTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 4. EXAMS -->
+            <section class="admin-section" id="section-exams" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Academics</span><h2>Exam Management</h2><p>Published papers, submissions and paper details.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="exams">Export CSV</button>
+                </div>
+                <div class="admin-stat-grid" id="examStats"></div>
+                <div class="admin-card">
+                    <form class="admin-filters" id="examsFilters">
+                        <div class="admin-filter-field"><label for="exQ">Search</label><input id="exQ" data-param="q" placeholder="Test ID, title or faculty"></div>
+                        <div class="admin-filter-field"><label for="exType">Type</label><input id="exType" data-param="type" placeholder="jee / gate"></div>
+                        <div class="admin-filter-field"><label for="exFaculty">Faculty ID</label><input id="exFaculty" data-param="facultyId" placeholder="Faculty ID"></div>
+                        <div class="admin-filter-field"><label for="exStatus">State</label><select id="exStatus" data-param="status"><option value="">All</option><option value="completed">Completed (submissions)</option><option value="pending">Pending (no submissions)</option></select></div>
+                        <div class="admin-filter-field"><label for="exFrom">Published from</label><input id="exFrom" data-param="from" type="date"></div>
+                        <div class="admin-filter-field"><label for="exTo">Published to</label><input id="exTo" data-param="to" type="date"></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="examsCount">Loading records…</div><div id="examsNoteText"></div></div>
+                    <div class="admin-table-wrap" id="examsTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 5. PERFORMANCE -->
+            <section class="admin-section" id="section-performance" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Results</span><h2>Student Exam Performance</h2><p>Attempts, scores, ranks and performance metrics.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="performance">Export CSV</button>
+                </div>
+                <div class="admin-stat-grid" id="perfStats"></div>
+                <div class="admin-card">
+                    <form class="admin-filters" id="performanceFilters">
+                        <div class="admin-filter-field"><label for="pfQ">Search</label><input id="pfQ" data-param="q" placeholder="Student or exam"></div>
+                        <div class="admin-filter-field"><label for="pfTest">Test ID</label><input id="pfTest" data-param="testId" placeholder="Test ID"></div>
+                        <div class="admin-filter-field"><label for="pfStudent">Student ID</label><input id="pfStudent" data-param="studentId" placeholder="Student ID"></div>
+                        <div class="admin-filter-field"><label for="pfDomain">Program</label><input id="pfDomain" data-param="domain" placeholder="Domain"></div>
+                        <div class="admin-filter-field"><label for="pfFrom">From</label><input id="pfFrom" data-param="from" type="date"></div>
+                        <div class="admin-filter-field"><label for="pfTo">To</label><input id="pfTo" data-param="to" type="date"></div>
+                        <div class="admin-filter-field"><label for="pfSort">Sort by</label><select id="pfSort" data-param="sort"><option value="submitted_at">Submitted</option><option value="score">Score</option><option value="student_id">Student ID</option></select></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="performanceCount">Loading records…</div></div>
+                    <div class="admin-table-wrap" id="performanceTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 6. SYLLABUS -->
+            <section class="admin-section" id="section-syllabus" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Curriculum</span><h2>Syllabus Management</h2><p>Subjects taken from questions in published exam papers.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="syllabus">Export CSV</button>
+                </div>
+                <div class="admin-card">
+                    <form class="admin-filters" id="syllabusFilters">
+                        <div class="admin-filter-field"><label for="syQ">Search</label><input id="syQ" data-param="q" placeholder="Subject or exam title"></div>
+                        <div class="admin-filter-field"><label for="syType">Exam type</label><input id="syType" data-param="type" placeholder="jee / gate"></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="syllabusCount">Loading records…</div><div id="syllabusNoteText"></div></div>
+                    <div class="admin-table-wrap" id="syllabusTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 7. FEES -->
+            <section class="admin-section" id="section-fees" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Finance</span><h2>Fee Management</h2><p>Fee structures, student dues and payment history.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="fees">Export CSV</button>
+                </div>
+                <div class="admin-stat-grid" id="feeStats"></div>
+                <div class="admin-card" style="margin-bottom:1.1rem">
+                    <div class="admin-card__head"><h3>Student fee records</h3><p>Paid, partial and unpaid students</p></div>
+                    <form class="admin-filters" id="feesFilters">
+                        <div class="admin-filter-field"><label for="feQ">Search</label><input id="feQ" data-param="q" placeholder="Student ID or name"></div>
+                        <div class="admin-filter-field"><label for="feDomain">Program</label><input id="feDomain" data-param="domain" placeholder="Domain"></div>
+                        <div class="admin-filter-field"><label for="feStatus">Fee status</label><select id="feStatus" data-param="status"><option value="">All</option><option value="paid">Fully paid</option><option value="partial">Partial</option><option value="unpaid">Unpaid</option></select></div>
+                        <div class="admin-filter-field"><label for="feSort">Sort by</label><select id="feSort" data-param="sort"><option value="student_id">Student ID</option><option value="name">Name</option><option value="fees_paid">Fees paid</option><option value="remaining_fees">Remaining</option></select></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="feesCount">Loading records…</div></div>
+                    <div class="admin-table-wrap" id="feesTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card__head"><h3>Payment history</h3><p>Recorded transactions from payment_history</p></div>
+                    <form class="admin-filters" id="paymentsFilters">
+                        <div class="admin-filter-field"><label for="payQ">Search</label><input id="payQ" data-param="q" placeholder="Student, payment ID"></div>
+                        <div class="admin-filter-field"><label for="payStatus">Status</label><input id="payStatus" data-param="status" placeholder="SUCCESS"></div>
+                        <div class="admin-filter-field"><label for="payType">Type</label><input id="payType" data-param="type" placeholder="PARTIAL / FULL"></div>
+                        <div class="admin-filter-field"><label for="payFrom">From</label><input id="payFrom" data-param="from" type="date"></div>
+                        <div class="admin-filter-field"><label for="payTo">To</label><input id="payTo" data-param="to" type="date"></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="paymentsCount">Loading records…</div></div>
+                    <div class="admin-table-wrap" id="paymentsTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 8. TIMETABLES & GUIDELINES -->
+            <section class="admin-section" id="section-timetables" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Academic information</span><h2>Timetables &amp; Guidelines</h2><p>Database-backed schedules, guidelines and announcements.</p></div>
+                </div>
+                <div class="admin-grid admin-grid--two" id="academicContent"><div class="admin-loading">Loading…</div></div>
+            </section>
+
+            <!-- 9. PROGRAMS -->
+            <section class="admin-section" id="section-programs" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Academics</span><h2>Programs Management</h2><p>Student counts and fee position for each program in the database.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="programs">Export CSV</button>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-note"><span>ℹ️</span><div id="programsNoteText">Loading…</div></div>
+                    <div class="admin-table-wrap" id="programsTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 10. MESSAGES -->
+            <section class="admin-section" id="section-messages" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Communication</span><h2>Contact Messages</h2><p>Messages submitted by students and visitors.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="messages">Export CSV</button>
+                </div>
+                <div class="admin-stat-grid" id="messageStats"></div>
+                <div class="admin-card">
+                    <form class="admin-filters" id="messagesFilters">
+                        <div class="admin-filter-field"><label for="msQ">Search</label><input id="msQ" data-param="q" placeholder="Name, email or message"></div>
+                        <div class="admin-filter-field"><label for="msRead">Read status</label><select id="msRead" data-param="read"><option value="">All</option><option value="unread">Unread</option><option value="read">Read</option></select></div>
+                        <div class="admin-filter-field"><label for="msStarred">Starred</label><select id="msStarred" data-param="starred"><option value="">All</option><option value="yes">Starred only</option></select></div>
+                        <div class="admin-filter-field"><label for="msFrom">From</label><input id="msFrom" data-param="from" type="date"></div>
+                        <div class="admin-filter-field"><label for="msTo">To</label><input id="msTo" data-param="to" type="date"></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="messagesCount">Loading records…</div></div>
+                    <div class="admin-table-wrap" id="messagesTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 11. GATE / JEE -->
+            <section class="admin-section" id="section-gate-jee" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Program analytics</span><h2>GATE &amp; JEE Statistics</h2><p>Separate student counts and records by program category.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="gate-jee">Export CSV</button>
+                </div>
+                <div class="admin-stat-grid" id="gateJeeStats"></div>
+                <div class="admin-card">
+                    <div class="admin-note"><span>ℹ️</span><div id="gateJeeNoteText">Loading…</div></div>
+                    <div class="admin-table-wrap" id="gateJeeTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 12. SETTINGS -->
+            <section class="admin-section" id="section-settings" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Security</span><h2>Admin Settings</h2><p>Change the admin password and security PIN.</p></div>
+                </div>
+                <div class="admin-card admin-settings">
+                    <div class="admin-card__head"><h3>Credentials</h3><p>Both current credentials are required</p></div>
+                    <div class="admin-card__body">
+                        <p class="admin-settings__notice">New credentials are salted and hashed on the server before being stored. Changing them ends other active admin sessions and takes effect immediately.</p>
+                        <form id="credentialForm" novalidate>
+                            <label class="admin-field" for="currentPassword"><span>Current password</span><span class="admin-field__input"><input id="currentPassword" type="password" autocomplete="current-password" required></span></label>
+                            <label class="admin-field" for="currentPin"><span>Current PIN</span><span class="admin-field__input"><input id="currentPin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" required></span></label>
+                            <label class="admin-field" for="newPassword"><span>New password (12+ characters)</span><span class="admin-field__input"><input id="newPassword" type="password" autocomplete="new-password" required></span></label>
+                            <label class="admin-field" for="newPin"><span>New PIN (6 digits)</span><span class="admin-field__input"><input id="newPin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" required></span></label>
+                            <div id="credentialError" class="admin-auth-error" role="alert" hidden></div>
+                            <button class="admin-auth-submit" type="submit"><span class="admin-auth-submit__label">Update Credentials</span></button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <div class="admin-modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+        <div class="admin-modal__card">
+            <div class="admin-modal__head">
+                <h3 id="adminModalTitle">Details</h3>
+                <button class="admin-icon-btn" type="button" id="adminModalClose" aria-label="Close">✕</button>
+            </div>
+            <div class="admin-modal__body" id="adminModalBody"></div>
+        </div>
+    </div>
+
+    <div id="adminToast" role="status" aria-live="polite"></div>
+
+</body>
+</html>

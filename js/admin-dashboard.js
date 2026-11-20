@@ -1,0 +1,706 @@
+// Admin dashboard controller. Every value shown here comes from an authenticated
+// backend response; no statistics or records are generated in the browser.
+(function () {
+    'use strict';
+
+    var API_BASE = window.PINNACLE_API_BASE || 'https://pinnacle-backend-5i7n.onrender.com';
+    var SECTION_TITLES = {
+        overview: ['Dashboard', 'Live records from the academy database'],
+        students: ['Students', 'Registered students, profiles and fee position'],
+        faculty: ['Faculty', 'Faculty records and published exams'],
+        exams: ['Exam Management', 'Published papers and submission state'],
+        performance: ['Performance', 'Attempts, scores and rankings'],
+        syllabus: ['Syllabus', 'Subjects from published exam questions'],
+        fees: ['Fee Management', 'Fee structures, dues and payment history'],
+        timetables: ['Timetables & Guidelines', 'Database-backed academic information'],
+        programs: ['Programs', 'Program statistics from student records'],
+        messages: ['Contact Messages', 'Messages submitted by students and visitors'],
+        'gate-jee': ['GATE & JEE Statistics', 'Separate program analytics'],
+        settings: ['Settings', 'Admin credential management']
+    };
+
+    var state = { section: 'overview', loaded: {}, cache: {}, sessionExpiresAt: 0 };
+    var $ = function (selector) { return document.querySelector(selector); };
+
+    function esc(value) {
+        return String(value === null || value === undefined ? '' : value).replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+    }
+
+    function money(value) {
+        var number = Number(value) || 0;
+        return '₹' + number.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function dateText(value) {
+        if (!value) return '—';
+        return String(value).replace('T', ' ').slice(0, 19);
+    }
+
+    function num(value) { return Number(value) || 0; }
+
+    function params(form) {
+        var result = {};
+        if (!form) return result;
+        form.querySelectorAll('[data-param]').forEach(function (input) {
+            if (input.value && String(input.value).trim()) result[input.getAttribute('data-param')] = input.value.trim();
+        });
+        return result;
+    }
+
+    function query(values) {
+        return new URLSearchParams(values).toString();
+    }
+
+    function api(path, options) {
+        options = options || {};
+        var headers = { 'Accept': 'application/json' };
+        if (options.body) headers['Content-Type'] = 'application/json';
+        return fetch(API_BASE + path, {
+            method: options.method || 'GET',
+            credentials: 'include',
+            headers: headers,
+            body: options.body ? JSON.stringify(options.body) : undefined
+        }).then(function (response) {
+            if (response.status === 401) {
+                window.location.replace('admin-login.html');
+                throw new Error('Admin session expired');
+            }
+            return response.json().catch(function () { return {}; }).then(function (data) {
+                return { status: response.status, data: data };
+            });
+        });
+    }
+
+    function statCard(icon, value, label, foot, trend) {
+        return '<article class="admin-stat-card">' +
+            '<div class="admin-stat-card__top"><span class="admin-stat-card__icon">' + esc(icon) + '</span>' +
+            (trend ? '<span class="admin-stat-card__trend">' + esc(trend) + '</span>' : '') + '</div>' +
+            '<strong class="admin-stat-card__value">' + esc(value) + '</strong>' +
+            '<span class="admin-stat-card__label">' + esc(label) + '</span>' +
+            (foot ? '<span class="admin-stat-card__foot">' + esc(foot) + '</span>' : '') +
+            '</article>';
+    }
+
+    function emptyState(title, message, icon) {
+        return '<div class="admin-empty"><div class="admin-empty__icon">' + esc(icon || '📭') + '</div>' +
+            '<strong>' + esc(title) + '</strong><p>' + esc(message) + '</p></div>';
+    }
+
+    function table(headers, rows) {
+        if (!rows.length) return emptyState('No records found', 'No records match the current view or filters.', '📭');
+        return '<table class="admin-table"><thead><tr>' + headers.map(function (h) {
+            return '<th>' + esc(h) + '</th>';
+        }).join('') + '</tr></thead><tbody>' + rows.join('') + '</tbody></table>';
+    }
+
+    function badge(label, kind) {
+        return '<span class="admin-badge admin-badge--' + esc(kind || '') + '">' + esc(label) + '</span>';
+    }
+
+    function toast(message, isError) {
+        var box = $('#adminToast');
+        if (!box) return;
+        box.textContent = message;
+        box.className = 'admin-toast' + (isError ? ' admin-toast--error' : '');
+        window.clearTimeout(toast.timer);
+        toast.timer = window.setTimeout(function () { box.textContent = ''; box.className = ''; }, 4000);
+    }
+
+    function openModal(title, html) {
+        $('#adminModalTitle').textContent = title;
+        $('#adminModalBody').innerHTML = html;
+        $('#adminModal').classList.add('is-open');
+    }
+
+    function closeModal() { $('#adminModal').classList.remove('is-open'); }
+
+    function detailGrid(items) {
+        return '<div class="admin-detail-grid">' + items.map(function (item) {
+            return '<div class="admin-detail-item"><small>' + esc(item[0]) + '</small><strong>' + esc(item[1]) + '</strong></div>';
+        }).join('') + '</div>';
+    }
+
+    function csvExport(key, filename) {
+        var rows = state.cache[key];
+        if (!rows || !rows.length) { toast('There are no loaded records to export.', true); return; }
+        var columns = Object.keys(rows[0]).filter(function (column) {
+            return typeof rows[0][column] !== 'object';
+        });
+        var lines = [columns.join(',')].concat(rows.map(function (row) {
+            return columns.map(function (column) {
+                return '"' + String(row[column] === null || row[column] === undefined ? '' : row[column]).replace(/"/g, '""') + '"';
+            }).join(',');
+        }));
+        var blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        var anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = filename + '.csv';
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+        URL.revokeObjectURL(url);
+    }
+
+    // ---------- section loaders ----------
+    function loadOverview() {
+        return api('/api/admin/overview').then(function (result) {
+            if (!result.data.success) throw new Error('overview');
+            var counts = result.data.counts || {};
+            var fees = result.data.fees || {};
+            $('#ovStats').innerHTML = [
+                statCard('🎓', num(counts.students), 'Students registered', num(counts.studentsWithAttempts) + ' with exam attempts'),
+                statCard('👨‍🏫', num(counts.faculty), 'Faculty members', 'Active in database'),
+                statCard('📝', num(counts.exams), 'Exams published', 'By faculty'),
+                statCard('🏆', num(counts.attempts), 'Exam attempts', num(counts.studentsWithAttempts) + ' participating students'),
+                statCard('💳', num(counts.payments), 'Payments recorded', money(fees.collected) + ' collected'),
+                statCard('✉️', num(counts.messages), 'Contact messages', 'From the contact form'),
+                statCard('📈', money(fees.feesPaid), 'Fees paid', 'Across all students'),
+                statCard('⏳', money(fees.remaining), 'Fees outstanding', 'Remaining balance')
+            ].join('');
+
+            var domains = (result.data.byDomain || []).map(function (row) {
+                return { label: row.domain, value: num(row.total) };
+            });
+            var maxDomain = Math.max.apply(null, [1].concat(domains.map(function (row) { return row.value; })));
+            $('#ovDomainBars').innerHTML = domains.length ? '<div class="admin-bars">' + domains.map(function (row) {
+                return '<div class="admin-bar-row"><span title="' + esc(row.label) + '">' + esc(row.label) + '</span>' +
+                    '<span class="admin-bar-track"><span class="admin-bar-fill" style="width:' + Math.round(row.value / maxDomain * 100) + '%"></span></span>' +
+                    '<strong>' + row.value + '</strong></div>';
+            }).join('') + '</div>' : emptyState('No students yet', 'Student registrations will appear here.', '🎓');
+
+            var types = (result.data.byTestType || []).map(function (row) {
+                return { label: row.test_type, value: num(row.total) };
+            });
+            var totalTests = types.reduce(function (sum, row) { return sum + row.value; }, 0);
+            var cumulative = 0;
+            var stops = types.map(function (row) {
+                var start = cumulative;
+                cumulative += totalTests ? row.value / totalTests * 100 : 0;
+                return { row: row, start: start, end: cumulative };
+            });
+            $('#ovTypeDonut').innerHTML = totalTests ?
+                '<div class="admin-donut-wrap"><div class="admin-donut" style="' +
+                '--donut-a:' + (stops[0] ? stops[0].end : 0) + '%;--donut-b:' + (stops[1] ? stops[1].end : 0) +
+                '%;--donut-c:' + (stops[2] ? stops[2].end : 0) + '%">' +
+                '<div class="admin-donut__label"><strong>' + totalTests + '</strong><span>exams</span></div></div>' +
+                '<div class="admin-legend">' + stops.map(function (item, index) {
+                    var color = ['#2563EB', '#00A8E8', '#7C3AED'][index % 3];
+                    return '<div><i style="background:' + color + '"></i><span>' + esc(item.row.label) + '</span><span>' + item.row.value + '</span></div>';
+                }).join('') + '</div></div>' : emptyState('No exams published', 'Published exam papers will appear here.', '📝');
+
+            var recentStudents = result.data.recentStudents || [];
+            $('#ovRecentStudents').innerHTML = table(['Student', 'Program', 'Enrolled'], recentStudents.map(function (row) {
+                return '<tr><td><strong>' + esc(row.name) + '</strong><small>' + esc(row.student_id) + '</small></td>' +
+                    '<td>' + esc(row.domain) + '</td><td>' + esc(dateText(row.enrollment_date || row.created_at)) + '</td></tr>';
+            }));
+
+            $('#ovRecentExams').innerHTML = '<div class="admin-card__head"><h3>Latest exams</h3></div>' + table(['Exam', 'Type', 'Published'], (result.data.recentExams || []).map(function (row) {
+                return '<tr><td><strong>' + esc(row.title) + '</strong><small>' + esc(row.test_id) + '</small></td>' +
+                    '<td>' + esc(row.test_type) + '</td><td>' + esc(dateText(row.published_at)) + '</td></tr>';
+            }));
+            $('#ovRecentMessages').innerHTML = '<div class="admin-card__head"><h3>Latest messages</h3></div>' + table(['Name', 'Email', 'Received'], (result.data.recentMessages || []).map(function (row) {
+                return '<tr><td>' + esc(row.name) + '</td><td>' + esc(row.email) + '</td><td>' + esc(dateText(row.created_at)) + '</td></tr>';
+            }));
+        });
+    }
+
+    function loadStudents() {
+        var form = $('#studentsFilters');
+        return api('/api/admin/students' + (query(params(form)) ? '?' + query(params(form)) : '')).then(function (result) {
+            var records = result.data.records || [];
+            state.cache.students = records;
+            $('#studentsCount').textContent = records.length
+                ? 'Showing ' + records.length + ' of ' + num(result.data.total) + ' registered students.'
+                : 'No students match the current filters.';
+            $('#studentsTable').innerHTML = table(
+                ['Student ID', 'Name', 'Program', 'Enrolled', 'Fees (total / paid / due)', 'Payments', 'Attempts', ''],
+                records.map(function (row) {
+                    var status = num(row.remaining_fees) <= 0 ? badge('Paid', 'success')
+                        : num(row.fees_paid) <= 0 ? badge('Unpaid', 'danger') : badge('Partial', 'warning');
+                    return '<tr><td><strong>' + esc(row.student_id) + '</strong></td><td>' + esc(row.name) + '</td>' +
+                        '<td>' + esc(row.domain) + '</td><td>' + esc(dateText(row.enrollment_date)) + '</td>' +
+                        '<td class="admin-table__num">' + money(row.total_fees) + '<small>Paid ' + money(row.fees_paid) + ' · Due ' + money(row.remaining_fees) + '</small></td>' +
+                        '<td>' + num(row.payment_count) + '</td><td>' + num(row.attempt_count) + '</td>' +
+                        '<td>' + status + ' <button class="admin-btn admin-btn--sm admin-btn--ghost" type="button" data-detail="student:' + esc(row.student_id) + '">View</button></td></tr>';
+                })
+            );
+        });
+    }
+
+    function loadFaculty() {
+        var form = $('#facultyFilters');
+        return api('/api/admin/faculty' + (query(params(form)) ? '?' + query(params(form)) : '')).then(function (result) {
+            var records = result.data.records || [];
+            state.cache.faculty = records;
+            $('#facultyCount').textContent = records.length ? 'Showing ' + records.length + ' of ' + num(result.data.total) + ' faculty members.' : 'No faculty members match the current filters.';
+            $('#facultyTable').innerHTML = table(
+                ['Faculty ID', 'Name', 'Domain', 'Contact', 'Qualifications', 'Published exams', ''],
+                records.map(function (row) {
+                    return '<tr><td><strong>' + esc(row.faculty_id) + '</strong></td><td>' + esc(row.name) + '</td>' +
+                        '<td>' + esc(row.domain) + '</td><td>' + esc(row.mail) + '<small>' + esc(row.mobile) + '</small></td>' +
+                        '<td>' + esc(String(row.qualifications || '—').slice(0, 70)) + '</td>' +
+                        '<td>' + num(row.published_tests) + '</td>' +
+                        '<td><button class="admin-btn admin-btn--sm admin-btn--ghost" type="button" data-detail="faculty:' + esc(row.faculty_id) + '">View</button></td></tr>';
+                })
+            );
+        });
+    }
+
+    function loadExams() {
+        var form = $('#examsFilters');
+        var suffix = query(params(form)) ? '?' + query(params(form)) : '';
+        return Promise.all([
+            api('/api/admin/exams'),
+            api('/api/admin/exams' + suffix)
+        ]).then(function (results) {
+            var all = results[0].data.records || [];
+            var records = results[1].data.records || [];
+            state.cache.exams = records;
+            var completed = all.filter(function (row) { return num(row.attempt_count) > 0; }).length;
+            $('#examStats').innerHTML = [
+                statCard('📝', all.length, 'Exams published', 'Across all exam types'),
+                statCard('✅', completed, 'Completed', 'Exams with recorded submissions'),
+                statCard('⏳', all.length - completed, 'Pending', 'Exams with no submissions yet')
+            ].join('');
+            $('#examsNoteText').textContent = results[1].data.note || '';
+            $('#examsCount').textContent = records.length ? 'Showing ' + records.length + ' published exam papers.' : 'No exams match the current filters.';
+            $('#examsTable').innerHTML = table(
+                ['Test ID', 'Title', 'Type', 'Faculty', 'Questions / subjects', 'Submissions', 'State', 'Published', ''],
+                records.map(function (row) {
+                    return '<tr><td><strong>' + esc(row.test_id) + '</strong></td><td>' + esc(row.title) + '</td>' +
+                        '<td>' + esc(row.test_type) + '</td><td>' + esc(row.faculty_name) + '<small>' + esc(row.faculty_id) + '</small></td>' +
+                        '<td>' + num(row.question_count) + ' questions<small>' + esc((row.subjects || []).join(', ') || '—') + '</small></td>' +
+                        '<td>' + num(row.attempt_count) + '</td>' +
+                        '<td>' + (row.state === 'completed' ? badge('Completed', 'success') : badge('Pending', 'warning')) + '</td>' +
+                        '<td>' + esc(dateText(row.published_at)) + '</td>' +
+                        '<td><button class="admin-btn admin-btn--sm admin-btn--ghost" type="button" data-detail="exam:' + esc(row.test_id) + '">View</button></td></tr>';
+                })
+            );
+        });
+    }
+
+    function loadPerformance() {
+        var form = $('#performanceFilters');
+        return api('/api/admin/performance' + (query(params(form)) ? '?' + query(params(form)) : '')).then(function (result) {
+            var records = result.data.records || [];
+            var metrics = result.data.metrics || {};
+            state.cache.performance = records;
+            $('#perfStats').innerHTML = [
+                statCard('🏆', num(metrics.attempts), 'Total attempts', num(metrics.students) + ' distinct students'),
+                statCard('📊', Number(metrics.average_score || 0).toFixed(2), 'Average score', 'Across all submissions'),
+                statCard('⬆️', num(metrics.highest_score), 'Highest score', 'Best submitted score'),
+                statCard('⬇️', num(metrics.lowest_score), 'Lowest score', 'Lowest submitted score')
+            ].join('');
+            $('#performanceCount').textContent = records.length ? 'Showing ' + records.length + ' result records. ' + (result.data.note || '') : 'No result records match the current filters.';
+            $('#performanceTable').innerHTML = table(
+                ['Rank', 'Student', 'Program', 'Exam', 'Score', 'Submitted'],
+                records.map(function (row) {
+                    return '<tr><td>' + badge('#' + num(row.rank), 'violet') + '</td>' +
+                        '<td><strong>' + esc(row.student_name) + '</strong><small>' + esc(row.student_id) + '</small></td>' +
+                        '<td>' + esc(row.student_domain || '—') + '</td>' +
+                        '<td>' + esc(row.exam_title || row.test_id) + '<small>' + esc(row.test_type || row.test_id) + '</small></td>' +
+                        '<td class="admin-table__num"><strong>' + esc(row.score) + '</strong> / ' + esc(row.total_marks || '—') + '</td>' +
+                        '<td>' + esc(dateText(row.submitted_at)) + '</td></tr>';
+                })
+            );
+        });
+    }
+
+    function loadSyllabus() {
+        return api('/api/admin/syllabus').then(function (result) {
+            var records = result.data.records || [];
+            var q = ($('#syQ') || {}).value ? $('#syQ').value.trim().toLowerCase() : '';
+            var type = ($('#syType') || {}).value ? $('#syType').value.trim().toLowerCase() : '';
+            records = records.filter(function (row) {
+                return (!q || String(row.subject).toLowerCase().indexOf(q) !== -1 || String(row.exam_title).toLowerCase().indexOf(q) !== -1) &&
+                    (!type || String(row.test_type).toLowerCase().indexOf(type) !== -1);
+            });
+            state.cache.syllabus = records;
+            $('#syllabusNoteText').textContent = result.data.note || '';
+            $('#syllabusCount').textContent = records.length ? 'Showing ' + records.length + ' subject / exam pairs recorded in published papers.' : 'No syllabus information is available in the database for these filters.';
+            $('#syllabusTable').innerHTML = table(
+                ['Subject', 'Exam', 'Type', 'Questions', 'Published'],
+                records.map(function (row) {
+                    return '<tr><td><strong>' + esc(row.subject) + '</strong></td><td>' + esc(row.exam_title) + '<small>' + esc(row.test_id) + '</small></td>' +
+                        '<td>' + esc(row.test_type) + '</td><td>' + num(row.question_count) + '</td><td>' + esc(dateText(row.published_at)) + '</td></tr>';
+                })
+            );
+        });
+    }
+
+    function loadFees() {
+        var feeForm = $('#feesFilters');
+        var payForm = $('#paymentsFilters');
+        var feeSuffix = query(params(feeForm)) ? '?' + query(params(feeForm)) : '';
+        var paySuffix = query(params(payForm)) ? '?' + query(params(payForm)) : '';
+        return Promise.all([
+            api('/api/admin/fees' + feeSuffix),
+            api('/api/admin/fees/payments' + paySuffix)
+        ]).then(function (results) {
+            var records = results[0].data.records || [];
+            var payments = results[1].data.records || [];
+            var summary = results[0].data.summary || {};
+            state.cache.fees = records;
+            $('#feeStats').innerHTML = [
+                statCard('💰', money(summary.totalFees || summary.total_fees || 0), 'Total fee structure', 'Sum of student records'),
+                statCard('✅', money(summary.feesPaid || summary.fees_paid || 0), 'Fees paid', 'Recorded against students'),
+                statCard('⏳', money(summary.remaining || summary.remaining_fees || 0), 'Fees outstanding', 'Remaining balances'),
+                statCard('🧾', payments.length, 'Transactions shown', 'From payment history')
+            ].join('');
+            $('#feesCount').textContent = records.length ? 'Showing ' + records.length + ' of ' + num(results[0].data.total) + ' student fee records.' : 'No student fee records match the current filters.';
+            $('#feesTable').innerHTML = table(
+                ['Student', 'Program', 'Total fees', 'Paid', 'Remaining', 'Payments', 'Status'],
+                records.map(function (row) {
+                    var status = num(row.remaining_fees) <= 0 ? badge('Paid', 'success')
+                        : num(row.fees_paid) <= 0 ? badge('Unpaid', 'danger') : badge('Partial', 'warning');
+                    return '<tr><td><strong>' + esc(row.name) + '</strong><small>' + esc(row.student_id) + '</small></td>' +
+                        '<td>' + esc(row.domain) + '</td><td class="admin-table__num">' + money(row.total_fees) + '</td>' +
+                        '<td class="admin-table__num">' + money(row.fees_paid) + '</td>' +
+                        '<td class="admin-table__num">' + money(row.remaining_fees) + '</td>' +
+                        '<td>' + num(row.payment_count) + '</td><td>' + status + '</td></tr>';
+                })
+            );
+            $('#paymentsCount').textContent = payments.length ? 'Showing ' + payments.length + ' payment records.' : 'No payment records match the current filters.';
+            $('#paymentsTable').innerHTML = table(
+                ['Student', 'Order ID', 'Payment ID', 'Amount', 'Type', 'Status', 'Paid at'],
+                payments.map(function (row) {
+                    return '<tr><td><strong>' + esc(row.student_name || row.student_id) + '</strong><small>' + esc(row.student_id) + '</small></td>' +
+                        '<td>' + esc(row.razorpay_order_id || '—') + '</td><td>' + esc(row.razorpay_payment_id || '—') + '</td>' +
+                        '<td class="admin-table__num">' + money(row.amount_paid) + '</td><td>' + esc(row.payment_type || '—') + '</td>' +
+                        '<td>' + badge(row.payment_status || '—', String(row.payment_status).toUpperCase() === 'SUCCESS' ? 'success' : 'warning') + '</td>' +
+                        '<td>' + esc(dateText(row.paid_at)) + '</td></tr>';
+                })
+            );
+        });
+    }
+
+    function loadAcademicContent() {
+        return api('/api/admin/academic-content').then(function (result) {
+            var groups = [
+                ['🗓️', 'Timetables', result.data.timetables || []],
+                ['📋', 'Guidelines', result.data.guidelines || []],
+                ['📢', 'Announcements', result.data.announcements || []]
+            ];
+            $('#academicContent').innerHTML = groups.map(function (group) {
+                var body = group[2].length
+                    ? table(['Title', 'Details'], group[2].map(function (row) {
+                        return '<tr><td>' + esc(row.title || '—') + '</td><td>' + esc(row.details || row.description || '—') + '</td></tr>';
+                    }))
+                    : emptyState('No ' + group[1].toLowerCase() + ' in the database', 'These records are not stored in the academy database, so no sample data is shown.', group[0]);
+                return '<div class="admin-card"><div class="admin-card__head"><h3>' + esc(group[1]) + '</h3></div>' + body + '</div>';
+            }).join('');
+        });
+    }
+
+    function loadPrograms() {
+        return api('/api/admin/programs').then(function (result) {
+            var records = result.data.records || [];
+            state.cache.programs = records;
+            $('#programsNoteText').textContent = result.data.note || '';
+            $('#programsTable').innerHTML = table(
+                ['Program (student domain)', 'Students', 'Total fees', 'Fees paid', 'Remaining'],
+                records.map(function (row) {
+                    return '<tr><td><strong>' + esc(row.program) + '</strong></td><td>' + num(row.student_count) + '</td>' +
+                        '<td class="admin-table__num">' + money(row.total_fees) + '</td>' +
+                        '<td class="admin-table__num">' + money(row.fees_paid) + '</td>' +
+                        '<td class="admin-table__num">' + money(row.remaining_fees) + '</td></tr>';
+                })
+            );
+        });
+    }
+
+    function loadMessages() {
+        var form = $('#messagesFilters');
+        return api('/api/admin/messages' + (query(params(form)) ? '?' + query(params(form)) : '')).then(function (result) {
+            var records = result.data.records || [];
+            state.cache.messages = records;
+            var unread = records.filter(function (row) { return !num(row.is_read); }).length;
+            var starred = records.filter(function (row) { return num(row.starred); }).length;
+            $('#messageStats').innerHTML = [
+                statCard('✉️', num(result.data.total), 'Messages shown', 'Matching current filters'),
+                statCard('📬', unread, 'Unread', 'In the current view'),
+                statCard('⭐', starred, 'Starred', 'In the current view')
+            ].join('');
+            $('#messagesCount').textContent = records.length ? 'Showing ' + records.length + ' messages.' : 'No messages match the current filters.';
+            $('#messagesTable').innerHTML = table(
+                ['Name', 'Contact', 'Message', 'Received', 'Flags', ''],
+                records.map(function (row) {
+                    return '<tr><td><strong>' + esc(row.name) + '</strong><small>' + esc(row.location) + '</small></td>' +
+                        '<td>' + esc(row.email) + '<small>' + esc(row.mobile) + '</small></td>' +
+                        '<td>' + esc(String(row.message).slice(0, 110)) + (String(row.message).length > 110 ? '…' : '') + '</td>' +
+                        '<td>' + esc(dateText(row.created_at)) + '</td>' +
+                        '<td>' + (num(row.is_read) ? badge('Read', 'success') : badge('Unread', 'info')) + ' ' +
+                        (num(row.starred) ? badge('★ Starred', 'warning') : '') + '</td>' +
+                        '<td><div class="admin-table__actions">' +
+                        '<button class="admin-btn admin-btn--sm admin-btn--ghost" type="button" data-detail="message:' + row.id + '">View</button>' +
+                        '<button class="admin-btn admin-btn--sm admin-btn--ghost" type="button" data-message-action="read:' + row.id + ':' + (num(row.is_read) ? 0 : 1) + '">' + (num(row.is_read) ? 'Unread' : 'Mark read') + '</button>' +
+                        '<button class="admin-btn admin-btn--sm admin-btn--ghost" type="button" data-message-action="star:' + row.id + ':' + (num(row.starred) ? 0 : 1) + '">' + (num(row.starred) ? 'Unstar' : 'Star') + '</button>' +
+                        '<button class="admin-btn admin-btn--sm admin-btn--danger" type="button" data-message-action="delete:' + row.id + '">Delete</button>' +
+                        '</div></td></tr>';
+                })
+            );
+        });
+    }
+
+    function loadGateJee() {
+        return api('/api/admin/gate-jee').then(function (result) {
+            var categories = result.data.categories || [];
+            var records = result.data.records || [];
+            state.cache['gate-jee'] = records;
+            $('#gateJeeNoteText').textContent = result.data.note || '';
+            $('#gateJeeStats').innerHTML = categories.length ? categories.map(function (row) {
+                return statCard(row.category === 'GATE' ? '⚙️' : row.category === 'JEE' ? '📘' : '🎯',
+                    num(row.student_count), row.category + ' students',
+                    num(row.attempts) + ' exam attempts · Avg ' + Number(row.average_score).toFixed(1), 'Program');
+            }).join('') : emptyState('No program records', 'Student records will be grouped here.', '🏅');
+            $('#gateJeeTable').innerHTML = table(
+                ['Student ID', 'Name', 'Program', 'Enrolled', 'Total fees', 'Paid', 'Remaining'],
+                records.map(function (row) {
+                    return '<tr><td><strong>' + esc(row.student_id) + '</strong></td><td>' + esc(row.name) + '</td>' +
+                        '<td>' + esc(row.domain) + '</td><td>' + esc(dateText(row.enrollment_date)) + '</td>' +
+                        '<td class="admin-table__num">' + money(row.total_fees) + '</td>' +
+                        '<td class="admin-table__num">' + money(row.fees_paid) + '</td>' +
+                        '<td class="admin-table__num">' + money(row.remaining_fees) + '</td></tr>';
+                })
+            );
+        });
+    }
+
+    var LOADERS = {
+        overview: loadOverview,
+        students: loadStudents,
+        faculty: loadFaculty,
+        exams: loadExams,
+        performance: loadPerformance,
+        syllabus: loadSyllabus,
+        fees: loadFees,
+        timetables: loadAcademicContent,
+        programs: loadPrograms,
+        messages: loadMessages,
+        'gate-jee': loadGateJee
+    };
+
+    function showSection(name, updateHash) {
+        if (!SECTION_TITLES[name]) name = 'overview';
+        state.section = name;
+        Object.keys(SECTION_TITLES).forEach(function (key) {
+            var section = document.getElementById('section-' + key);
+            if (section) section.hidden = key !== name;
+        });
+        document.querySelectorAll('.admin-nav-item').forEach(function (item) {
+            item.classList.toggle('is-active', item.getAttribute('data-section') === name);
+        });
+        $('#adminPageTitle').textContent = SECTION_TITLES[name][0];
+        $('#adminPageSubtitle').textContent = SECTION_TITLES[name][1];
+        if (updateHash) history.replaceState(null, '', '#' + name);
+        if (LOADERS[name]) {
+            LOADERS[name]().catch(function (error) {
+                console.error('Admin section load failed:', name, error);
+                toast('Could not load this section. Please retry.', true);
+            });
+        }
+        closeSidebar();
+    }
+
+    function closeSidebar() {
+        $('#adminSidebar').classList.remove('is-open');
+        $('#adminBackdrop').classList.remove('is-open');
+    }
+
+    // ---------- detail views ----------
+    function showStudentDetail(id) {
+        api('/api/admin/students/' + encodeURIComponent(id)).then(function (result) {
+            if (!result.data.success) { toast(result.data.message || 'Student not found', true); return; }
+            var student = result.data.student || {};
+            var payments = result.data.payments || [];
+            var results = result.data.results || [];
+            var html = detailGrid([
+                ['Student ID', student.student_id], ['Name', student.name], ['Program', student.domain],
+                ['Date of birth', dateText(student.dob).slice(0, 10)], ['Enrolled', dateText(student.enrollment_date)],
+                ['Total fees', money(student.total_fees)], ['Fees paid', money(student.fees_paid)], ['Remaining', money(student.remaining_fees)]
+            ]) + '<h4 style="margin:1rem 0 .5rem;font-size:.9rem">Payments</h4>' +
+                table(['Amount', 'Type', 'Status', 'Paid at'], payments.map(function (row) {
+                    return '<tr><td>' + money(row.amount_paid) + '</td><td>' + esc(row.payment_type) + '</td><td>' + esc(row.payment_status) + '</td><td>' + esc(dateText(row.paid_at)) + '</td></tr>';
+                })) + '<h4 style="margin:1rem 0 .5rem;font-size:.9rem">Exam results</h4>' +
+                table(['Exam', 'Score', 'Submitted'], results.map(function (row) {
+                    return '<tr><td>' + esc(row.title || row.test_id) + '</td><td>' + esc(row.score) + ' / ' + esc(row.total_marks || '—') + '</td><td>' + esc(dateText(row.submitted_at)) + '</td></tr>';
+                }));
+            openModal('Student profile — ' + student.name, html);
+        });
+    }
+
+    function showFacultyDetail(id) {
+        api('/api/admin/faculty/' + encodeURIComponent(id)).then(function (result) {
+            if (!result.data.success) { toast(result.data.message || 'Faculty not found', true); return; }
+            var faculty = result.data.faculty || {};
+            var exams = result.data.exams || [];
+            var html = detailGrid([
+                ['Faculty ID', faculty.faculty_id], ['Name', faculty.name], ['Domain', faculty.domain],
+                ['Mobile', faculty.mobile], ['Email', faculty.mail], ['Address', faculty.address],
+                ['Date of birth', faculty.dob], ['Enrolled', faculty.enrollment_date],
+                ['Qualifications', faculty.qualifications], ['Achievements', faculty.achievements], ['Awards', faculty.awards]
+            ]) + '<h4 style="margin:1rem 0 .5rem;font-size:.9rem">Published exams (' + exams.length + ')</h4>' +
+                table(['Test ID', 'Title', 'Type', 'Published'], exams.map(function (row) {
+                    return '<tr><td>' + esc(row.test_id) + '</td><td>' + esc(row.title) + '</td><td>' + esc(row.test_type) + '</td><td>' + esc(dateText(row.published_at)) + '</td></tr>';
+                }));
+            openModal('Faculty profile — ' + faculty.name, html);
+        });
+    }
+
+    function showExamDetail(id) {
+        api('/api/admin/exams/' + encodeURIComponent(id)).then(function (result) {
+            if (!result.data.success) { toast(result.data.message || 'Exam not found', true); return; }
+            var exam = result.data.exam || {};
+            var stats = result.data.stats || {};
+            var questions = exam.questions || [];
+            var html = detailGrid([
+                ['Test ID', exam.test_id], ['Title', exam.title], ['Type', exam.test_type],
+                ['Faculty', exam.faculty_name], ['Faculty ID', exam.faculty_id],
+                ['Published', exam.published_at], ['Attempts', stats.attempts],
+                ['Average score', stats.average], ['Highest', stats.highest], ['Lowest', stats.lowest]
+            ]) + '<h4 style="margin:1rem 0 .5rem;font-size:.9rem">Question paper (' + questions.length + ' questions)</h4>' +
+                '<div class="admin-question-list">' + (questions.length ? questions.map(function (question, index) {
+                    return '<div class="admin-question"><small>Q' + (index + 1) + ' · ' + esc(question.subject || '—') + ' · ' + esc(question.type || '—') + '</small>' + esc(question.question) + '</div>';
+                }).join('') : emptyState('No questions stored', 'This exam has no question data in the database.', '📝')) + '</div>' +
+                '<h4 style="margin:1rem 0 .5rem;font-size:.9rem">Submissions</h4>' +
+                table(['Student', 'Score', 'Submitted'], (result.data.results || []).map(function (row) {
+                    return '<tr><td>' + esc(row.student_name) + '<small>' + esc(row.student_id) + '</small></td><td>' + esc(row.score) + ' / ' + esc(row.total_marks || '—') + '</td><td>' + esc(dateText(row.submitted_at)) + '</td></tr>';
+                }));
+            openModal('Exam details — ' + exam.title, html);
+        });
+    }
+
+    function showMessageDetail(id) {
+        var record = (state.cache.messages || []).find(function (row) { return String(row.id) === String(id); });
+        if (!record) { toast('Message is no longer in the current view.', true); return; }
+        openModal('Message from ' + record.name, detailGrid([
+            ['Name', record.name], ['Email', record.email], ['Mobile', record.mobile],
+            ['Location', record.location], ['Date of birth', record.dob], ['Received', record.created_at]
+        ]) + '<div class="admin-question" style="margin-top:1rem">' + esc(record.message) + '</div>');
+    }
+
+    // ---------- events ----------
+    function bindEvents() {
+        document.querySelectorAll('.admin-nav-item').forEach(function (item) {
+            item.addEventListener('click', function () { showSection(item.getAttribute('data-section'), true); });
+        });
+
+        $('#adminMenuToggle').addEventListener('click', function () {
+            $('#adminSidebar').classList.toggle('is-open');
+            $('#adminBackdrop').classList.toggle('is-open');
+        });
+        $('#adminBackdrop').addEventListener('click', closeSidebar);
+        $('#adminModalClose').addEventListener('click', closeModal);
+        $('#adminModal').addEventListener('click', function (event) {
+            if (event.target === $('#adminModal')) closeModal();
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') closeModal();
+        });
+
+        document.querySelectorAll('.admin-filters').forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                var section = form.getAttribute('id').replace('Filters', '');
+                if (section === 'payments') section = 'fees';
+                if (LOADERS[section]) LOADERS[section]().catch(function () { toast('Could not apply filters.', true); });
+            });
+            form.addEventListener('reset', function () {
+                window.setTimeout(function () {
+                    var section = form.getAttribute('id').replace('Filters', '');
+                    if (section === 'payments') section = 'fees';
+                    if (LOADERS[section]) LOADERS[section]().catch(function () {});
+                }, 0);
+            });
+        });
+
+        document.addEventListener('click', function (event) {
+            var detail = event.target.closest('[data-detail]');
+            if (detail) {
+                var parts = detail.getAttribute('data-detail').split(':');
+                if (parts[0] === 'student') showStudentDetail(parts[1]);
+                else if (parts[0] === 'faculty') showFacultyDetail(parts[1]);
+                else if (parts[0] === 'exam') showExamDetail(parts[1]);
+                else if (parts[0] === 'message') showMessageDetail(parts[1]);
+                return;
+            }
+            var action = event.target.closest('[data-message-action]');
+            if (action) {
+                var bits = action.getAttribute('data-message-action').split(':');
+                if (bits[0] === 'delete') {
+                    if (!window.confirm('Delete this contact message permanently?')) return;
+                    api('/api/admin/messages/' + bits[1], { method: 'DELETE' }).then(function (result) {
+                        toast(result.data.message || 'Message deleted', !result.data.success);
+                        loadMessages();
+                    });
+                } else {
+                    api('/api/admin/messages/' + bits[1], {
+                        method: 'PATCH',
+                        body: bits[0] === 'read' ? { isRead: bits[2] === '1' } : { starred: bits[2] === '1' }
+                    }).then(function (result) {
+                        toast(result.data.message || 'Message updated', !result.data.success);
+                        loadMessages();
+                    });
+                }
+                return;
+            }
+            var exportButton = event.target.closest('[data-export]');
+            if (exportButton) {
+                var key = exportButton.getAttribute('data-export');
+                csvExport(key, 'pinnacle-admin-' + key.replace(/[^a-z0-9-]/gi, '-'));
+            }
+        });
+
+        $('#adminLogoutBtn').addEventListener('click', function () {
+            api('/api/admin/logout', { method: 'POST' }).then(function () {
+                window.location.replace('admin-login.html');
+            }).catch(function () { window.location.replace('admin-login.html'); });
+        });
+
+        var credentialForm = $('#credentialForm');
+        credentialForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            var errorBox = $('#credentialError');
+            errorBox.hidden = true;
+            var body = {
+                currentPassword: $('#currentPassword').value,
+                currentPin: $('#currentPin').value.trim(),
+                newPassword: $('#newPassword').value,
+                newPin: $('#newPin').value.trim()
+            };
+            var button = credentialForm.querySelector('button[type="submit"]');
+            button.disabled = true;
+            api('/api/admin/credentials', { method: 'PUT', body: body }).then(function (result) {
+                button.disabled = false;
+                if (result.status !== 200 || !result.data.success) {
+                    errorBox.textContent = result.data.message || 'Could not update credentials.';
+                    errorBox.hidden = false;
+                    return;
+                }
+                credentialForm.reset();
+                toast(result.data.message);
+            }).catch(function () { button.disabled = false; });
+        });
+    }
+
+    // ---------- bootstrap ----------
+    api('/api/admin/session').then(function (result) {
+        if (result.status !== 200 || !result.data.success) {
+            window.location.replace('admin-login.html');
+            return;
+        }
+        state.sessionExpiresAt = num(result.data.admin.expiresAt);
+        bindEvents();
+        var hash = window.location.hash.replace('#', '');
+        showSection(hash || 'overview', false);
+        window.setInterval(function () {
+            var remaining = Math.max(0, Math.round((state.sessionExpiresAt - Date.now()) / 60000));
+            var pill = document.querySelector('.admin-pill');
+            if (pill) pill.innerHTML = '<i aria-hidden="true"></i> Admin · ' + remaining + 'm left';
+            if (remaining <= 0) window.location.replace('admin-login.html');
+        }, 30000);
+    }).catch(function () { /* api() already redirects on 401 */ });
+})();
