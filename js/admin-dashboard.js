@@ -359,6 +359,7 @@
             var payments = results[1].data.records || [];
             var summary = results[0].data.summary || {};
             state.cache.fees = records;
+            state.cache.payments = payments;
             $('#feeStats').innerHTML = [
                 statCard('💰', money(summary.totalFees || summary.total_fees || 0), 'Total fee structure', 'Sum of student records'),
                 statCard('✅', money(summary.feesPaid || summary.fees_paid || 0), 'Fees paid', 'Recorded against students'),
@@ -367,7 +368,7 @@
             ].join('');
             $('#feesCount').textContent = records.length ? 'Showing ' + records.length + ' of ' + num(results[0].data.total) + ' student fee records.' : 'No student fee records match the current filters.';
             $('#feesTable').innerHTML = table(
-                ['Student', 'Program', 'Total fees', 'Paid', 'Remaining', 'Payments', 'Status'],
+                ['Student', 'Program', 'Total fees', 'Paid', 'Remaining', 'Payments', 'Status', 'Actions'],
                 records.map(function (row) {
                     var status = num(row.remaining_fees) <= 0 ? badge('Paid', 'success')
                         : num(row.fees_paid) <= 0 ? badge('Unpaid', 'danger') : badge('Partial', 'warning');
@@ -375,21 +376,166 @@
                         '<td>' + esc(row.domain) + '</td><td class="admin-table__num">' + money(row.total_fees) + '</td>' +
                         '<td class="admin-table__num">' + money(row.fees_paid) + '</td>' +
                         '<td class="admin-table__num">' + money(row.remaining_fees) + '</td>' +
-                        '<td>' + num(row.payment_count) + '</td><td>' + status + '</td></tr>';
+                        '<td>' + num(row.payment_count) + '</td><td>' + status + '</td>' +
+                        '<td><div class="admin-table__actions">' +
+                        '<button class="admin-btn admin-btn--sm admin-btn--ghost" type="button" data-fee-action="edit-fee" data-student="' + esc(row.student_id) + '">Edit fees</button>' +
+                        '<button class="admin-btn admin-btn--sm" type="button" data-fee-action="add-payment" data-student="' + esc(row.student_id) + '">Add payment</button>' +
+                        '</div></td></tr>';
                 })
             );
             $('#paymentsCount').textContent = payments.length ? 'Showing ' + payments.length + ' payment records.' : 'No payment records match the current filters.';
             $('#paymentsTable').innerHTML = table(
-                ['Student', 'Order ID', 'Payment ID', 'Amount', 'Type', 'Status', 'Paid at'],
+                ['Student', 'Order ID', 'Payment ID', 'Amount', 'Type', 'Status', 'Paid at', 'Actions'],
                 payments.map(function (row) {
                     return '<tr><td><strong>' + esc(row.student_name || row.student_id) + '</strong><small>' + esc(row.student_id) + '</small></td>' +
                         '<td>' + esc(row.razorpay_order_id || '—') + '</td><td>' + esc(row.razorpay_payment_id || '—') + '</td>' +
                         '<td class="admin-table__num">' + money(row.amount_paid) + '</td><td>' + esc(row.payment_type || '—') + '</td>' +
                         '<td>' + badge(row.payment_status || '—', String(row.payment_status).toUpperCase() === 'SUCCESS' ? 'success' : 'warning') + '</td>' +
-                        '<td>' + esc(dateText(row.paid_at)) + '</td></tr>';
+                        '<td>' + esc(dateText(row.paid_at)) + '</td>' +
+                        '<td><div class="admin-table__actions"><button class="admin-btn admin-btn--sm admin-btn--ghost" type="button" data-fee-action="edit-payment" data-payment="' + esc(row.id) + '">Edit</button></div></td></tr>';
                 })
             );
         });
+    }
+
+    // ---------- fee management ----------
+    function feeStatusLabel(row) {
+        if (num(row.remaining_fees) <= 0) return 'Paid';
+        return num(row.fees_paid) <= 0 ? 'Unpaid' : 'Partial';
+    }
+
+    function localDateTime(value) {
+        if (value) return String(value).replace(' ', 'T').slice(0, 16);
+        var now = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
+        return now.toISOString().slice(0, 16);
+    }
+
+    function openFeeDialog(title, html, onSubmit) {
+        openModal(title, html);
+        var form = $('#adminModalBody').querySelector('.admin-fee-form');
+        if (!form) return;
+        var cancel = form.querySelector('[data-modal-cancel]');
+        if (cancel) cancel.addEventListener('click', closeModal);
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            var body = {};
+            Array.prototype.forEach.call(form.elements, function (input) {
+                if (input.name) body[input.name] = input.value;
+            });
+            var button = form.querySelector('button[type="submit"]');
+            button.disabled = true;
+            onSubmit(body, button);
+        });
+    }
+
+    function finishFeeWrite(result, button, fallbackMessage) {
+        button.disabled = false;
+        if (result.status >= 400 || !result.data.success) {
+            toast(result.data.message || (fallbackMessage + ' failed.'), true);
+            return;
+        }
+        closeModal();
+        toast(result.data.message || fallbackMessage);
+        LOADERS.fees().catch(function () { toast('Fee records could not be refreshed.', true); });
+    }
+
+    function editFee(studentId) {
+        var row = (state.cache.fees || []).find(function (item) { return String(item.student_id) === String(studentId); });
+        if (!row) { toast('That fee record is no longer in the current view.', true); return; }
+        openFeeDialog('Edit fees — ' + row.name,
+            detailGrid([
+                ['Student ID', row.student_id], ['Program', row.domain],
+                ['Paid', money(row.fees_paid)], ['Outstanding', money(row.remaining_fees)],
+                ['Status', feeStatusLabel(row)]
+            ]) +
+            '<form class="admin-fee-form">' +
+                '<input type="hidden" name="studentId" value="' + esc(row.student_id) + '">' +
+                '<label class="admin-field"><span>Total fee structure</span><span class="admin-field__input"><input name="totalFees" type="number" min="0" step="0.01" value="' + esc(row.total_fees) + '" required></span></label>' +
+                '<p class="admin-fee-form__hint">Paid amounts and payment history are unchanged. The outstanding balance is recalculated automatically.</p>' +
+                '<div class="admin-fee-form__actions"><button class="admin-btn admin-btn--ghost" type="button" data-modal-cancel>Cancel</button><button class="admin-btn" type="submit">Save fee structure</button></div>' +
+            '</form>',
+            function (body, button) {
+                api('/api/admin/fees/' + encodeURIComponent(body.studentId), {
+                    method: 'PATCH', body: { totalFees: body.totalFees }
+                }).then(function (result) {
+                    finishFeeWrite(result, button, 'Fee structure updated');
+                }).catch(function () {
+                    button.disabled = false;
+                    toast('Could not reach the server.', true);
+                });
+            });
+    }
+
+    function addPayment(studentId) {
+        var row = (state.cache.fees || []).find(function (item) { return String(item.student_id) === String(studentId); });
+        if (!row) { toast('That student is no longer in the current view.', true); return; }
+        if (num(row.remaining_fees) <= 0) { toast('This student has no outstanding fees.', true); return; }
+        openFeeDialog('Record payment — ' + row.name,
+            detailGrid([
+                ['Student ID', row.student_id], ['Program', row.domain],
+                ['Total fees', money(row.total_fees)], ['Paid', money(row.fees_paid)],
+                ['Outstanding', money(row.remaining_fees)]
+            ]) +
+            '<form class="admin-fee-form">' +
+                '<input type="hidden" name="studentId" value="' + esc(row.student_id) + '">' +
+                '<div class="admin-fee-form__grid">' +
+                    '<label class="admin-field"><span>Amount</span><span class="admin-field__input"><input name="amount" type="number" min="0.01" max="' + esc(row.remaining_fees) + '" step="0.01" placeholder="0.00" required></span></label>' +
+                    '<label class="admin-field"><span>Method</span><span class="admin-field__input"><select name="paymentType"><option value="CASH">Cash</option><option value="BANK_TRANSFER">Bank transfer</option><option value="UPI">UPI</option><option value="OTHER">Other</option></select></span></label>' +
+                    '<label class="admin-field"><span>Paid at</span><span class="admin-field__input"><input name="paidAt" type="datetime-local" value="' + esc(localDateTime()) + '" required></span></label>' +
+                    '<label class="admin-field"><span>Reference (optional)</span><span class="admin-field__input"><input name="reference" maxlength="80" placeholder="Receipt or voucher number" autocomplete="off"></span></label>' +
+                '</div>' +
+                '<p class="admin-fee-form__hint">A unique ADMIN reference is generated when none is supplied. Full or partial amounts are both accepted.</p>' +
+                '<div class="admin-fee-form__actions"><button class="admin-btn admin-btn--ghost" type="button" data-modal-cancel>Cancel</button><button class="admin-btn" type="submit">Record payment</button></div>' +
+            '</form>',
+            function (body, button) {
+                api('/api/admin/fees/' + encodeURIComponent(body.studentId) + '/payments', {
+                    method: 'POST',
+                    body: { amount: body.amount, paymentType: body.paymentType, paidAt: body.paidAt, reference: body.reference }
+                }).then(function (result) {
+                    finishFeeWrite(result, button, 'Payment recorded');
+                }).catch(function () {
+                    button.disabled = false;
+                    toast('Could not reach the server.', true);
+                });
+            });
+    }
+
+    function editPayment(paymentId) {
+        var row = (state.cache.payments || []).find(function (item) { return String(item.id) === String(paymentId); });
+        if (!row) { toast('That payment record is no longer in the current view.', true); return; }
+        var currentStatus = String(row.payment_status || 'SUCCESS').toUpperCase();
+        var statuses = ['SUCCESS', 'FAILED', 'REFUNDED'];
+        if (statuses.indexOf(currentStatus) < 0) statuses.unshift(currentStatus);
+        openFeeDialog('Edit payment record',
+            detailGrid([
+                ['Student', row.student_name || row.student_id], ['Student ID', row.student_id],
+                ['Payment ID', row.razorpay_payment_id || '—'], ['Order ID', row.razorpay_order_id || '—'],
+                ['Recorded amount', money(row.amount_paid)], ['Status', currentStatus]
+            ]) +
+            '<form class="admin-fee-form">' +
+                '<input type="hidden" name="paymentId" value="' + esc(row.id) + '">' +
+                '<div class="admin-fee-form__grid">' +
+                    '<label class="admin-field"><span>Amount</span><span class="admin-field__input"><input name="amount" type="number" min="0.01" step="0.01" value="' + esc(row.amount_paid) + '" required></span></label>' +
+                    '<label class="admin-field"><span>Method</span><span class="admin-field__input"><input name="paymentType" maxlength="50" value="' + esc(row.payment_type || '') + '" required></span></label>' +
+                    '<label class="admin-field"><span>Status</span><span class="admin-field__input"><select name="paymentStatus">' + statuses.map(function (status) {
+                        return '<option value="' + esc(status) + '"' + (status === currentStatus ? ' selected' : '') + '>' + esc(status) + '</option>';
+                    }).join('') + '</select></span></label>' +
+                    '<label class="admin-field"><span>Paid at</span><span class="admin-field__input"><input name="paidAt" type="datetime-local" value="' + esc(localDateTime(row.paid_at)) + '" required></span></label>' +
+                '</div>' +
+                '<p class="admin-fee-form__hint">Marking a payment FAILED or REFUNDED removes its amount from the student\'s paid total.</p>' +
+                '<div class="admin-fee-form__actions"><button class="admin-btn admin-btn--ghost" type="button" data-modal-cancel>Cancel</button><button class="admin-btn" type="submit">Save payment</button></div>' +
+            '</form>',
+            function (body, button) {
+                api('/api/admin/fees/payments/' + encodeURIComponent(body.paymentId), {
+                    method: 'PATCH',
+                    body: { amount: body.amount, paymentType: body.paymentType, paymentStatus: body.paymentStatus, paidAt: body.paidAt }
+                }).then(function (result) {
+                    finishFeeWrite(result, button, 'Payment record updated');
+                }).catch(function () {
+                    button.disabled = false;
+                    toast('Could not reach the server.', true);
+                });
+            });
     }
 
     function academicCard(title, icon, records, note) {
@@ -453,7 +599,7 @@
                 records.map(function (row) {
                     return '<tr><td><strong>' + esc(row.name) + '</strong><small>' + esc(row.location) + '</small></td>' +
                         '<td>' + esc(row.email) + '<small>' + esc(row.mobile) + '</small></td>' +
-                        '<td>' + esc(String(row.message).slice(0, 110)) + (String(row.message).length > 110 ? '…' : '') + '</td>' +
+                        '<td class="admin-message-cell">' + esc(row.message) + '</td>' +
                         '<td>' + esc(dateText(row.created_at)) + '</td>' +
                         '<td>' + (num(row.is_read) ? badge('Read', 'success') : badge('Unread', 'info')) + ' ' +
                         (num(row.starred) ? badge('★ Starred', 'warning') : '') + '</td>' +
@@ -690,7 +836,7 @@
         openModal('Message from ' + record.name, detailGrid([
             ['Name', record.name], ['Email', record.email], ['Mobile', record.mobile],
             ['Location', record.location], ['Date of birth', record.dob], ['Received', record.created_at]
-        ]) + '<div class="admin-question" style="margin-top:1rem">' + esc(record.message) + '</div>');
+        ]) + '<div class="admin-question admin-message-body" style="margin-top:1rem">' + esc(record.message) + '</div>');
     }
 
     // ---------- events ----------
@@ -750,6 +896,14 @@
         });
 
         document.addEventListener('click', function (event) {
+            var feeAction = event.target.closest('[data-fee-action]');
+            if (feeAction) {
+                var actionName = feeAction.getAttribute('data-fee-action');
+                if (actionName === 'edit-fee') editFee(feeAction.getAttribute('data-student'));
+                else if (actionName === 'add-payment') addPayment(feeAction.getAttribute('data-student'));
+                else if (actionName === 'edit-payment') editPayment(feeAction.getAttribute('data-payment'));
+                return;
+            }
             var detail = event.target.closest('[data-detail]');
             if (detail) {
                 var parts = detail.getAttribute('data-detail').split(':');
@@ -837,11 +991,15 @@
         } catch (_) { /* storage may be unavailable */ }
         var hash = window.location.hash.replace('#', '');
         showSection(hash || 'overview', false);
-        window.setInterval(function () {
+        function updateSessionInfo() {
             var remaining = Math.max(0, Math.round((state.sessionExpiresAt - Date.now()) / 60000));
             var pill = document.getElementById('adminSessionPill');
             if (pill) pill.innerHTML = '<i aria-hidden="true"></i> Admin · ' + remaining + 'm left';
+            var settingsStatus = document.getElementById('settingsSessionStatus');
+            if (settingsStatus) settingsStatus.textContent = 'Signed in · this admin session expires in ' + remaining + ' minutes.';
             if (remaining <= 0) window.location.replace('admin-login.html');
-        }, 30000);
+        }
+        updateSessionInfo();
+        window.setInterval(updateSessionInfo, 30000);
     }).catch(function () { /* api() already redirects on 401 */ });
 })();

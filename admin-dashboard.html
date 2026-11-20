@@ -390,20 +390,40 @@
             <!-- 12. SETTINGS -->
             <section class="admin-section" id="section-settings" hidden>
                 <div class="admin-section-head">
-                    <div><span class="admin-eyebrow">Security</span><h2>Admin Settings</h2><p>Change the admin password and security PIN.</p></div>
+                    <div><span class="admin-eyebrow">Account &amp; security</span><h2>Admin Settings</h2><p>Review your session and update the admin password and security PIN.</p></div>
                 </div>
-                <div class="admin-card admin-settings">
-                    <div class="admin-card__head"><h3>Credentials</h3><p>Both current credentials are required</p></div>
-                    <div class="admin-card__body">
-                        <p class="admin-settings__notice">New credentials are salted and hashed on the server before being stored. Changing them ends other active admin sessions and takes effect immediately.</p>
-                        <form id="credentialForm" novalidate>
-                            <label class="admin-field" for="currentPassword"><span>Current password</span><span class="admin-field__input"><input id="currentPassword" type="password" autocomplete="current-password" required></span></label>
-                            <label class="admin-field" for="currentPin"><span>Current PIN</span><span class="admin-field__input"><input id="currentPin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" required></span></label>
-                            <label class="admin-field" for="newPassword"><span>New password (12+ characters)</span><span class="admin-field__input"><input id="newPassword" type="password" autocomplete="new-password" required></span></label>
-                            <label class="admin-field" for="newPin"><span>New PIN (6 digits)</span><span class="admin-field__input"><input id="newPin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" required></span></label>
-                            <div id="credentialError" class="admin-auth-error" role="alert" hidden></div>
-                            <button class="admin-auth-submit" type="submit"><span class="admin-auth-submit__label">Update Credentials</span></button>
-                        </form>
+                <div class="admin-grid admin-grid--two">
+                    <div class="admin-card admin-settings">
+                        <div class="admin-card__head"><h3>Credentials</h3><p>Both current credentials are required</p></div>
+                        <div class="admin-card__body">
+                            <p class="admin-settings__notice">New credentials are salted and hashed on the server before being stored. Changing them ends other active admin sessions and takes effect immediately.</p>
+                            <form id="credentialForm" novalidate>
+                                <div class="admin-settings__group">
+                                    <h4>Verify identity</h4>
+                                    <label class="admin-field" for="currentPassword"><span>Current password</span><span class="admin-field__input"><input id="currentPassword" type="password" autocomplete="current-password" required></span></label>
+                                    <label class="admin-field" for="currentPin"><span>Current PIN</span><span class="admin-field__input"><input id="currentPin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" required></span></label>
+                                </div>
+                                <div class="admin-settings__group">
+                                    <h4>Choose new credentials</h4>
+                                    <label class="admin-field" for="newPassword"><span>New password (12+ characters)</span><span class="admin-field__input"><input id="newPassword" type="password" autocomplete="new-password" required></span></label>
+                                    <label class="admin-field" for="newPin"><span>New PIN (6 digits)</span><span class="admin-field__input"><input id="newPin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" required></span></label>
+                                </div>
+                                <div id="credentialError" class="admin-auth-error" role="alert" hidden></div>
+                                <button class="admin-auth-submit" type="submit"><span class="admin-auth-submit__label">Update Credentials</span></button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Session &amp; security</h3><p>Information about this admin session</p></div>
+                        <div class="admin-card__body">
+                            <div class="admin-settings__status" id="settingsSessionStatus">Session details load after sign in.</div>
+                            <ul class="admin-settings__checklist">
+                                <li><span>✓</span><div><strong>Server-side session</strong><small>Access is tied to this signed-in browser session.</small></div></li>
+                                <li><span>✓</span><div><strong>Hashed credentials</strong><small>Passwords and PINs are never stored in plain text.</small></div></li>
+                                <li><span>✓</span><div><strong>Immediate invalidation</strong><small>Updating credentials ends other active admin sessions.</small></div></li>
+                            </ul>
+                            <p class="admin-settings__notice">Use a unique password and PIN. If you suspect unauthorized access, update both credentials here and sign out of other devices.</p>
+                        </div>
                     </div>
                 </div>
             </section>

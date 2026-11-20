@@ -497,6 +497,53 @@ header .nav-links > :first-child {
     margin-left: auto;
 }
 
+/* The academy mark is the exception: it stays pinned to the extreme left of
+   the menu rail, and the auto margin starts with the next navigation item. */
+header .nav-links > .nav-brand-mark {
+    margin-left: 0;
+}
+
+header .nav-links > .nav-brand-mark + * {
+    margin-left: auto;
+}
+
+header .nav-links a.nav-brand-mark {
+    display: inline-grid;
+    place-items: center;
+    padding: .2rem;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+header .nav-links a.nav-brand-mark::after {
+    display: none;
+}
+
+.nav-brand-mark svg {
+    width: 28px;
+    height: 28px;
+    overflow: visible;
+}
+
+.nav-brand-mark__shield {
+    fill: rgba(11, 61, 145, .08);
+    stroke: var(--primary, #0B3D91);
+    stroke-width: 2.2;
+    stroke-linejoin: round;
+}
+
+.nav-brand-mark__peak {
+    fill: none;
+    stroke: var(--accent, #0EA5E9);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.nav-brand-mark__dot {
+    fill: var(--accent, #0EA5E9);
+}
+
 header .nav-links::-webkit-scrollbar {
     display: none;
 }
