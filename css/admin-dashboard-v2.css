@@ -1,5 +1,5 @@
-/* ==========================================================================
-   Admin Dashboard V2 — visual-only glass re-skin + 20:80 app shell
+﻿/* ==========================================================================
+   Admin Dashboard V2 â€” visual-only glass re-skin + 20:80 app shell
    Loaded AFTER admin.css. Every rule is scoped to .adm-v2 so the existing
    dashboard markup, classes, handlers, API calls and session flow stay intact.
    ========================================================================== */
@@ -122,7 +122,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   4. Sidebar — floating glass navigation panel
+   4. Sidebar â€” floating glass navigation panel
    -------------------------------------------------------------------------- */
 .adm-v2 .admin-sidebar {
     position: relative;
@@ -721,6 +721,78 @@
 }
 
 /* --------------------------------------------------------------------------
+    8b. Readable record and detail surfaces
+    Keeps the V2 dark glass theme while preventing light-theme token values
+    from producing pale panels with white text inside detail views.
+    -------------------------------------------------------------------------- */
+.adm-v2 .admin-detail-item,
+.adm-v2 .admin-question {
+    background: rgba(6, 30, 51, .62);
+    border: 1px solid var(--glass-border-soft);
+    color: #fff;
+}
+
+.adm-v2 .admin-detail-item small,
+.adm-v2 .admin-question small,
+.adm-v2 .admin-table td small {
+    color: rgba(255, 255, 255, .72);
+}
+
+.adm-v2 .admin-detail-item strong {
+    color: #fff;
+}
+
+.adm-v2 .admin-modal__body .admin-field__input {
+    background: rgba(255, 255, 255, .10);
+    box-shadow: inset 0 0 0 1px var(--glass-border-soft), var(--shadow-sm);
+}
+
+/* --------------------------------------------------------------------------
+    8c. Settings readability
+    Replaces light-theme surfaces and muted text that stayed unreadable on the
+    dark V2 shell. Credential values, validation and session logic are untouched.
+    -------------------------------------------------------------------------- */
+.adm-v2 .admin-settings .admin-card__head p {
+    color: var(--text-60);
+}
+.adm-v2 .admin-settings .admin-field > span:first-child,
+.adm-v2 .admin-settings__notice,
+.adm-v2 .admin-settings__status,
+.adm-v2 .admin-settings__checklist small {
+    color: rgba(255, 255, 255, .78);
+}
+.adm-v2 .admin-settings .admin-field__input {
+    background: rgba(6, 30, 51, .62);
+    box-shadow: inset 0 0 0 1px var(--glass-border-soft), var(--shadow-sm);
+}
+.adm-v2 .admin-settings .admin-field input::placeholder {
+    color: var(--text-40);
+}
+.adm-v2 .admin-settings__group {
+    border-bottom-color: var(--glass-border-soft);
+}
+.adm-v2 .admin-settings__group h4 {
+    color: #fff;
+}
+.adm-v2 .admin-settings__status {
+    background: rgba(37, 99, 235, .16);
+    box-shadow: inset 0 0 0 1px var(--glass-border-soft);
+}
+.adm-v2 .admin-settings__notice {
+    background: rgba(124, 58, 237, .14);
+    box-shadow: inset 0 0 0 1px var(--glass-border-soft);
+}
+.adm-v2 .admin-settings__checklist li > span {
+    background: rgba(52, 211, 153, .16);
+    color: var(--positive);
+}
+.adm-v2 .admin-settings .admin-auth-error {
+    background: rgba(248, 113, 113, .12);
+    box-shadow: inset 0 0 0 1px rgba(248, 113, 113, .28);
+    color: #fecaca;
+}
+
+/* --------------------------------------------------------------------------
    9. Animations
    -------------------------------------------------------------------------- */
 @keyframes adm-rise {
@@ -845,3 +917,5 @@
         scroll-behavior: auto !important;
     }
 }
+
+

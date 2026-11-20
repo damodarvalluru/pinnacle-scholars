@@ -11,6 +11,27 @@
     var pinInput = document.getElementById('adminPin');
     var errorBox = document.getElementById('adminLoginError');
     var submitButton = document.getElementById('adminLoginSubmit');
+    var methodRadios = Array.prototype.slice.call(document.querySelectorAll('input[name="credentialMethod"]'));
+    var credentialPanels = {
+        password: document.getElementById('adminPasswordPanel'),
+        pin: document.getElementById('adminPinPanel')
+    };
+
+    function selectedMethod() {
+        var selected = methodRadios.filter(function (radio) { return radio.checked; })[0];
+        return selected ? selected.value : 'password';
+    }
+
+    function syncCredentialMethod() {
+        var method = selectedMethod();
+        Object.keys(credentialPanels).forEach(function (key) {
+            credentialPanels[key].hidden = key !== method;
+        });
+        methodRadios.forEach(function (radio) {
+            radio.parentNode.classList.toggle('is-selected', radio.value === method);
+        });
+        clearError();
+    }
 
     function showError(message) {
         errorBox.textContent = message;
@@ -37,6 +58,11 @@
         input.addEventListener('input', clearError);
     });
 
+    methodRadios.forEach(function (radio) {
+        radio.addEventListener('change', syncCredentialMethod);
+    });
+    syncCredentialMethod();
+
     // An already authenticated admin should not see the login form again.
     fetch(API_BASE + '/api/admin/session', {
         credentials: 'include',
@@ -49,11 +75,20 @@
         event.preventDefault();
         clearError();
 
-        var password = passwordInput.value;
-        var pin = pinInput.value.trim();
-        if (!password || !pin) {
-            showError('Enter both the admin password and the security PIN.');
-            return;
+        var method = selectedMethod();
+        var body = {};
+        if (method === 'password') {
+            body.password = passwordInput.value;
+            if (!body.password) {
+                showError('Enter your admin password.');
+                return;
+            }
+        } else {
+            body.pin = pinInput.value.trim();
+            if (!body.pin) {
+                showError('Enter your 6-digit security PIN.');
+                return;
+            }
         }
 
         submitButton.disabled = true;
@@ -63,7 +98,7 @@
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify({ password: password, pin: pin })
+            body: JSON.stringify(body)
         }).then(function (response) {
             return response.json().catch(function () { return {}; }).then(function (data) {
                 return { status: response.status, data: data };
@@ -79,7 +114,8 @@
                 message += ' Try again in about ' + minutes + ' minute' + (minutes === 1 ? '' : 's') + '.';
             }
             showError(message);
-            pinInput.value = '';
+            if (method === 'password') passwordInput.value = '';
+            else pinInput.value = '';
             submitButton.disabled = false;
             submitButton.querySelector('.admin-auth-submit__label').textContent = 'Verify & Continue';
         }).catch(function () {

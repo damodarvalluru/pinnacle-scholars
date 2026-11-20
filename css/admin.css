@@ -1163,3 +1163,68 @@ body.admin-dashboard-page {
     }
     .admin-auth-submit::after { display: none !important; }
 }
+
+/* ---------- Admin login: separate credential options ----------
+   Visual separation only. The form submits exactly one selected credential. */
+.admin-credential-picker {
+    margin: 0 0 1.35rem;
+    padding: 0;
+    border: 0;
+}
+.admin-credential-picker legend {
+    margin-bottom: .55rem;
+    padding: 0;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--text-secondary, #52667A);
+}
+.admin-credential-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .7rem;
+}
+.admin-credential-option {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: .18rem;
+    padding: .8rem .9rem;
+    border-radius: 14px;
+    background: var(--bg-surface-soft, #EEF5FF);
+    box-shadow: inset 0 0 0 1px var(--border, #D9E4F2);
+    cursor: pointer;
+    transition: box-shadow var(--transition-fast, .2s ease), transform var(--transition-fast, .2s ease);
+}
+.admin-credential-option:hover { transform: translateY(-1px); }
+.admin-credential-option:focus-within {
+    outline: 2px solid var(--primary-bright, #2563EB);
+    outline-offset: 2px;
+}
+.admin-credential-option input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+.admin-credential-option.is-selected {
+    background: linear-gradient(135deg, rgba(124, 58, 237, .12), rgba(37, 99, 235, .12));
+    box-shadow: inset 0 0 0 2px var(--primary-bright, #2563EB), 0 8px 18px rgba(37, 99, 235, .12);
+}
+.admin-credential-option__title {
+    font-size: .84rem;
+    font-weight: 700;
+    color: var(--text-primary, #102A43);
+}
+.admin-credential-option__hint {
+    font-size: .7rem;
+    line-height: 1.4;
+    color: var(--text-muted, #718096);
+}
+.admin-credential-panel[hidden] { display: none !important; }
+
+@media (max-width: 520px) {
+    .admin-credential-options { grid-template-columns: minmax(0, 1fr); }
+}

@@ -47,21 +47,37 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.2"/></svg>
                     </span>
                     <h2>Admin Sign In</h2>
-                    <p>Enter both credentials to continue.</p>
+                    <p>Choose one credential option to continue.</p>
                 </div>
 
-                <label class="admin-field" for="adminPassword">
+                <fieldset class="admin-credential-picker">
+                    <legend>Sign-in method</legend>
+                    <div class="admin-credential-options">
+                        <label class="admin-credential-option is-selected">
+                            <input type="radio" name="credentialMethod" value="password" checked aria-controls="adminPasswordPanel">
+                            <span class="admin-credential-option__title">Admin Password</span>
+                            <span class="admin-credential-option__hint">Use your full admin password</span>
+                        </label>
+                        <label class="admin-credential-option">
+                            <input type="radio" name="credentialMethod" value="pin" aria-controls="adminPinPanel">
+                            <span class="admin-credential-option__title">Security PIN</span>
+                            <span class="admin-credential-option__hint">Use your 6-digit PIN</span>
+                        </label>
+                    </div>
+                </fieldset>
+
+                <label class="admin-field admin-credential-panel" id="adminPasswordPanel" for="adminPassword">
                     <span>Admin Password</span>
                     <span class="admin-field__input">
-                        <input type="password" id="adminPassword" name="password" autocomplete="current-password" placeholder="Enter admin password" required>
+                        <input type="password" id="adminPassword" name="password" autocomplete="current-password" placeholder="Enter admin password">
                         <button type="button" class="admin-field__reveal" data-reveal="adminPassword" aria-label="Show password">Show</button>
                     </span>
                 </label>
 
-                <label class="admin-field" for="adminPin">
+                <label class="admin-field admin-credential-panel" id="adminPinPanel" for="adminPin" hidden>
                     <span>Security PIN</span>
                     <span class="admin-field__input">
-                        <input type="password" id="adminPin" name="pin" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="6-digit PIN" required>
+                        <input type="password" id="adminPin" name="pin" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="6-digit PIN">
                         <button type="button" class="admin-field__reveal" data-reveal="adminPin" aria-label="Show PIN">Show</button>
                     </span>
                 </label>
