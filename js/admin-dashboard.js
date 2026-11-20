@@ -8,15 +8,26 @@
         overview: ['Dashboard', 'Live records from the academy database'],
         students: ['Students', 'Registered students, profiles and fee position'],
         faculty: ['Faculty', 'Faculty records and published exams'],
-        exams: ['Exam Management', 'Published papers and submission state'],
-        performance: ['Performance', 'Attempts, scores and rankings'],
+        exams: ['Exams', 'Published papers and submission state'],
+        performance: ['Exam Results', 'Attempts, scores and rankings'],
         syllabus: ['Syllabus', 'Subjects from published exam questions'],
-        fees: ['Fee Management', 'Fee structures, dues and payment history'],
-        timetables: ['Timetables & Guidelines', 'Database-backed academic information'],
+        timetables: ['Timetables', 'Database-backed schedules and announcements'],
+        fees: ['Fees', 'Fee structures, dues and payment history'],
         programs: ['Programs', 'Program statistics from student records'],
+        guidelines: ['Guidelines', 'Guidance records stored in the database'],
         messages: ['Contact Messages', 'Messages submitted by students and visitors'],
-        'gate-jee': ['GATE & JEE Statistics', 'Separate program analytics'],
+        reports: ['Reports', 'Consolidated insights from live academy records'],
+        'gate-jee': ['GATE & JEE Stats', 'Separate program analytics'],
         settings: ['Settings', 'Admin credential management']
+    };
+
+    // Friendly hash aliases keep older bookmarks working after the menu rename.
+    var SECTION_ALIASES = {
+        'exam-results': 'performance',
+        'exam-management': 'exams',
+        'fee-management': 'fees',
+        'contact-messages': 'messages',
+        'timetables-guidelines': 'timetables'
     };
 
     var state = { section: 'overview', loaded: {}, cache: {}, sessionExpiresAt: 0 };
@@ -150,6 +161,10 @@
             if (!result.data.success) throw new Error('overview');
             var counts = result.data.counts || {};
             var fees = result.data.fees || {};
+            var sync = $('#ovSynced');
+            if (sync) {
+                sync.textContent = 'Live snapshot · ' + new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+            }
             $('#ovStats').innerHTML = [
                 statCard('🎓', num(counts.students), 'Students registered', num(counts.studentsWithAttempts) + ' with exam attempts'),
                 statCard('👨‍🏫', num(counts.faculty), 'Faculty members', 'Active in database'),
@@ -377,20 +392,28 @@
         });
     }
 
+    function academicCard(title, icon, records, note) {
+        var body = records.length
+            ? table(['Title', 'Details'], records.map(function (row) {
+                return '<tr><td>' + esc(row.title || '—') + '</td><td>' + esc(row.details || row.description || '—') + '</td></tr>';
+            }))
+            : emptyState('No ' + title.toLowerCase() + ' in the database', note || 'No sample data is shown when records are unavailable.', icon);
+        return '<div class="admin-card"><div class="admin-card__head"><h3>' + esc(title) + '</h3></div>' + body + '</div>';
+    }
+
     function loadAcademicContent() {
         return api('/api/admin/academic-content').then(function (result) {
+            var note = result.data.note || '';
+            if (state.section === 'guidelines') {
+                $('#guidelinesContent').innerHTML = academicCard('Guidelines', '📋', result.data.guidelines || [], note);
+                return;
+            }
             var groups = [
-                ['🗓️', 'Timetables', result.data.timetables || []],
-                ['📋', 'Guidelines', result.data.guidelines || []],
-                ['📢', 'Announcements', result.data.announcements || []]
+                ['Timetables', '🗓️', result.data.timetables || []],
+                ['Announcements', '📢', result.data.announcements || []]
             ];
             $('#academicContent').innerHTML = groups.map(function (group) {
-                var body = group[2].length
-                    ? table(['Title', 'Details'], group[2].map(function (row) {
-                        return '<tr><td>' + esc(row.title || '—') + '</td><td>' + esc(row.details || row.description || '—') + '</td></tr>';
-                    }))
-                    : emptyState('No ' + group[1].toLowerCase() + ' in the database', 'These records are not stored in the academy database, so no sample data is shown.', group[0]);
-                return '<div class="admin-card"><div class="admin-card__head"><h3>' + esc(group[1]) + '</h3></div>' + body + '</div>';
+                return academicCard(group[0], group[1], group[2], note);
             }).join('');
         });
     }
@@ -469,6 +492,88 @@
         });
     }
 
+    function loadReports() {
+        return Promise.all([
+            api('/api/admin/overview'),
+            api('/api/admin/performance?limit=500'),
+            api('/api/admin/programs'),
+            api('/api/admin/fees'),
+            api('/api/admin/messages')
+        ]).then(function (results) {
+            var overview = results[0].data || {};
+            var performance = results[1].data || {};
+            var programs = results[2].data || {};
+            var fees = results[3].data || {};
+            var messages = results[4].data || {};
+            var counts = overview.counts || {};
+            var feeSummary = fees.summary || {};
+            var resultsList = performance.records || [];
+            var messageList = messages.records || [];
+            var programList = programs.records || [];
+            var unread = messageList.filter(function (row) { return !num(row.is_read); }).length;
+            var starred = messageList.filter(function (row) { return num(row.starred); }).length;
+            var attemptRate = num(counts.students) ? Math.round(num(counts.studentsWithAttempts) / num(counts.students) * 100) : 0;
+            var realization = num(feeSummary.totalFees || feeSummary.total_fees)
+                ? Math.round(num(feeSummary.feesPaid || feeSummary.fees_paid) / num(feeSummary.totalFees || feeSummary.total_fees) * 100)
+                : 0;
+
+            $('#reportsStats').innerHTML = [
+                statCard('🎓', num(counts.students), 'Students enrolled', programList.length + ' program groups'),
+                statCard('📊', attemptRate + '%', 'Attempt coverage', num(counts.studentsWithAttempts) + ' of ' + num(counts.students) + ' students'),
+                statCard('💰', realization + '%', 'Fee realization', money(feeSummary.feesPaid || feeSummary.fees_paid) + ' collected'),
+                statCard('✉️', num(messages.total === undefined ? messageList.length : messages.total), 'Contact messages', unread + ' unread · ' + starred + ' starred')
+            ].join('');
+
+            state.cache.reports = programList.map(function (row) {
+                return {
+                    program: row.program,
+                    students: row.student_count,
+                    total_fees: row.total_fees,
+                    fees_paid: row.fees_paid,
+                    remaining_fees: row.remaining_fees
+                };
+            });
+            $('#reportsPrograms').innerHTML = table(
+                ['Program', 'Students', 'Total fees', 'Paid', 'Remaining'],
+                programList.map(function (row) {
+                    return '<tr><td><strong>' + esc(row.program) + '</strong></td><td>' + num(row.student_count) + '</td>' +
+                        '<td class="admin-table__num">' + money(row.total_fees) + '</td>' +
+                        '<td class="admin-table__num">' + money(row.fees_paid) + '</td>' +
+                        '<td class="admin-table__num">' + money(row.remaining_fees) + '</td></tr>';
+                })
+            );
+
+            var bands = [
+                { label: '80 – 100', test: function (score) { return score >= 80; } },
+                { label: '60 – 79', test: function (score) { return score >= 60 && score < 80; } },
+                { label: '40 – 59', test: function (score) { return score >= 40 && score < 60; } },
+                { label: 'Below 40', test: function (score) { return score < 40; } }
+            ].map(function (band) {
+                band.value = resultsList.filter(function (row) { return band.test(num(row.score)); }).length;
+                return band;
+            });
+            var maxBand = Math.max.apply(null, [1].concat(bands.map(function (band) { return band.value; })));
+            $('#reportsScores').innerHTML = resultsList.length ? '<div class="admin-bars">' + bands.map(function (band) {
+                return '<div class="admin-bar-row"><span>' + esc(band.label) + '</span>' +
+                    '<span class="admin-bar-track"><span class="admin-bar-fill" style="width:' + Math.round(band.value / maxBand * 100) + '%"></span></span>' +
+                    '<strong>' + band.value + '</strong></div>';
+            }).join('') + '</div>' : emptyState('No submitted results', 'Score bands will appear when students submit exams.', '📊');
+
+            var top = resultsList.slice().sort(function (a, b) { return num(b.score) - num(a.score); }).slice(0, 5);
+            $('#reportsTop').innerHTML = table(['Student', 'Exam', 'Score'], top.map(function (row) {
+                return '<tr><td><strong>' + esc(row.student_name || row.student_id) + '</strong><small>' + esc(row.student_id) + '</small></td>' +
+                    '<td>' + esc(row.exam_title || row.test_id) + '</td>' +
+                    '<td class="admin-table__num"><strong>' + esc(row.score) + '</strong> / ' + esc(row.total_marks || '—') + '</td></tr>';
+            }));
+
+            $('#reportsMessages').innerHTML = '<div class="admin-detail-grid">' +
+                '<div class="admin-detail-item"><small>Total in view</small><strong>' + messageList.length + '</strong></div>' +
+                '<div class="admin-detail-item"><small>Unread</small><strong>' + unread + '</strong></div>' +
+                '<div class="admin-detail-item"><small>Starred</small><strong>' + starred + '</strong></div>' +
+                '</div>' + (messages.note ? '<p class="admin-report-note">' + esc(messages.note) + '</p>' : '');
+        });
+    }
+
     var LOADERS = {
         overview: loadOverview,
         students: loadStudents,
@@ -479,11 +584,14 @@
         fees: loadFees,
         timetables: loadAcademicContent,
         programs: loadPrograms,
+        guidelines: loadAcademicContent,
         messages: loadMessages,
+        reports: loadReports,
         'gate-jee': loadGateJee
     };
 
     function showSection(name, updateHash) {
+        name = SECTION_ALIASES[name] || name;
         if (!SECTION_TITLES[name]) name = 'overview';
         state.section = name;
         Object.keys(SECTION_TITLES).forEach(function (key) {
@@ -491,7 +599,10 @@
             if (section) section.hidden = key !== name;
         });
         document.querySelectorAll('.admin-nav-item').forEach(function (item) {
-            item.classList.toggle('is-active', item.getAttribute('data-section') === name);
+            var active = item.getAttribute('data-section') === name;
+            item.classList.toggle('is-active', active);
+            if (active) item.setAttribute('aria-current', 'page');
+            else item.removeAttribute('aria-current');
         });
         $('#adminPageTitle').textContent = SECTION_TITLES[name][0];
         $('#adminPageSubtitle').textContent = SECTION_TITLES[name][1];
@@ -593,12 +704,33 @@
             $('#adminBackdrop').classList.toggle('is-open');
         });
         $('#adminBackdrop').addEventListener('click', closeSidebar);
+
+        var collapseButton = $('#adminSidebarCollapse');
+        collapseButton.addEventListener('click', function () {
+            var sidebar = $('#adminSidebar');
+            var collapsed = sidebar.classList.toggle('is-collapsed');
+            collapseButton.setAttribute('aria-expanded', String(!collapsed));
+            collapseButton.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
+            collapseButton.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+            try { window.localStorage.setItem('pinnacle-admin-sidebar-collapsed', collapsed ? '1' : '0'); } catch (_) { /* storage may be unavailable */ }
+        });
+
+        document.querySelectorAll('[data-goto]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                showSection(button.getAttribute('data-goto'), true);
+                var topbar = document.querySelector('.admin-topbar');
+                if (topbar) topbar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
         $('#adminModalClose').addEventListener('click', closeModal);
         $('#adminModal').addEventListener('click', function (event) {
             if (event.target === $('#adminModal')) closeModal();
         });
         document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') closeModal();
+            if (event.key === 'Escape') {
+                closeModal();
+                closeSidebar();
+            }
         });
 
         document.querySelectorAll('.admin-filters').forEach(function (form) {
@@ -694,11 +826,20 @@
         }
         state.sessionExpiresAt = num(result.data.admin.expiresAt);
         bindEvents();
+        try {
+            if (window.localStorage.getItem('pinnacle-admin-sidebar-collapsed') === '1') {
+                $('#adminSidebar').classList.add('is-collapsed');
+                var collapseButton = $('#adminSidebarCollapse');
+                collapseButton.setAttribute('aria-expanded', 'false');
+                collapseButton.setAttribute('aria-label', 'Expand sidebar');
+                collapseButton.title = 'Expand sidebar';
+            }
+        } catch (_) { /* storage may be unavailable */ }
         var hash = window.location.hash.replace('#', '');
         showSection(hash || 'overview', false);
         window.setInterval(function () {
             var remaining = Math.max(0, Math.round((state.sessionExpiresAt - Date.now()) / 60000));
-            var pill = document.querySelector('.admin-pill');
+            var pill = document.getElementById('adminSessionPill');
             if (pill) pill.innerHTML = '<i aria-hidden="true"></i> Admin · ' + remaining + 'm left';
             if (remaining <= 0) window.location.replace('admin-login.html');
         }, 30000);

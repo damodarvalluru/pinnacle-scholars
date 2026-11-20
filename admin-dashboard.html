@@ -16,56 +16,90 @@
 </head>
 <body class="admin-dashboard-page">
 
-    <aside class="admin-sidebar" id="adminSidebar">
-        <div class="admin-sidebar__brand">
-            <span class="admin-sidebar__mark" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 20 6v5.5c0 5.2-3.3 8.9-8 10-4.7-1.1-8-4.8-8-10V6l8-3.5Z"/><path d="m9 12.1 2 2 4-4.2"/></svg>
-            </span>
-            <span><strong>Pinnacle Academy</strong><span>ADMIN CONSOLE</span></span>
-        </div>
+    <!-- Shared icon sprite: keeps navigation icons consistent and lightweight. -->
+    <svg class="admin-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="i-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></symbol>
+        <symbol id="i-students" viewBox="0 0 24 24"><path d="M2.5 8.5 12 4l9.5 4.5L12 13 2.5 8.5Z"/><path d="m6.5 10.5.2 4.2c.1 1.7 2.4 3 5.3 3s5.2-1.3 5.3-3l.2-4.2"/><path d="M21.5 8.5V14"/></symbol>
+        <symbol id="i-faculty" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20v-1.1c0-3 2.7-5.4 6-5.4s6 2.4 6 5.4V20"/><path d="m16 5 1.4 1.4L20 3.8"/><path d="M19 12v8"/></symbol>
+        <symbol id="i-exams" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2.2"/><path d="M9 4V3h6v1"/><path d="M9 10h6M9 14h6M9 18h3"/></symbol>
+        <symbol id="i-results" viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4v1.5A3.5 3.5 0 0 0 7.5 11M17 6h3v1.5a3.5 3.5 0 0 1-3.5 3.5"/><path d="M12 14v4M9 21h6M10 18h4"/></symbol>
+        <symbol id="i-syllabus" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v16H6.5A2.5 2.5 0 0 0 4 21.5V5.5Z"/><path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H19"/><path d="M8 7.5h7M8 11h5"/></symbol>
+        <symbol id="i-timetable" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="16" rx="2.2"/><path d="M8 3v4M16 3v4M3.5 10h17"/><path d="M8 14h3M14 14h3M8 18h3"/></symbol>
+        <symbol id="i-fees" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19M6 15h4"/></symbol>
+        <symbol id="i-programs" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></symbol>
+        <symbol id="i-guidelines" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M15 3v5h4"/><path d="M8 12h8M8 16h6"/></symbol>
+        <symbol id="i-messages" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.2"/><path d="m3.5 6.5 8.5 6 8.5-6"/></symbol>
+        <symbol id="i-reports" viewBox="0 0 24 24"><path d="M4 20V4"/><path d="M4 20h17"/><path d="M8 16v-5M13 16V7M18 16v-8"/></symbol>
+        <symbol id="i-analytics" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9h-9V3Z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15V3.5Z"/></symbol>
+        <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21h-4v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.3 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3v-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.3 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3h4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21v4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></symbol>
+        <symbol id="i-collapse" viewBox="0 0 24 24"><path d="M14 6 8 12l6 6M20 5v14"/></symbol>
+        <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/></symbol>
+        <symbol id="i-logout" viewBox="0 0 24 24"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+        <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M3 12h4M17 12h4M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></symbol>
+    </svg>
 
-        <nav aria-label="Admin dashboard sections">
-            <div class="admin-nav-group">
-                <p class="admin-nav-group__title">Overview</p>
-                <button class="admin-nav-item is-active" type="button" data-section="overview"><span>📊</span><span>Dashboard</span></button>
-                <button class="admin-nav-item" type="button" data-section="students"><span>🎓</span><span>Students</span></button>
-                <button class="admin-nav-item" type="button" data-section="faculty"><span>👨‍🏫</span><span>Faculty</span></button>
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="admin-sidebar__inner">
+            <div class="admin-sidebar__brand">
+                <span class="admin-sidebar__mark" aria-hidden="true"><svg><use href="#i-spark"></use></svg></span>
+                <span class="admin-sidebar__brand-copy"><strong>Pinnacle Academy</strong><span>ADMIN CONSOLE</span></span>
+                <button class="admin-sidebar__collapse" id="adminSidebarCollapse" type="button" title="Collapse sidebar" aria-label="Collapse sidebar" aria-expanded="true"><svg aria-hidden="true"><use href="#i-collapse"></use></svg></button>
             </div>
-            <div class="admin-nav-group">
-                <p class="admin-nav-group__title">Academics</p>
-                <button class="admin-nav-item" type="button" data-section="exams"><span>📝</span><span>Exam Management</span></button>
-                <button class="admin-nav-item" type="button" data-section="performance"><span>🏆</span><span>Performance</span></button>
-                <button class="admin-nav-item" type="button" data-section="syllabus"><span>📚</span><span>Syllabus</span></button>
-                <button class="admin-nav-item" type="button" data-section="timetables"><span>🗓️</span><span>Timetables &amp; Guidelines</span></button>
-                <button class="admin-nav-item" type="button" data-section="programs"><span>🎯</span><span>Programs</span></button>
+
+            <nav class="admin-nav" aria-label="Admin dashboard sections">
+                <div class="admin-nav-group">
+                    <p class="admin-nav-group__title">Workspace</p>
+                    <button class="admin-nav-item is-active" type="button" data-section="overview" title="Dashboard" aria-current="page"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-dashboard"></use></svg></span><span class="admin-nav-item__label">Dashboard</span></button>
+                </div>
+                <div class="admin-nav-group">
+                    <p class="admin-nav-group__title">People</p>
+                    <button class="admin-nav-item" type="button" data-section="students" title="Students"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-students"></use></svg></span><span class="admin-nav-item__label">Students</span></button>
+                    <button class="admin-nav-item" type="button" data-section="faculty" title="Faculty"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-faculty"></use></svg></span><span class="admin-nav-item__label">Faculty</span></button>
+                </div>
+                <div class="admin-nav-group">
+                    <p class="admin-nav-group__title">Academics</p>
+                    <button class="admin-nav-item" type="button" data-section="exams" title="Exams"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-exams"></use></svg></span><span class="admin-nav-item__label">Exams</span></button>
+                    <button class="admin-nav-item" type="button" data-section="performance" title="Exam Results"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-results"></use></svg></span><span class="admin-nav-item__label">Exam Results</span></button>
+                    <button class="admin-nav-item" type="button" data-section="syllabus" title="Syllabus"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-syllabus"></use></svg></span><span class="admin-nav-item__label">Syllabus</span></button>
+                    <button class="admin-nav-item" type="button" data-section="timetables" title="Timetables"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-timetable"></use></svg></span><span class="admin-nav-item__label">Timetables</span></button>
+                    <button class="admin-nav-item" type="button" data-section="programs" title="Programs"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-programs"></use></svg></span><span class="admin-nav-item__label">Programs</span></button>
+                    <button class="admin-nav-item" type="button" data-section="guidelines" title="Guidelines"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-guidelines"></use></svg></span><span class="admin-nav-item__label">Guidelines</span></button>
+                </div>
+                <div class="admin-nav-group">
+                    <p class="admin-nav-group__title">Administration</p>
+                    <button class="admin-nav-item" type="button" data-section="fees" title="Fees"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-fees"></use></svg></span><span class="admin-nav-item__label">Fees</span></button>
+                    <button class="admin-nav-item" type="button" data-section="messages" title="Contact Messages"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-messages"></use></svg></span><span class="admin-nav-item__label">Contact Messages</span></button>
+                </div>
+                <div class="admin-nav-group">
+                    <p class="admin-nav-group__title">Insights &amp; system</p>
+                    <button class="admin-nav-item" type="button" data-section="reports" title="Reports"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-reports"></use></svg></span><span class="admin-nav-item__label">Reports</span></button>
+                    <button class="admin-nav-item" type="button" data-section="gate-jee" title="GATE & JEE Statistics"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-analytics"></use></svg></span><span class="admin-nav-item__label">GATE &amp; JEE Stats</span></button>
+                    <button class="admin-nav-item" type="button" data-section="settings" title="Settings"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-settings"></use></svg></span><span class="admin-nav-item__label">Settings</span></button>
+                </div>
+            </nav>
+
+            <div class="admin-sidebar__footer">
+                <span class="admin-sidebar__avatar" aria-hidden="true">AD</span>
+                <span class="admin-sidebar__user"><strong>Administrator</strong><span>Secure session</span></span>
+                <span class="admin-sidebar__status" title="Session active" aria-hidden="true"></span>
             </div>
-            <div class="admin-nav-group">
-                <p class="admin-nav-group__title">Administration</p>
-                <button class="admin-nav-item" type="button" data-section="fees"><span>💳</span><span>Fee Management</span></button>
-                <button class="admin-nav-item" type="button" data-section="messages"><span>✉️</span><span>Contact Messages</span></button>
-                <button class="admin-nav-item" type="button" data-section="gate-jee"><span>🏅</span><span>GATE &amp; JEE Stats</span></button>
-                <button class="admin-nav-item" type="button" data-section="settings"><span>⚙️</span><span>Settings</span></button>
-            </div>
-        </nav>
+        </div>
     </aside>
 
     <div class="admin-backdrop" id="adminBackdrop"></div>
 
     <main class="admin-main">
         <header class="admin-topbar">
-            <button class="admin-menu-toggle" id="adminMenuToggle" type="button" aria-label="Toggle admin navigation">☰</button>
+            <button class="admin-menu-toggle" id="adminMenuToggle" type="button" aria-label="Toggle admin navigation"><svg aria-hidden="true"><use href="#i-menu"></use></svg></button>
             <div class="admin-topbar__titles">
                 <h1 id="adminPageTitle">Dashboard</h1>
                 <p id="adminPageSubtitle">Live records from the academy database</p>
             </div>
             <div class="admin-topbar__actions">
-                <span class="admin-pill"><i aria-hidden="true"></i> Admin session active</span>
-                <a class="admin-icon-btn" href="index.html" title="View website" aria-label="View website">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></svg>
-                </a>
-                <button class="admin-icon-btn" id="adminLogoutBtn" type="button" title="Log out" aria-label="Log out">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></svg>
-                </button>
+                <span class="admin-pill" id="adminSessionPill" aria-live="polite"><i aria-hidden="true"></i> Admin session active</span>
+                <a class="admin-icon-btn" href="index.html" title="View website" aria-label="View website"><svg aria-hidden="true"><use href="#i-external"></use></svg></a>
+                <button class="admin-icon-btn" id="adminLogoutBtn" type="button" title="Log out" aria-label="Log out"><svg aria-hidden="true"><use href="#i-logout"></use></svg></button>
             </div>
         </header>
 
@@ -73,8 +107,19 @@
 
             <!-- 1. OVERVIEW -->
             <section class="admin-section" id="section-overview">
-                <div class="admin-section-head">
-                    <div><span class="admin-eyebrow">Live database snapshot</span><h2>Academy Overview</h2><p>Counts are read directly from the academy tables.</p></div>
+                <div class="admin-hero">
+                    <div class="admin-hero__copy">
+                        <span class="admin-eyebrow">Command center</span>
+                        <h2>Academy Overview</h2>
+                        <p>Live counts, charts and recent activity read directly from the academy database.</p>
+                    </div>
+                    <div class="admin-hero__side">
+                        <span class="admin-hero__sync" id="ovSynced">Awaiting live snapshot…</span>
+                        <div class="admin-hero__actions">
+                            <button class="admin-btn admin-btn--light" type="button" data-goto="students">View students</button>
+                            <button class="admin-btn admin-btn--glass" type="button" data-goto="reports">Open reports</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="admin-stat-grid" id="ovStats"><div class="admin-loading">Loading statistics…</div></div>
                 <div class="admin-grid admin-grid--charts">
@@ -166,7 +211,7 @@
             <!-- 5. PERFORMANCE -->
             <section class="admin-section" id="section-performance" hidden>
                 <div class="admin-section-head">
-                    <div><span class="admin-eyebrow">Results</span><h2>Student Exam Performance</h2><p>Attempts, scores, ranks and performance metrics.</p></div>
+                    <div><span class="admin-eyebrow">Results &amp; rankings</span><h2>Exam Results</h2><p>Attempts, scores, ranks and performance metrics from submitted exams.</p></div>
                     <button class="admin-btn admin-btn--ghost" type="button" data-export="performance">Export CSV</button>
                 </div>
                 <div class="admin-stat-grid" id="perfStats"></div>
@@ -241,10 +286,10 @@
                 </div>
             </section>
 
-            <!-- 8. TIMETABLES & GUIDELINES -->
+            <!-- 8. TIMETABLES -->
             <section class="admin-section" id="section-timetables" hidden>
                 <div class="admin-section-head">
-                    <div><span class="admin-eyebrow">Academic information</span><h2>Timetables &amp; Guidelines</h2><p>Database-backed schedules, guidelines and announcements.</p></div>
+                    <div><span class="admin-eyebrow">Academic information</span><h2>Timetables</h2><p>Database-backed schedules and announcements.</p></div>
                 </div>
                 <div class="admin-grid admin-grid--two" id="academicContent"><div class="admin-loading">Loading…</div></div>
             </section>
@@ -259,6 +304,14 @@
                     <div class="admin-note"><span>ℹ️</span><div id="programsNoteText">Loading…</div></div>
                     <div class="admin-table-wrap" id="programsTable"><div class="admin-loading">Loading…</div></div>
                 </div>
+            </section>
+
+            <!-- 9b. GUIDELINES -->
+            <section class="admin-section" id="section-guidelines" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Academic information</span><h2>Guidelines</h2><p>Guidance records stored in the academy database.</p></div>
+                </div>
+                <div class="admin-grid admin-grid--two" id="guidelinesContent"><div class="admin-loading">Loading…</div></div>
             </section>
 
             <!-- 10. MESSAGES -->
@@ -293,6 +346,35 @@
                 <div class="admin-card">
                     <div class="admin-note"><span>ℹ️</span><div id="gateJeeNoteText">Loading…</div></div>
                     <div class="admin-table-wrap" id="gateJeeTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 11b. REPORTS -->
+            <section class="admin-section" id="section-reports" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Consolidated insights</span><h2>Reports</h2><p>Combined views derived from live student, exam, result, fee and message records.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="reports">Export CSV</button>
+                </div>
+                <div class="admin-stat-grid" id="reportsStats"><div class="admin-loading">Loading statistics…</div></div>
+                <div class="admin-grid admin-grid--two">
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Program snapshot</h3><p>Students and fee position by program</p></div>
+                        <div class="admin-card__body admin-card__body--flush" id="reportsPrograms"><div class="admin-loading">Loading…</div></div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Score distribution</h3><p>Submitted results grouped by score band</p></div>
+                        <div class="admin-card__body" id="reportsScores"><div class="admin-loading">Loading…</div></div>
+                    </div>
+                </div>
+                <div class="admin-grid admin-grid--two" style="margin-top:1.1rem">
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Top performers</h3><p>Highest submitted scores</p></div>
+                        <div class="admin-card__body admin-card__body--flush" id="reportsTop"><div class="admin-loading">Loading…</div></div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Communication load</h3><p>Contact message flags from the database</p></div>
+                        <div class="admin-card__body" id="reportsMessages"><div class="admin-loading">Loading…</div></div>
+                    </div>
                 </div>
             </section>
 
