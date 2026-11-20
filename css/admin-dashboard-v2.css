@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Admin Dashboard V2 — visual-only glass re-skin
+   Admin Dashboard V2 — visual-only glass re-skin + 20:80 app shell
    Loaded AFTER admin.css. Every rule is scoped to .adm-v2 so the existing
    dashboard markup, classes, handlers, API calls and session flow stay intact.
    ========================================================================== */
@@ -51,11 +51,12 @@
    -------------------------------------------------------------------------- */
 .adm-v2.admin-dashboard-page {
     display: flex;
-    gap: 16px;
+    flex-direction: row;
+    gap: 0;
     height: 100vh;
     height: 100dvh;
     min-height: 100vh;
-    padding: 16px;
+    padding: 0;
     overflow: hidden;
     color: var(--text);
     font-family: var(--font);
@@ -126,14 +127,16 @@
 .adm-v2 .admin-sidebar {
     position: relative;
     top: auto;
-    flex: 0 0 260px;
-    width: 260px;
-    height: calc(100vh - 32px);
-    height: calc(100dvh - 32px);
-    padding: 14px;
-    border-radius: var(--radius-xl);
+    flex: 0 0 20%;
+    width: 20%;
+    height: 100vh;
+    height: 100dvh;
+    padding: 0;
+    border: 0;
+    border-right: 1px solid var(--glass-border-soft);
+    border-radius: 0;
     background: var(--sidebar-bg);
-    box-shadow: var(--shadow-panel);
+    box-shadow: 12px 0 36px rgba(0, 12, 30, .38);
     overflow: hidden;
     /* Opacity-only entrance: a transform keyframe here would override the
        off-canvas drawer transform in the responsive rules below. */
@@ -144,22 +147,20 @@
 .adm-v2 .admin-sidebar__inner {
     width: 100%;
     height: 100%;
-    padding: 0;
-    overflow-y: auto;
-    scrollbar-width: none;
+    padding: 14px 12px 12px;
+    overflow: hidden;
 }
 
-.adm-v2 .admin-sidebar__inner::-webkit-scrollbar { display: none; }
-
 .adm-v2 .admin-sidebar__brand {
-    gap: 10px;
-    padding: 4px 4px 16px;
+    gap: 9px;
+    margin-bottom: 8px;
+    padding: 2px 4px 12px;
     border-bottom: 1px solid var(--glass-border-soft);
 }
 
 .adm-v2 .admin-sidebar__mark {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     border-radius: var(--radius-sm);
     background: linear-gradient(135deg, rgba(255, 255, 255, .32), rgba(255, 255, 255, .12));
     border: 1px solid var(--glass-border);
@@ -191,10 +192,15 @@
 
 .adm-v2 .admin-sidebar__collapse:hover { color: #fff; background: rgba(255, 255, 255, .22); }
 
-.adm-v2 .admin-nav-group { padding-top: 0; border-top: 0; }
+.adm-v2 .admin-nav-group {
+    margin-bottom: 8px;
+    padding-top: 0;
+    border-top: 0;
+}
 
 .adm-v2 .admin-nav-group__title {
-    margin: 18px 10px 6px;
+    margin: 10px 8px 4px;
+    padding: 0;
     font-size: 10px;
     font-weight: 700;
     letter-spacing: .14em;
@@ -205,13 +211,14 @@
 .adm-v2 .admin-nav-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    height: 40px;
-    padding: 0 12px;
+    gap: 10px;
+    height: 36px;
+    margin: 2px 0;
+    padding: 0 10px;
     border: 1px solid transparent;
     border-radius: 14px;
     color: var(--text-60);
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 500;
     background: transparent;
     box-shadow: none;
@@ -223,16 +230,16 @@
 .adm-v2 .admin-nav-item::before { display: none; }
 
 .adm-v2 .admin-nav-item__icon {
-    width: 18px;
-    height: 18px;
-    flex: 0 0 18px;
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
     transition: transform .25s var(--ease);
 }
 
 .adm-v2 .admin-nav-item__icon svg {
-    width: 18px;
-    height: 18px;
-    stroke-width: 1.75;
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.8;
 }
 
 .adm-v2 .admin-nav-item:hover {
@@ -272,7 +279,7 @@
 /* Bottom plan card + existing secure-session footer */
 .adm-v2 .adm-v2-plan {
     margin-top: auto;
-    padding: 12px;
+    padding: 10px;
     border-radius: var(--radius-md);
     background: rgba(255, 255, 255, .10);
     border: 1px solid var(--glass-border-soft);
@@ -307,8 +314,8 @@
 }
 
 .adm-v2 .admin-sidebar__footer {
-    margin-top: .75rem;
-    padding: .9rem .45rem .15rem;
+    margin-top: .5rem;
+    padding: .65rem .4rem .1rem;
     border-top: 1px solid var(--glass-border-soft);
 }
 
@@ -340,9 +347,11 @@
    5. Right column: glass top bar + scrollable main panel
    -------------------------------------------------------------------------- */
 .adm-v2 .admin-main {
+    flex: 1 1 80%;
+    width: 80%;
     display: grid;
-    grid-template-rows: 56px minmax(0, 1fr);
-    gap: 16px;
+    grid-template-rows: 64px minmax(0, 1fr);
+    gap: 0;
     min-width: 0;
     min-height: 0;
 }
@@ -354,10 +363,13 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    height: 56px;
-    padding: 0 14px;
-    border-radius: var(--radius-pill);
-    box-shadow: var(--shadow-card);
+    height: 64px;
+    padding: 0 20px;
+    border: 0;
+    border-bottom: 1px solid var(--glass-border-soft);
+    border-radius: 0;
+    background: linear-gradient(180deg, rgba(7, 38, 62, .88), rgba(6, 30, 51, .78));
+    box-shadow: 0 8px 24px rgba(0, 12, 30, .24);
     animation: adm-rise .6s .08s var(--ease) both;
 }
 
@@ -421,10 +433,11 @@
     min-height: 0;
     max-width: none;
     margin: 0;
-    padding: 24px;
-    border-radius: var(--radius-xl);
-    background: var(--glass-bg-strong);
-    box-shadow: var(--shadow-panel);
+    padding: 20px 24px 28px;
+    border: 0;
+    border-radius: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .015));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
@@ -748,16 +761,19 @@
    10. Responsive: tablet drawer, mobile stacking
    -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
-    .adm-v2.admin-dashboard-page { padding: 12px; }
+    .adm-v2.admin-dashboard-page { padding: 0; }
+
+    .adm-v2 .admin-main { flex-basis: 100%; width: 100%; }
 
     .adm-v2 .admin-sidebar,
     .adm-v2 .admin-sidebar.is-collapsed {
         position: fixed;
-        inset: 12px auto 12px 12px;
+        inset: 0 auto 0 0;
         z-index: 30;
-        width: 272px;
-        flex-basis: 272px;
-        height: calc(100dvh - 24px);
+        width: min(280px, 86vw);
+        flex-basis: min(280px, 86vw);
+        height: 100dvh;
+        border-radius: 0;
         transform: translateX(-110%);
         transition: transform .35s var(--ease);
     }
@@ -796,12 +812,12 @@
 }
 
 @media (max-width: 640px) {
-    .adm-v2.admin-dashboard-page { padding: 10px; gap: 10px; }
-    .adm-v2 .admin-main { grid-template-rows: 52px minmax(0, 1fr); gap: 10px; }
-    .adm-v2 .admin-topbar { height: 52px; padding: 0 10px; }
+    .adm-v2.admin-dashboard-page { padding: 0; gap: 0; }
+    .adm-v2 .admin-main { grid-template-rows: 56px minmax(0, 1fr); gap: 0; }
+    .adm-v2 .admin-topbar { height: 56px; padding: 0 12px; }
     .adm-v2 .admin-topbar__titles p { display: none; }
     .adm-v2 .admin-pill { display: none; }
-    .adm-v2 .admin-content { padding: 16px; border-radius: 22px; }
+    .adm-v2 .admin-content { padding: 14px; }
     .adm-v2 .admin-section-head h2,
     .adm-v2 .admin-hero h2 { font-size: 22px; }
     .adm-v2 .admin-hero { padding: 16px; }
@@ -813,7 +829,7 @@
 
 @media (max-width: 560px) {
     .adm-v2 .admin-sidebar,
-    .adm-v2 .admin-sidebar.is-collapsed { width: calc(100vw - 32px); flex-basis: calc(100vw - 32px); }
+    .adm-v2 .admin-sidebar.is-collapsed { width: min(300px, 88vw); flex-basis: min(300px, 88vw); }
     .adm-v2 .adm-v2-avatar { display: none; }
 }
 
