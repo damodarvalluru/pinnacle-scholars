@@ -1,0 +1,654 @@
+/* ==========================================================================
+   ADMIN LOGIN — PREMIUM ACCESS EXPERIENCE
+   --------------------------------------------------------------------------
+   Scoped to body.admin-auth-page, so it only affects admin-login.html.
+   Loaded after admin.css: it restyles presentation only. Every id, class,
+   form field and behaviour used by js/admin-login.js is left intact, so the
+   Password / Security PIN options and the API flow work exactly as before.
+
+   The visual language mirrors the premium admin credentials experience:
+   deep-space ambience, animated aurora and grid, a rotating gradient edge,
+   glass cards, floating labels and a sheen-swept primary action.
+   ========================================================================== */
+
+@property --login-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+/* --------------------------------------------------------------------------
+   1. Stage — ambient light and a slow drifting micro-grid
+   -------------------------------------------------------------------------- */
+
+body.admin-auth-page {
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: #E8F2FF;
+    background:
+        radial-gradient(65% 55% at 8% 8%, rgba(25, 180, 232, .16), transparent 70%),
+        radial-gradient(55% 50% at 92% 92%, rgba(124, 58, 237, .18), transparent 70%),
+        #050D1B;
+}
+
+body.admin-auth-page::before,
+body.admin-auth-page::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+body.admin-auth-page::before {
+    background:
+        radial-gradient(38% 42% at 18% 28%, rgba(25, 180, 232, .22), transparent 72%),
+        radial-gradient(36% 40% at 82% 70%, rgba(124, 58, 237, .22), transparent 72%),
+        radial-gradient(30% 34% at 62% 8%, rgba(52, 211, 153, .10), transparent 72%);
+    filter: blur(26px);
+    animation: login-aurora 20s ease-in-out infinite alternate;
+}
+
+body.admin-auth-page::after {
+    background-image:
+        radial-gradient(rgba(125, 211, 252, .22) 1px, transparent 1px),
+        radial-gradient(rgba(167, 139, 250, .16) 1px, transparent 1px);
+    background-size: 42px 42px, 70px 70px;
+    background-position: 0 0, 21px 35px;
+    -webkit-mask-image: radial-gradient(75% 65% at 50% 45%, #000 8%, transparent 78%);
+    mask-image: radial-gradient(75% 65% at 50% 45%, #000 8%, transparent 78%);
+    opacity: .55;
+    animation: login-grid 42s linear infinite;
+}
+
+.admin-back-link {
+    z-index: 5;
+    padding: .5rem .95rem;
+    border-radius: 999px;
+    color: rgba(226, 240, 255, .78);
+    background: rgba(255, 255, 255, .06);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    transition: color .25s ease, background .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+
+.admin-back-link:hover {
+    color: #fff;
+    background: rgba(25, 180, 232, .16);
+    box-shadow: inset 0 0 0 1px rgba(125, 211, 252, .4), 0 10px 24px rgba(0, 8, 24, .3);
+}
+
+/* --------------------------------------------------------------------------
+   2. Shell — rotating gradient edge with a travelling sheen
+   -------------------------------------------------------------------------- */
+
+.admin-auth-shell {
+    position: relative;
+    z-index: 1;
+    width: min(1060px, 100%);
+    isolation: isolate;
+    border: 1px solid transparent;
+    border-radius: 32px;
+    background:
+        linear-gradient(155deg, rgba(12, 34, 62, .96), rgba(5, 16, 32, .98)) padding-box,
+        conic-gradient(
+            from var(--login-angle),
+            #19B4E8,
+            #6366F1 28%,
+            #A855F7 52%,
+            #34D399 76%,
+            #19B4E8
+        ) border-box;
+    box-shadow:
+        0 44px 110px rgba(0, 5, 20, .62),
+        inset 0 1px 0 rgba(255, 255, 255, .14),
+        0 0 0 1px rgba(255, 255, 255, .04);
+    animation:
+        login-enter .75s cubic-bezier(.22, 1, .36, 1) both,
+        login-border-spin 16s linear infinite;
+}
+
+.admin-auth-shell::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(115deg, transparent 34%, rgba(255, 255, 255, .12) 49%, transparent 64%);
+    transform: translateX(-130%);
+    animation: login-sheen 9s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   3. Brand panel
+   -------------------------------------------------------------------------- */
+
+.admin-auth-brand {
+    padding: 3.6rem 3rem;
+    border-right: 1px solid rgba(255, 255, 255, .08);
+    background:
+        radial-gradient(55% 45% at 12% 18%, rgba(25, 180, 232, .24), transparent 70%),
+        radial-gradient(50% 45% at 88% 82%, rgba(124, 58, 237, .26), transparent 70%),
+        linear-gradient(155deg, rgba(11, 61, 145, .72), rgba(6, 24, 54, .9));
+}
+
+.admin-auth-brand__glow {
+    width: 380px;
+    height: 380px;
+    right: -150px;
+    top: -130px;
+    background: radial-gradient(circle, rgba(56, 189, 248, .38), transparent 68%);
+    animation: login-aurora 9s ease-in-out infinite alternate;
+}
+
+.admin-auth-emblem {
+    position: relative;
+    width: 76px;
+    height: 76px;
+    margin-bottom: 1.8rem;
+    border-radius: 22px;
+    background: linear-gradient(135deg, rgba(125, 211, 252, .24), rgba(124, 58, 237, .28));
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .45),
+        0 18px 36px rgba(0, 10, 30, .45);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    animation: login-float 5s ease-in-out infinite;
+}
+
+/* Two slow orbital rings around the academy shield. */
+.admin-auth-emblem::before,
+.admin-auth-emblem::after {
+    content: '';
+    position: absolute;
+    border-radius: 30px;
+    pointer-events: none;
+}
+
+.admin-auth-emblem::before {
+    inset: -10px;
+    border: 1px solid rgba(125, 211, 252, .38);
+    animation: login-orbit 14s linear infinite;
+}
+
+.admin-auth-emblem::after {
+    inset: -18px;
+    border: 1px dashed rgba(167, 139, 250, .28);
+    animation: login-orbit 22s linear infinite reverse;
+}
+
+.admin-auth-emblem svg {
+    width: 2.6rem;
+    height: 2.6rem;
+    color: #E0F2FE;
+    filter: drop-shadow(0 0 10px rgba(125, 211, 252, .55));
+}
+
+.admin-auth-kicker {
+    color: #7DD3FC;
+    text-shadow: 0 0 18px rgba(125, 211, 252, .35);
+}
+
+.admin-auth-brand h1 {
+    background: linear-gradient(100deg, #FFFFFF 8%, #9BDCFF 52%, #C4B5FD 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 12px 32px rgba(0, 8, 26, .3);
+}
+
+.admin-auth-brand__copy {
+    color: rgba(226, 240, 255, .78);
+}
+
+.admin-auth-brand__meta span {
+    padding: .5rem .75rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .06);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1);
+    color: rgba(226, 240, 255, .82);
+}
+
+.admin-auth-brand__meta i {
+    background: #34D399;
+    box-shadow: 0 0 0 4px rgba(52, 211, 153, .16);
+    animation: login-secure-pulse 3s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   4. Form panel and card header
+   -------------------------------------------------------------------------- */
+
+.admin-auth-panel {
+    background: linear-gradient(165deg, rgba(13, 36, 65, .94), rgba(5, 17, 34, .97));
+}
+
+.admin-auth-card {
+    max-width: 400px;
+    animation: login-enter .7s .12s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.admin-auth-card__icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+    color: #E0F2FE;
+    background: linear-gradient(135deg, rgba(25, 180, 232, .24), rgba(124, 58, 237, .28));
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .4),
+        inset 0 0 0 1px rgba(125, 211, 252, .22),
+        0 14px 30px rgba(0, 10, 30, .35);
+    animation: login-float 5.5s ease-in-out infinite;
+}
+
+.admin-auth-card h2 {
+    background: linear-gradient(100deg, #FFFFFF 10%, #8FD8FF 58%, #C4B5FD 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.admin-auth-card__head p {
+    color: rgba(191, 219, 254, .68);
+}
+
+/* --------------------------------------------------------------------------
+   5. The two sign-in options
+   -------------------------------------------------------------------------- */
+
+.admin-credential-picker legend {
+    color: rgba(191, 219, 254, .72);
+}
+
+.admin-credential-options {
+    gap: .8rem;
+}
+
+.admin-credential-option {
+    position: relative;
+    gap: .2rem;
+    padding: .95rem .9rem .95rem 3.15rem;
+    overflow: hidden;
+    border-radius: 16px;
+    color: #E8F2FF;
+    background: linear-gradient(160deg, rgba(255, 255, 255, .075), rgba(255, 255, 255, .025));
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, .12),
+        0 12px 26px rgba(0, 8, 24, .25);
+    transition:
+        transform .3s cubic-bezier(.22, 1, .36, 1),
+        background .3s ease,
+        box-shadow .3s ease;
+}
+
+/* Emoji glyphs keep the markup unchanged while giving each option an icon. */
+.admin-credential-option::before {
+    content: '\1F510';
+    position: absolute;
+    left: .95rem;
+    top: 50%;
+    font-size: 1.3rem;
+    line-height: 1;
+    transform: translateY(-50%);
+    filter: drop-shadow(0 4px 8px rgba(0, 8, 24, .4));
+    transition: transform .3s cubic-bezier(.22, 1, .36, 1);
+}
+
+.admin-credential-option:nth-child(2)::before {
+    content: '\1F522';
+}
+
+/* Selected check badge. */
+.admin-credential-option::after {
+    content: '\2713';
+    position: absolute;
+    top: .55rem;
+    right: .6rem;
+    display: grid;
+    place-items: center;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #19B4E8, #6366F1);
+    box-shadow: 0 0 0 3px rgba(25, 180, 232, .16);
+    color: #fff;
+    font-size: .68rem;
+    font-weight: 800;
+    opacity: 0;
+    transform: scale(.4);
+    transition: opacity .3s ease, transform .35s cubic-bezier(.22, 1, .36, 1);
+}
+
+.admin-credential-option:hover {
+    transform: translateY(-3px);
+    background: linear-gradient(160deg, rgba(255, 255, 255, .11), rgba(255, 255, 255, .04));
+    box-shadow:
+        inset 0 0 0 1px rgba(125, 211, 252, .35),
+        0 18px 32px rgba(0, 8, 24, .32);
+}
+
+.admin-credential-option:hover::before {
+    transform: translateY(-50%) scale(1.12) rotate(-6deg);
+}
+
+.admin-credential-option.is-selected {
+    background: linear-gradient(135deg, rgba(25, 180, 232, .18), rgba(124, 58, 237, .2));
+    box-shadow:
+        inset 0 0 0 1.5px rgba(125, 211, 252, .8),
+        0 16px 34px rgba(25, 180, 232, .16),
+        0 0 0 4px rgba(25, 180, 232, .07);
+}
+
+.admin-credential-option.is-selected::after {
+    opacity: 1;
+    transform: scale(1);
+    animation: login-pop .4s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.admin-credential-option:active {
+    transform: translateY(-1px) scale(.99);
+}
+
+.admin-credential-option__title {
+    color: #F8FAFF;
+}
+
+.admin-credential-option__hint {
+    color: rgba(191, 219, 254, .62);
+}
+
+/* Switching methods reveals the matching credential field smoothly. */
+.admin-credential-panel:not([hidden]) {
+    animation: login-panel-in .45s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+/* --------------------------------------------------------------------------
+   6. Floating-label credential fields
+   -------------------------------------------------------------------------- */
+
+.admin-field {
+    position: relative;
+    margin-bottom: 1.3rem;
+}
+
+.admin-field > span:first-child {
+    position: absolute;
+    left: 1.1rem;
+    top: 50%;
+    z-index: 2;
+    margin: 0;
+    padding: 0 .4rem;
+    background: #0A2340;
+    color: rgba(226, 240, 255, .66);
+    font-size: .84rem;
+    font-weight: 600;
+    letter-spacing: .01em;
+    text-transform: none;
+    pointer-events: none;
+    transform: translateY(-50%);
+    transform-origin: left center;
+    transition:
+        top .28s cubic-bezier(.22, 1, .36, 1),
+        transform .28s cubic-bezier(.22, 1, .36, 1),
+        color .28s ease;
+}
+
+.admin-field:focus-within > span:first-child,
+.admin-field:has(input:not(:placeholder-shown)) > span:first-child {
+    top: 0;
+    color: #7DD3FC;
+    transform: translateY(-50%) scale(.84);
+}
+
+.admin-field__input {
+    position: relative;
+    min-height: 3.6rem;
+    border-radius: 15px;
+    background: linear-gradient(160deg, rgba(4, 20, 38, .96), rgba(9, 38, 66, .9));
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, .14),
+        0 12px 26px rgba(0, 8, 24, .3);
+    transition:
+        transform .3s cubic-bezier(.22, 1, .36, 1),
+        background .3s ease,
+        box-shadow .3s ease;
+}
+
+/* Gradient border that fades in on focus. */
+.admin-field__input::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    pointer-events: none;
+    background: linear-gradient(90deg, #19B4E8, #7C3AED);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity .3s ease;
+}
+
+.admin-field:focus-within .admin-field__input {
+    transform: translateY(-2px);
+    background: linear-gradient(160deg, rgba(5, 28, 50, .98), rgba(12, 54, 86, .92));
+    box-shadow:
+        inset 0 0 0 1px rgba(125, 211, 252, .75),
+        0 18px 36px rgba(25, 180, 232, .2),
+        0 0 0 4px rgba(25, 180, 232, .1);
+}
+
+.admin-field:focus-within .admin-field__input::after {
+    opacity: 1;
+}
+
+.admin-field input {
+    padding: 1.25rem 1.1rem .75rem;
+    color: #FFFFFF;
+    caret-color: #7DD3FC;
+    font-size: .92rem;
+    letter-spacing: .01em;
+}
+
+.admin-field input::placeholder {
+    color: transparent;
+}
+
+.admin-field__reveal {
+    min-width: 3.3rem;
+    margin-right: .55rem;
+    padding: .4rem .65rem;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, .1);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14);
+    color: rgba(226, 240, 255, .78);
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+    transition: transform .25s ease, background .25s ease, color .25s ease;
+}
+
+.admin-field__reveal:hover {
+    transform: translateY(-1px);
+    background: rgba(25, 180, 232, .22);
+    color: #fff;
+}
+
+.admin-auth-error {
+    border-radius: 13px;
+    background: rgba(244, 63, 94, .12);
+    box-shadow: inset 0 0 0 1px rgba(244, 63, 94, .32);
+    color: #FDA4AF;
+}
+
+.admin-auth-error:not([hidden]) {
+    animation: login-shake .45s ease;
+}
+
+/* --------------------------------------------------------------------------
+   7. Primary action
+   -------------------------------------------------------------------------- */
+
+.admin-auth-submit {
+    padding: 1rem 1.4rem;
+    border-radius: 15px;
+    background: linear-gradient(100deg, #0EA5E9, #6366F1 55%, #A855F7);
+    box-shadow:
+        0 16px 34px rgba(79, 70, 229, .42),
+        inset 0 1px 0 rgba(255, 255, 255, .5);
+    font-size: .92rem;
+    letter-spacing: .02em;
+    animation: login-glow 3.6s ease-in-out infinite;
+}
+
+.admin-auth-submit::after {
+    inset: -60% -20%;
+    background: linear-gradient(100deg, transparent 28%, rgba(255, 255, 255, .4) 50%, transparent 72%);
+    transform: translateX(-130%) rotate(8deg);
+    transition: transform .75s cubic-bezier(.22, 1, .36, 1);
+}
+
+.admin-auth-submit:hover:not(:disabled) {
+    filter: saturate(1.15);
+    box-shadow:
+        0 22px 44px rgba(79, 70, 229, .55),
+        inset 0 1px 0 rgba(255, 255, 255, .6);
+}
+
+.admin-auth-submit:hover:not(:disabled)::after {
+    transform: translateX(130%) rotate(8deg);
+}
+
+.admin-auth-submit:hover:not(:disabled) svg {
+    transform: translateX(5px);
+}
+
+.admin-auth-submit__label::after {
+    content: '\2192';
+    font-size: 1.1rem;
+    line-height: 1;
+    transition: transform .3s cubic-bezier(.22, 1, .36, 1);
+}
+
+.admin-auth-submit:hover:not(:disabled) .admin-auth-submit__label::after {
+    transform: translateX(4px);
+}
+
+.admin-auth-footnote {
+    color: rgba(191, 219, 254, .55);
+}
+
+/* --------------------------------------------------------------------------
+   8. Motion
+   -------------------------------------------------------------------------- */
+
+@keyframes login-enter {
+    from { opacity: 0; transform: translateY(20px) scale(.985); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes login-panel-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes login-border-spin {
+    to { --login-angle: 360deg; }
+}
+
+@keyframes login-aurora {
+    to { transform: translate3d(3%, -2%, 0) scale(1.1); }
+}
+
+@keyframes login-grid {
+    to { background-position: 42px 42px, -49px 77px; }
+}
+
+@keyframes login-sheen {
+    0%, 55% { transform: translateX(-130%); }
+    85%, 100% { transform: translateX(130%); }
+}
+
+@keyframes login-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+@keyframes login-orbit {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes login-secure-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, .4); }
+    50% { box-shadow: 0 0 0 7px rgba(52, 211, 153, 0); }
+}
+
+@keyframes login-pop {
+    from { transform: scale(.4); }
+    70% { transform: scale(1.18); }
+    to { transform: scale(1); }
+}
+
+@keyframes login-shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(2px); }
+}
+
+@keyframes login-glow {
+    0%, 100% { box-shadow: 0 16px 34px rgba(79, 70, 229, .38), inset 0 1px 0 rgba(255, 255, 255, .5); }
+    50% { box-shadow: 0 20px 44px rgba(79, 70, 229, .55), inset 0 1px 0 rgba(255, 255, 255, .6); }
+}
+
+/* --------------------------------------------------------------------------
+   9. Responsive and reduced motion
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+    .admin-auth-shell {
+        width: min(560px, 100%);
+        grid-template-columns: 1fr;
+        border-radius: 28px;
+    }
+
+    .admin-auth-brand {
+        padding: 2.5rem 2rem;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .admin-auth-brand__meta { display: none; }
+    .admin-auth-panel { padding: 2.5rem 2rem; }
+}
+
+@media (max-width: 560px) {
+    body.admin-auth-page {
+        padding: 4.5rem 1rem 1.5rem;
+        place-items: start center;
+    }
+
+    .admin-auth-shell { border-radius: 24px; }
+    .admin-auth-brand { padding: 2rem 1.5rem; }
+    .admin-auth-panel { padding: 2rem 1.4rem; }
+    .admin-back-link { top: 1rem; left: 1rem; }
+    .admin-credential-options { grid-template-columns: minmax(0, 1fr); }
+    .admin-auth-card { max-width: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.admin-auth-page *,
+    body.admin-auth-page *::before,
+    body.admin-auth-page *::after,
+    body.admin-auth-page::before,
+    body.admin-auth-page::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

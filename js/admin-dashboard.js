@@ -965,6 +965,47 @@
             }).catch(function () { window.location.replace('admin-login.html'); });
         });
 
+        // Credential view enhancements — presentation only. The reveal toggles
+        // and strength meter never alter the values that the submit handler reads.
+        document.querySelectorAll('#section-settings [data-reveal]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var input = document.getElementById(button.getAttribute('data-reveal'));
+                if (!input) return;
+                var showing = input.type === 'password';
+                input.type = showing ? 'text' : 'password';
+                button.textContent = showing ? 'Hide' : 'Show';
+                button.setAttribute('aria-pressed', String(showing));
+                var label = button.getAttribute('aria-label') || '';
+                button.setAttribute('aria-label', label.replace(/^(Show|Hide) /, showing ? 'Hide ' : 'Show '));
+            });
+        });
+
+        var newPasswordInput = $('#newPassword');
+        var strengthMeter = $('#credentialStrength');
+        var strengthHint = $('#credentialStrengthHint');
+        function updateCredentialStrength() {
+            if (!newPasswordInput || !strengthMeter) return;
+            var value = newPasswordInput.value || '';
+            var score = 0;
+            if (value.length >= 12) score++;
+            if (/[a-z]/.test(value) && /[A-Z]/.test(value)) score++;
+            if (/\d/.test(value)) score++;
+            if (/[^A-Za-z0-9]/.test(value)) score++;
+            if (!value) score = 0;
+            strengthMeter.setAttribute('data-strength', String(score));
+            if (!strengthHint) return;
+            var hints = [
+                'Use 12+ characters with a number and a symbol.',
+                'Too short — aim for at least 12 characters.',
+                'Better — add mixed case, a number and a symbol.',
+                'Strong — add a symbol for maximum strength.',
+                'Excellent — this password meets every check.'
+            ];
+            strengthHint.textContent = hints[score];
+        }
+        if (newPasswordInput) newPasswordInput.addEventListener('input', updateCredentialStrength);
+        updateCredentialStrength();
+
         var credentialForm = $('#credentialForm');
         credentialForm.addEventListener('submit', function (event) {
             event.preventDefault();

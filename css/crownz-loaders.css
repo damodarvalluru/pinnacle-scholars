@@ -1,0 +1,441 @@
+/* =====================================================================
+   20 LOADING ANIMATIONS  -  pure CSS (no JavaScript)
+   Rebuilt frame-by-frame from the reel "20 Loading Animations"
+   (@crownzdesigns). Colours were sampled from the video pixels.
+   Sizes/timings are close visual matches, not the author's source.
+
+   HOW TO USE
+   1. Paste this whole file into your site's CSS (or link it).
+   2. Put the matching markup (see crownz-loaders.html) in your page.
+   3. Every loader is:  <div class="ld ld-NAME"> ... </div>
+      Put it inside a stage:  <div class="ld-stage is-dark|is-light">
+   4. Scale one loader:  style="--ld-scale:.6"
+      Slow/speed up all:  :root { --ld-speed: 1.5 }   (bigger = slower)
+   ===================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap');
+
+/* ---------- 0. DESIGN TOKENS ---------- */
+@property --p      { syntax: '<integer>'; inherits: true;  initial-value: 0; }
+@property --bat    { syntax: '<color>';   inherits: true;  initial-value: #e8862a; }
+
+:root {
+  --ld-dark:      #121116;   /* dark stage background          */
+  --ld-light:     #efefea;   /* light stage background         */
+  --ld-ink:       #0c0b0e;   /* window bar / outlines / text   */
+  --ld-lime:      #c9ed36;
+  --ld-blue:      #276dfe;
+  --ld-pink:      #fe4c6a;
+  --ld-orange:    #fe9021;
+  --ld-cyan:      #2ad5fd;
+  --ld-purple:    #7967fd;
+  --ld-green:     #26af54;
+  --ld-track:     #dedde2;   /* light-theme tracks / skeleton  */
+  --ld-track-dk:  #26262e;   /* dark-theme tracks              */
+  --ld-bubble:    #e1e0d9;   /* typing bubble                  */
+  --ld-muted:     #8e8d99;
+  --ld-shimmer:   #47454d;   /* text-shimmer base colour       */
+  --ld-speed:     1;         /* duration multiplier            */
+  --ld-font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+/* ---------- 1. STAGE (the coloured area a loader sits in) ---------- */
+.ld-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 240px;
+  overflow: hidden;
+  font-family: var(--ld-font);
+  box-sizing: border-box;
+}
+.ld-stage.is-dark  { background: var(--ld-dark);  color: #fff; }
+.ld-stage.is-light { background: var(--ld-light); color: var(--ld-ink); }
+.ld-stage *, .ld-stage *::before, .ld-stage *::after { box-sizing: border-box; }
+
+.ld { transform: scale(var(--ld-scale, 1)); transform-origin: center; }
+
+/* ---------- 2. MAC-STYLE BROWSER WINDOW (frame used in the video) ---------- */
+.ld-window {
+  width: 100%;
+  border: 3px solid var(--ld-ink);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--ld-ink);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .28);
+}
+.ld-window__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 10px;
+  background: var(--ld-ink);
+}
+.ld-window__bar i { width: 8px; height: 8px; border-radius: 50%; display: block; }
+.ld-window__bar i:nth-child(1) { background: #ff5f57; }
+.ld-window__bar i:nth-child(2) { background: #febc2e; }
+.ld-window__bar i:nth-child(3) { background: #28c840; }
+.ld-window__bar b {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 14px;
+  border-radius: 999px;
+  background: #2a292f;
+  color: #d9d9de;
+  font: 600 10px/1.4 var(--ld-font);
+  letter-spacing: .01em;
+  white-space: nowrap;
+}
+.ld-window .ld-stage { min-height: 260px; }
+
+/* ---------- 3. SPINNER ARC ---------- */
+.ld-spinner-arc svg {
+  width: 76px; height: 76px; display: block;
+  animation: ld-rotate calc(1.4s * var(--ld-speed)) linear infinite;
+}
+.ld-spinner-arc .track { fill: none; stroke: #2c2b33; stroke-width: 4; }
+.ld-spinner-arc .arc {
+  fill: none; stroke: var(--ld-lime); stroke-width: 4; stroke-linecap: round;
+  stroke-dasharray: 1 150; stroke-dashoffset: 0;
+  animation: ld-arc calc(1.4s * var(--ld-speed)) ease-in-out infinite;
+}
+@keyframes ld-rotate { to { transform: rotate(360deg); } }
+@keyframes ld-arc {
+  0%   { stroke-dasharray: 1 150;  stroke-dashoffset: 0; }
+  50%  { stroke-dasharray: 90 150; stroke-dashoffset: -35; }
+  100% { stroke-dasharray: 90 150; stroke-dashoffset: -124; }
+}
+
+/* ---------- 4. BOUNCING DOTS ---------- */
+.ld-bouncing-dots { display: flex; gap: 14px; }
+.ld-bouncing-dots span {
+  width: 18px; height: 18px; border-radius: 50%;
+  animation: ld-bounce calc(.8s * var(--ld-speed)) ease-in-out infinite;
+}
+.ld-bouncing-dots span:nth-child(1) { background: var(--ld-blue);   animation-delay: 0s; }
+.ld-bouncing-dots span:nth-child(2) { background: var(--ld-pink);   animation-delay: calc(.13s * var(--ld-speed)); }
+.ld-bouncing-dots span:nth-child(3) { background: var(--ld-orange); animation-delay: calc(.26s * var(--ld-speed)); }
+@keyframes ld-bounce {
+  0%, 100% { transform: translateY(10px); }
+  50%      { transform: translateY(-10px); }
+}
+
+/* ---------- 5. PULSE RINGS ---------- */
+.ld-pulse-rings { position: relative; width: 140px; height: 140px; }
+.ld-pulse-rings .core,
+.ld-pulse-rings .ring { position: absolute; top: 50%; left: 50%; border-radius: 50%; transform: translate(-50%, -50%); }
+.ld-pulse-rings .core {
+  width: 30px; height: 30px; background: var(--ld-cyan);
+  animation: ld-core calc(1.4s * var(--ld-speed)) ease-in-out infinite;
+}
+.ld-pulse-rings .ring { border: 2px solid var(--ld-cyan); opacity: .8; animation: ld-ring calc(1.4s * var(--ld-speed)) ease-in-out infinite; }
+.ld-pulse-rings .r1 { width: 56px;  height: 56px;  animation-delay: 0s; }
+.ld-pulse-rings .r2 { width: 92px;  height: 92px;  animation-delay: calc(.15s * var(--ld-speed)); }
+.ld-pulse-rings .r3 { width: 134px; height: 134px; animation-delay: calc(.3s * var(--ld-speed)); }
+@keyframes ld-core { 0%, 100% { transform: translate(-50%, -50%) scale(.85); } 50% { transform: translate(-50%, -50%) scale(1.1); } }
+@keyframes ld-ring {
+  0%, 100% { transform: translate(-50%, -50%) scale(.82); opacity: .95; }
+  50%      { transform: translate(-50%, -50%) scale(1.06); opacity: .25; }
+}
+
+/* ---------- 6. INDETERMINATE BAR ---------- */
+.ld-bar { width: 320px; max-width: 78vw; text-align: center; }
+.ld-bar .label { font: 800 15px/1 var(--ld-font); margin: 0 0 16px; color: var(--ld-ink); }
+.ld-bar .track { position: relative; height: 12px; border-radius: 999px; background: var(--ld-track); overflow: hidden; }
+.ld-bar .fill {
+  position: absolute; top: 0; bottom: 0; left: 0; width: 10%;
+  border-radius: 999px; background: var(--ld-purple);
+  animation: ld-indeterminate calc(1.2s * var(--ld-speed)) ease-in-out infinite;
+}
+@keyframes ld-indeterminate {
+  0%   { left: -10%; width: 10%; }
+  50%  { left: 30%;  width: 40%; }
+  100% { left: 100%; width: 10%; }
+}
+
+/* ---------- 7. SKELETON SHIMMER ---------- */
+.ld-skeleton { position: relative; display: grid; grid-template-columns: 52px 1fr; gap: 14px 14px; width: 340px; max-width: 80vw; overflow: hidden; }
+.ld-skeleton .avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--ld-track); }
+.ld-skeleton .head   { display: grid; gap: 10px; align-content: center; }
+.ld-skeleton .body   { grid-column: 1 / -1; display: grid; gap: 10px; margin-top: 8px; }
+.ld-skeleton .line   { height: 10px; border-radius: 999px; background: var(--ld-track); }
+.ld-skeleton .w-80 { width: 80%; } .ld-skeleton .w-55 { width: 55%; }
+.ld-skeleton .w-70 { width: 70%; } .ld-skeleton .w-40 { width: 40%; }
+.ld-skeleton::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 35%, rgba(255, 255, 255, .85) 50%, transparent 65%);
+  transform: translateX(-100%);
+  animation: ld-sweep calc(1.4s * var(--ld-speed)) ease-in-out infinite;
+}
+@keyframes ld-sweep { 0% { transform: translateX(-100%); } 70%, 100% { transform: translateX(100%); } }
+
+/* ---------- 8. ORBIT ---------- */
+.ld-orbit { position: relative; width: 170px; height: 170px; }
+.ld-orbit .sun { position: absolute; top: 50%; left: 50%; width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%; background: #fff; }
+.ld-orbit .path { position: absolute; top: 50%; left: 50%; border: 1px solid rgba(255, 255, 255, .13); border-radius: 50%; animation: ld-rotate linear infinite; }
+.ld-orbit .path::after { content: ''; position: absolute; top: -7px; left: 50%; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; }
+.ld-orbit .p1 { width: 66px;  height: 66px;  margin: -33px 0 0 -33px;  animation-duration: calc(1.5s * var(--ld-speed)); }
+.ld-orbit .p2 { width: 112px; height: 112px; margin: -56px 0 0 -56px;  animation-duration: calc(2.3s * var(--ld-speed)); }
+.ld-orbit .p3 { width: 164px; height: 164px; margin: -82px 0 0 -82px;  animation-duration: calc(3.2s * var(--ld-speed)); }
+.ld-orbit .p1::after { background: var(--ld-lime); }
+.ld-orbit .p2::after { background: var(--ld-pink); }
+.ld-orbit .p3::after { background: var(--ld-cyan); }
+
+/* ---------- 9. EQUALIZER BARS ---------- */
+.ld-equalizer { display: flex; align-items: center; gap: 9px; height: 80px; }
+.ld-equalizer span {
+  width: 13px; height: 16px; border-radius: 999px;
+  animation: ld-eq calc(1s * var(--ld-speed)) ease-in-out infinite;
+}
+.ld-equalizer span:nth-child(1) { background: #276dfe; animation-delay: calc(-.90s * var(--ld-speed)); }
+.ld-equalizer span:nth-child(2) { background: #4d68ea; animation-delay: calc(-.75s * var(--ld-speed)); }
+.ld-equalizer span:nth-child(3) { background: #7062d4; animation-delay: calc(-.60s * var(--ld-speed)); }
+.ld-equalizer span:nth-child(4) { background: #9b59b6; animation-delay: calc(-.45s * var(--ld-speed)); }
+.ld-equalizer span:nth-child(5) { background: #c4519f; animation-delay: calc(-.30s * var(--ld-speed)); }
+.ld-equalizer span:nth-child(6) { background: #e65086; animation-delay: calc(-.15s * var(--ld-speed)); }
+.ld-equalizer span:nth-child(7) { background: #fe4c6a; animation-delay: 0s; }
+@keyframes ld-eq { 0%, 100% { height: 16px; } 50% { height: 72px; } }
+
+/* ---------- 10. SQUARE MORPH ---------- */
+.ld-square-morph span {
+  display: block; width: 64px; height: 64px;
+  background: var(--ld-orange); border-radius: 14%;
+  animation: ld-morph calc(1.6s * var(--ld-speed)) ease-in-out infinite;
+}
+@keyframes ld-morph {
+  0%   { transform: rotate(45deg);  border-radius: 14%; background: var(--ld-orange); }
+  25%  { transform: rotate(90deg);  border-radius: 32%; background: #ff6d46; }
+  50%  { transform: rotate(180deg); border-radius: 50%; background: var(--ld-pink); }
+  75%  { transform: rotate(270deg); border-radius: 32%; background: #ff6d46; }
+  100% { transform: rotate(405deg); border-radius: 14%; background: var(--ld-orange); }
+}
+
+/* ---------- 11. LIQUID FILL ---------- */
+.ld-liquid {
+  position: relative; width: 124px; height: 124px; overflow: hidden;
+  border: 4px solid #fff; border-radius: 50%;
+  animation: ld-level calc(3.2s * var(--ld-speed)) ease-in-out infinite;
+}
+.ld-liquid .wave {
+  position: absolute; left: -50%; width: 200%; height: 200%;
+  top: calc(100% - (var(--p) * 1.12%));
+  background: var(--ld-cyan); border-radius: 40%;
+  animation: ld-rotate calc(3s * var(--ld-speed)) linear infinite;
+}
+.ld-liquid .num {
+  position: absolute; inset: 0; display: grid; place-items: center; z-index: 2;
+  font: 800 30px/1 var(--ld-font); color: #fff; letter-spacing: -.01em;
+  counter-reset: pct var(--p);
+}
+.ld-liquid .num::after { content: counter(pct) '%'; }
+@keyframes ld-level { 0% { --p: 0; } 100% { --p: 100; } }
+
+/* ---------- 12. DOT GRID WAVE ---------- */
+.ld-dot-grid { display: grid; grid-template-columns: repeat(3, 18px); gap: 14px; }
+.ld-dot-grid span {
+  width: 18px; height: 18px; border-radius: 50%; background: var(--ld-purple);
+  animation: ld-dotwave calc(1.2s * var(--ld-speed)) ease-in-out infinite;
+}
+.ld-dot-grid span:nth-child(1) { animation-delay: calc(0s   * var(--ld-speed)); }
+.ld-dot-grid span:nth-child(2), .ld-dot-grid span:nth-child(4) { animation-delay: calc(.12s * var(--ld-speed)); }
+.ld-dot-grid span:nth-child(3), .ld-dot-grid span:nth-child(5), .ld-dot-grid span:nth-child(7) { animation-delay: calc(.24s * var(--ld-speed)); }
+.ld-dot-grid span:nth-child(6), .ld-dot-grid span:nth-child(8) { animation-delay: calc(.36s * var(--ld-speed)); }
+.ld-dot-grid span:nth-child(9) { animation-delay: calc(.48s * var(--ld-speed)); }
+@keyframes ld-dotwave {
+  0%, 100% { transform: scale(.45); opacity: .3; }
+  50%      { transform: scale(1);   opacity: 1; }
+}
+
+/* ---------- 13. INFINITY TRAIL ---------- */
+.ld-infinity svg { width: 190px; height: 95px; display: block; overflow: visible; }
+.ld-infinity path { fill: none; stroke-linecap: round; stroke-width: 5; }
+.ld-infinity .track { stroke: var(--ld-track-dk); }
+.ld-infinity .trail {
+  stroke: var(--ld-lime);
+  stroke-dasharray: var(--L) calc(100 - var(--L));
+  animation: ld-trail calc(2s * var(--ld-speed)) linear infinite;
+}
+.ld-infinity .t1 { --L: 30; opacity: .22; }
+.ld-infinity .t2 { --L: 20; opacity: .45; }
+.ld-infinity .t3 { --L: 10; opacity: .75; }
+.ld-infinity .t4 { --L: 3;  opacity: 1; stroke-width: 6; }
+@keyframes ld-trail { from { stroke-dashoffset: var(--L); } to { stroke-dashoffset: calc(var(--L) - 100); } }
+
+/* ---------- 14. FLIPPING SQUARE ---------- */
+.ld-flip { perspective: 400px; }
+.ld-flip span {
+  display: block; width: 60px; height: 60px; border-radius: 8px;
+  background: var(--ld-blue);
+  animation: ld-flip calc(1.6s * var(--ld-speed)) ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+@keyframes ld-flip {
+  0%   { transform: rotateX(0)      rotateY(0);      background: var(--ld-blue); }
+  25%  { transform: rotateX(90deg)  rotateY(0); }
+  26%  { background: #0d0d0d; }
+  50%  { transform: rotateX(180deg) rotateY(0);      background: #0d0d0d; }
+  75%  { transform: rotateX(180deg) rotateY(90deg); }
+  76%  { background: var(--ld-blue); }
+  100% { transform: rotateX(180deg) rotateY(180deg); background: var(--ld-blue); }
+}
+
+/* ---------- 15. GRADIENT RING ---------- */
+.ld-gradient-ring {
+  width: 86px; height: 86px; border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(254, 144, 33, 0) 0%, #7b2935 45%, #fe9021 100%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 7px));
+          mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 7px));
+  animation: ld-rotate calc(1s * var(--ld-speed)) linear infinite;
+}
+
+/* ---------- 16. TYPING DOTS (chat bubble) ---------- */
+.ld-typing {
+  position: relative; display: flex; gap: 8px; align-items: center;
+  padding: 18px 22px; border-radius: 999px; background: var(--ld-bubble);
+}
+.ld-typing::before {
+  content: ''; position: absolute; left: -2px; bottom: -6px;
+  width: 12px; height: 12px; border-radius: 50%; background: var(--ld-bubble);
+}
+.ld-typing span {
+  width: 13px; height: 13px; border-radius: 50%; background: #8a8a8a;
+  animation: ld-type calc(1.2s * var(--ld-speed)) ease-in-out infinite;
+}
+.ld-typing span:nth-child(2) { animation-delay: calc(.18s * var(--ld-speed)); }
+.ld-typing span:nth-child(3) { animation-delay: calc(.36s * var(--ld-speed)); }
+@keyframes ld-type {
+  0%, 60%, 100% { background: #8a8a8a; transform: scale(1); }
+  30%           { background: #141414; transform: scale(1.08); }
+}
+
+/* ---------- 17. SPOKE SPINNER ---------- */
+.ld-spoke { position: relative; width: 92px; height: 92px; }
+.ld-spoke i {
+  position: absolute; top: 0; left: 50%; width: 7px; height: 25px; margin-left: -3.5px;
+  border-radius: 999px; background: #fff; opacity: .18;
+  transform-origin: 50% 46px;
+  transform: rotate(calc(var(--i) * 30deg));
+  animation: ld-spoke calc(1.2s * var(--ld-speed)) linear infinite;
+  animation-delay: calc((var(--i) - 12) * .1s * var(--ld-speed));
+}
+@keyframes ld-spoke { 0% { opacity: 1; } 100% { opacity: .18; } }
+
+/* ---------- 18. PERCENT BAR ---------- */
+.ld-percent { width: 340px; max-width: 80vw; --p: 0; animation: ld-progress calc(2.6s * var(--ld-speed)) cubic-bezier(.4, 0, .2, 1) infinite; }
+.ld-percent .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+.ld-percent .label { font: 600 15px/1 var(--ld-font); color: var(--ld-muted); }
+.ld-percent .pct { font: 800 34px/1 var(--ld-font); color: var(--ld-ink); letter-spacing: -.02em; counter-reset: pct var(--p); }
+.ld-percent .pct::after { content: counter(pct) '%'; }
+.ld-percent .track { height: 14px; border-radius: 999px; background: var(--ld-track); overflow: hidden; }
+.ld-percent .fill  { height: 100%; width: calc(var(--p) * 1%); border-radius: 999px; background: var(--ld-green); }
+@keyframes ld-progress { 0% { --p: 0; } 85%, 100% { --p: 100; } }
+
+/* ---------- 19. CHASING SQUARES ---------- */
+.ld-chasing { position: relative; width: 70px; height: 70px; }
+.ld-chasing span {
+  position: absolute; top: 50%; left: 50%; width: 24px; height: 24px; margin: -12px 0 0 -12px;
+  border-radius: 7px;
+  animation: ld-chase calc(1.2s * var(--ld-speed)) ease-in-out infinite;
+}
+.ld-chasing span:nth-child(1) { background: var(--ld-lime); animation-delay: 0s; }
+.ld-chasing span:nth-child(2) { background: var(--ld-cyan); animation-delay: calc(-.4s * var(--ld-speed)); }
+.ld-chasing span:nth-child(3) { background: var(--ld-pink); animation-delay: calc(-.8s * var(--ld-speed)); }
+@keyframes ld-chase {
+  0%, 100% { transform: translate(-16px, -14px); }
+  33.3%    { transform: translate(16px, -14px); }
+  66.6%    { transform: translate(0, 18px); }
+}
+
+/* ---------- 20. TEXT SHIMMER ---------- */
+.ld-text-shimmer {
+  margin: 0; font: 800 58px/1 var(--ld-font); letter-spacing: -.02em;
+  color: transparent;
+  background: linear-gradient(100deg, var(--ld-shimmer) 38%, #fff 50%, var(--ld-shimmer) 62%) 120% 0 / 300% 100% no-repeat;
+  -webkit-background-clip: text; background-clip: text;
+  animation: ld-text calc(1.8s * var(--ld-speed)) linear infinite;
+}
+@keyframes ld-text { from { background-position: 120% 0; } to { background-position: -20% 0; } }
+
+/* ---------- 21. BATTERY CHARGE ---------- */
+.ld-battery {
+  position: relative; display: flex; gap: 6px; width: 150px; height: 78px; padding: 6px;
+  border: 7px solid var(--ld-ink); border-radius: 15px;
+  animation: ld-bat calc(3s * var(--ld-speed)) linear infinite;
+}
+.ld-battery::after {
+  content: ''; position: absolute; right: -19px; top: 50%; width: 9px; height: 26px; margin-top: -13px;
+  border-radius: 0 5px 5px 0; background: var(--ld-ink);
+}
+.ld-battery .cell { flex: 1; border-radius: 5px; background: var(--bat); opacity: 0; }
+.ld-battery .c1 { animation: ld-cell1 calc(3s * var(--ld-speed)) steps(1, end) infinite; }
+.ld-battery .c2 { animation: ld-cell2 calc(3s * var(--ld-speed)) steps(1, end) infinite; }
+.ld-battery .c3 { animation: ld-cell3 calc(3s * var(--ld-speed)) steps(1, end) infinite; }
+.ld-battery .c4 { animation: ld-cell4 calc(3s * var(--ld-speed)) steps(1, end) infinite; }
+.ld-battery .c5 { animation: ld-cell5 calc(3s * var(--ld-speed)) steps(1, end) infinite; }
+.ld-battery .bolt {
+  position: absolute; top: 50%; left: 50%; width: 30px; height: 52px; transform: translate(-50%, -50%);
+  background: var(--ld-ink);
+  clip-path: polygon(62% 0, 8% 56%, 42% 56%, 30% 100%, 92% 40%, 56% 40%);
+}
+@keyframes ld-bat {
+  0%, 12%  { --bat: #e8862a; }
+  45%      { --bat: #8f9a46; }
+  70%, 100% { --bat: #26af54; }
+}
+@keyframes ld-cell1 { 0%, 9%  { opacity: 0; } 10%, 94% { opacity: 1; } 95%, 100% { opacity: 0; } }
+@keyframes ld-cell2 { 0%, 25% { opacity: 0; } 26%, 94% { opacity: 1; } 95%, 100% { opacity: 0; } }
+@keyframes ld-cell3 { 0%, 41% { opacity: 0; } 42%, 94% { opacity: 1; } 95%, 100% { opacity: 0; } }
+@keyframes ld-cell4 { 0%, 57% { opacity: 0; } 58%, 94% { opacity: 1; } 95%, 100% { opacity: 0; } }
+@keyframes ld-cell5 { 0%, 73% { opacity: 0; } 74%, 94% { opacity: 1; } 95%, 100% { opacity: 0; } }
+
+/* ---------- 22. BOUNCING BALL ---------- */
+.ld-ball { position: relative; width: 90px; height: 150px; }
+.ld-ball .ball {
+  position: absolute; top: 0; left: 50%; width: 34px; height: 34px; margin-left: -17px;
+  border-radius: 50%; background: var(--ld-orange);
+  animation: ld-fall calc(1s * var(--ld-speed)) linear infinite;
+}
+.ld-ball .shadow {
+  position: absolute; bottom: 0; left: 50%; width: 44px; height: 7px; margin-left: -22px;
+  border-radius: 50%; background: #000;
+  animation: ld-shadow calc(1s * var(--ld-speed)) linear infinite;
+}
+@keyframes ld-fall {
+  0%   { transform: translateY(0)     scale(1, 1);      animation-timing-function: cubic-bezier(.55, 0, 1, .45); }
+  47%  { transform: translateY(100px) scale(1, 1);      animation-timing-function: ease-out; }
+  50%  { transform: translateY(108px) scale(1.18, .8); animation-timing-function: ease-out; }
+  53%  { transform: translateY(100px) scale(1, 1);      animation-timing-function: cubic-bezier(0, .55, .45, 1); }
+  100% { transform: translateY(0)     scale(1, 1); }
+}
+@keyframes ld-shadow {
+  0%, 100% { transform: scale(.3, .6); opacity: .25; animation-timing-function: cubic-bezier(.55, 0, 1, .45); }
+  50%      { transform: scale(1.1, 1); opacity: 1; }
+}
+
+/* ---------- 23. OVERVIEW GRID (last frame of the video) ---------- */
+.ld-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 0;
+  border: 3px solid var(--ld-ink); border-radius: 14px; overflow: hidden;
+}
+.ld-grid .ld-stage { min-height: 130px; aspect-ratio: 1 / .78; border-radius: 0; }
+.ld-grid .ld { --ld-scale: .42; }
+.ld-grid .ld-bar, .ld-grid .ld-percent, .ld-grid .ld-skeleton { --ld-scale: .38; }
+.ld-grid .ld-text-shimmer { --ld-scale: .45; }
+
+/* ---------- 24. POSTER / REEL LAYOUT (title + numbered list) ---------- */
+.ld-poster {
+  padding: 28px 24px 36px; font-family: var(--ld-font); color: var(--ld-ink);
+  background: linear-gradient(135deg, #cfcfcf, #b9b9b9 45%, #d4d4d4);
+}
+.ld-poster h1 { margin: 0; text-align: center; font: 800 34px/1.1 var(--ld-font); letter-spacing: -.03em; }
+.ld-poster .handle { margin: 4px 0 16px; text-align: center; font: 500 13px/1 var(--ld-font); color: #3a3a3a; }
+.ld-poster ol { columns: 2; column-gap: 28px; margin: 22px 0 0; padding: 0 0 0 28px; font: 700 14px/1.9 var(--ld-font); }
+
+/* ---------- 25. REDUCED MOTION ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .ld *, .ld *::before, .ld *::after, .ld { animation-duration: 0.001s !important; animation-iteration-count: 1 !important; }
+}
