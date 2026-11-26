@@ -214,7 +214,7 @@
 }
 
 .nav-dd-icon--gate {
-    background: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+    background: linear-gradient(135deg, #7C3AED 0%, #0E7490 100%);
 }
 
 .nav-dd-icon--plain {
@@ -703,7 +703,7 @@ html[data-theme="dark"] .exams-badge--institute {
 
 .exams-btn--gate {
     color: #ffffff;
-    background: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+    background: linear-gradient(135deg, #7C3AED 0%, #0E7490 100%);
     border-color: transparent;
 }
 
@@ -763,7 +763,7 @@ html[data-theme="dark"] .exams-badge--institute {
 }
 
 .tt-program__icon--gate {
-    background: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+    background: linear-gradient(135deg, #7C3AED 0%, #0E7490 100%);
 }
 
 .tt-program strong {
@@ -818,7 +818,7 @@ html[data-theme="dark"] .exams-badge--institute {
 }
 
 .tt-month__head--gate {
-    background: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+    background: linear-gradient(135deg, #7C3AED 0%, #0E7490 100%);
 }
 
 .tt-month__name {
@@ -1114,7 +1114,7 @@ html[data-theme="dark"] .nt-alert__body p {
 }
 
 .nt-panel__head--gate {
-    background: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+    background: linear-gradient(135deg, #7C3AED 0%, #0E7490 100%);
 }
 
 .nt-panel__head h3 {
@@ -1695,7 +1695,7 @@ html[data-theme="dark"] .level-chip--warning {
 }
 
 .sc-block__head--gate {
-    background: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+    background: linear-gradient(135deg, #7C3AED 0%, #0E7490 100%);
 }
 
 .sc-block__head h3 {

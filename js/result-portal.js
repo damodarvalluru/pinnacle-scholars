@@ -14,7 +14,7 @@ async function checkResult() {
     try {
         if (submitBtn) {
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<span class="verifying-spinner" style="display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:btnSpinner 0.8s linear infinite;margin-right:6px;vertical-align:middle;"></span> Verifying...`;
+            submitBtn.textContent = 'Verifying...';
         }
 
         const studentResponse = await fetch(`https://pinnacle-backend-5i7n.onrender.com/api/students/${studentId}`);

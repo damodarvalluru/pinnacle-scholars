@@ -855,7 +855,7 @@ html[data-theme="dark"] .hero-grid,
     font-weight: 900;
     letter-spacing: -0.03em;
     margin-bottom: 1.25rem;
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-royal) 100%);
+    background: linear-gradient(135deg, #F8FAFC 0%, #93C5FD 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 2px 7px rgba(3, 7, 17, 0.55));
@@ -863,7 +863,7 @@ html[data-theme="dark"] .hero-grid,
 
 .hero p {
     font-size: clamp(1.1rem, 2vw, 1.4rem);
-    color: var(--text-secondary);
+    color: #CBD5E1;
     text-shadow: 0 1px 5px rgba(3, 7, 17, 0.55);
     max-width: 720px;
     margin: 0 auto 2.5rem auto;

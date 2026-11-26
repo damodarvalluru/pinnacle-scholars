@@ -17,11 +17,24 @@
 
 const FORGOT_ID_API_BASE = "https://pinnacle-backend-5i7n.onrender.com";
 
+let forgotStudentBusy = false;
+let forgotFacultyBusy = false;
+
 /* ----------------------------------------------------------
    STUDENT — recover Student ID using Date of Birth
    Shown fields: Name, Student ID, Date of Birth, Course
    ---------------------------------------------------------- */
 async function forgotStudentId() {
+    if (forgotStudentBusy) return;
+    forgotStudentBusy = true;
+    try {
+        return await runForgotStudentId();
+    } finally {
+        forgotStudentBusy = false;
+    }
+}
+
+async function runForgotStudentId() {
     const dob = prompt(
         "Forgot your Student ID?\n\nEnter your Date of Birth (YYYY-MM-DD) to retrieve it:"
     );
@@ -92,6 +105,16 @@ async function forgotStudentId() {
    Shown fields: Faculty ID, Date of Birth, Mobile Number, Email
    ---------------------------------------------------------- */
 async function forgotFacultyId() {
+    if (forgotFacultyBusy) return;
+    forgotFacultyBusy = true;
+    try {
+        return await runForgotFacultyId();
+    } finally {
+        forgotFacultyBusy = false;
+    }
+}
+
+async function runForgotFacultyId() {
     const mobile = prompt(
         "Forgot your Faculty ID?\n\nEnter your registered Mobile Number to retrieve it:"
     );

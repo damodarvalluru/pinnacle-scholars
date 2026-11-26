@@ -279,7 +279,7 @@ body.syllabus-page {
     font-size: 1.35rem;
     font-weight: 900;
     line-height: 1.1;
-    background: var(--grad-accent);
+    background: linear-gradient(135deg, #1557C0, #0E7490);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;

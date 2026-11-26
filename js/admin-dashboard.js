@@ -913,22 +913,32 @@
                 else if (parts[0] === 'message') showMessageDetail(parts[1]);
                 return;
             }
-            var action = event.target.closest('[data-message-action]');
-            if (action) {
-                var bits = action.getAttribute('data-message-action').split(':');
+            var messageAction = event.target.closest('[data-message-action]');
+            if (messageAction) {
+                if (messageAction.disabled || messageAction.getAttribute('aria-disabled') === 'true') return;
+                messageAction.disabled = true;
+                messageAction.setAttribute('aria-disabled', 'true');
+                var enableMessageAction = function () {
+                    messageAction.disabled = false;
+                    messageAction.removeAttribute('aria-disabled');
+                };
+                var bits = messageAction.getAttribute('data-message-action').split(':');
                 if (bits[0] === 'delete') {
-                    if (!window.confirm('Delete this contact message permanently?')) return;
+                    if (!window.confirm('Delete this contact message permanently?')) {
+                        enableMessageAction();
+                        return;
+                    }
                     api('/api/admin/messages/' + bits[1], { method: 'DELETE' }).then(function (result) {
                         toast(result.data.message || 'Message deleted', !result.data.success);
                         loadMessages();
                     }).catch(function () {
                         toast('Unable to delete message. Please try again.', true);
-                    });
+                    }).finally(enableMessageAction);
                 } else {
                     // The backend PATCH writes both flags, so send both current
                     // values. Otherwise starring a message silently marks it
                     // unread and marking it read silently unstars it.
-                    var row = action.closest('tr');
+                    var row = messageAction.closest('tr');
                     var readBtn = row && row.querySelector('[data-message-action^="read:"]');
                     var starBtn = row && row.querySelector('[data-message-action^="star:"]');
                     var readBits = readBtn && readBtn.getAttribute('data-message-action').split(':');
@@ -948,7 +958,7 @@
                         loadMessages();
                     }).catch(function () {
                         toast('Unable to update message. Please try again.', true);
-                    });
+                    }).finally(enableMessageAction);
                 }
                 return;
             }

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Phase1 responsive probe</title><style>html,body{margin:0;height:100%;background:#111}pre{position:fixed;z-index:9;left:0;top:0;background:#000;color:#0f0;font:12px monospace;margin:0;padding:4px;white-space:pre-wrap}iframe{border:0}</style></head>
+<body>
+<pre id="out">RUNNING</pre>
+<script>
+(async function () {
+  const out = document.getElementById('out');
+  try {
+    const login = await fetch('https://pinnacle-backend-5i7n.onrender.com/api/admin/login', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ password: 'Damodar7106v' })
+    });
+    const frame = document.createElement('iframe');
+    frame.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh';
+    frame.src = 'admin-dashboard.html?v=phase1-responsive-' + Date.now();
+    document.body.appendChild(frame);
+    await new Promise(function (resolve, reject) {
+      frame.addEventListener('load', resolve, { once: true });
+      frame.addEventListener('error', reject, { once: true });
+    });
+    await new Promise(function (resolve) { setTimeout(resolve, 3500); });
+    const d = frame.contentDocument;
+    const w = frame.contentWindow;
+    const grid = d.querySelector('.admin-stat-grid');
+    const sidebar = d.querySelector('.admin-sidebar');
+    const foot = d.querySelector('.admin-stat-card__foot');
+    const card = d.querySelector('.admin-stat-card');
+    const result = {
+      loginStatus: login.status,
+      viewport: { width: w.innerWidth, height: w.innerHeight },
+      theme: d.documentElement.getAttribute('data-theme'),
+      statColumns: grid ? getComputedStyle(grid).gridTemplateColumns.split(' ').length : null,
+      sidebarPosition: sidebar ? getComputedStyle(sidebar).position : null,
+      sidebarTransform: sidebar ? getComputedStyle(sidebar).transform : null,
+      horizontalOverflow: d.documentElement.scrollWidth > w.innerWidth + 1,
+      cardBackground: card ? getComputedStyle(card).backgroundColor : null,
+      footColor: foot ? getComputedStyle(foot).color : null,
+      menuLabels: d.querySelectorAll('.admin-nav-item__label').length,
+      statCards: d.querySelectorAll('.admin-stat-card').length,
+      heading: d.querySelector('h1') ? d.querySelector('h1').textContent.trim() : null
+    };
+    out.textContent = 'RESULT ' + JSON.stringify(result);
+    document.title = 'DONE';
+  } catch (error) {
+    out.textContent = 'ERROR ' + (error && error.stack ? error.stack : String(error));
+    document.title = 'ERROR';
+  }
+})();
+</script>
+</body>
+</html>

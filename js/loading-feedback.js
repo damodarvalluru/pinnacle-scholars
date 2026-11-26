@@ -3,6 +3,10 @@
    Visual-only adapter for crownz-loaders.css. It observes user actions and
    network activity; it never changes requests, responses, validation,
    authentication or navigation.
+
+   Feedback policy: one small, non-blocking toast per in-flight action.
+   Local/navigation controls and controls with their own status text do not
+   receive a bridge toast.
    ========================================================================== */
 (function (global, document) {
     'use strict';
@@ -21,25 +25,14 @@
         download:     { loader: 'ld-bar',          label: 'Preparing download', stage: 'is-light', timeout: 20000 }
     };
 
-    var INLINE_LOADER = {
-        verification: 'ld-gradient-ring',
-        login: 'ld-gradient-ring',
-        registration: 'ld-bouncing-dots',
-        id: 'ld-gradient-ring',
-        result: 'ld-spinner-arc',
-        fees: 'ld-spinner-arc',
-        details: 'ld-bouncing-dots',
-        download: 'ld-spinner-arc',
-        page: 'ld-spinner-arc'
-    };
-
+    // Local controls whose handlers either navigate, toggle a panel, open a
+    // modal, or already provide their own inline status. Giving these a toast
+    // was the main source of duplicate/stuck indicators.
     var SKIP_HINTS = /^(theme|mobile-menu|global-scroll|admin-menu|admin-sidebar-collapse|admin-logout|syl-expand|admin-modal-close|contact-send-another)/i;
+
     var active = null;
-    var networkCount = 0;
     var sequence = 0;
-    var hideTimer = null;
-    var settleTimer = null;
-    var watchdogTimer = null;
+    var timers = { hide: null, settle: null, watchdog: null };
     var region = null;
 
     function element(tag, className, html) {
@@ -76,11 +69,6 @@
         }
     }
 
-    function inlineMarkup(kind) {
-        var name = INLINE_LOADER[kind] || INLINE_LOADER.details;
-        return '<span class="lf-inline lf-inline--' + name + '" aria-hidden="true">' + loaderMarkup(name === 'ld-bouncing-dots' ? 'registration' : name === 'ld-gradient-ring' ? 'login' : name === 'ld-spinner-arc' ? 'result' : 'details') + '</span>';
-    }
-
     function ensureRegion() {
         if (region && region.isConnected) return region;
         region = element('div', 'lf-region');
@@ -101,7 +89,11 @@
         document.body.appendChild(bar);
         var hideBar = function () {
             global.setTimeout(function () {
-                if (bar && bar.parentNode) bar.classList.add('is-done');
+                if (!bar || !bar.parentNode) return;
+                bar.classList.add('is-done');
+                global.setTimeout(function () {
+                    if (bar.parentNode) bar.parentNode.removeChild(bar);
+                }, 450);
             }, 350);
         };
         if (document.readyState === 'complete') hideBar();
@@ -124,152 +116,211 @@
         host.appendChild(toast);
     }
 
-    function removeInline(target) {
-        if (!target || !target.isConnected) return;
-        var nodes = target.querySelectorAll ? target.querySelectorAll('.lf-inline') : [];
-        Array.prototype.forEach.call(nodes, function (node) {
-            if (node.parentNode) node.parentNode.removeChild(node);
-        });
-        target.removeAttribute('aria-busy');
-    }
-
-    function addInline(target, kind) {
-        if (!target || !target.isConnected || typeof target.insertAdjacentHTML !== 'function') return;
-        // The existing label is left untouched; the loader is simply prepended.
-        target.insertAdjacentHTML('afterbegin', inlineMarkup(kind));
-        target.setAttribute('aria-busy', 'true');
+    function removeToast(immediate) {
+        var toast = region && region.querySelector('.lf-toast');
+        if (!toast) return;
+        if (immediate) {
+            if (toast.parentNode) toast.parentNode.removeChild(toast);
+            return;
+        }
+        toast.classList.add('is-leaving');
+        timers.hide = global.setTimeout(function () {
+            if (toast.parentNode) toast.parentNode.removeChild(toast);
+        }, 220);
     }
 
     function clearTimers() {
-        global.clearTimeout(hideTimer);
-        global.clearTimeout(settleTimer);
-        global.clearTimeout(watchdogTimer);
-        hideTimer = settleTimer = watchdogTimer = null;
+        global.clearTimeout(timers.hide);
+        global.clearTimeout(timers.settle);
+        global.clearTimeout(timers.watchdog);
+        timers.hide = timers.settle = timers.watchdog = null;
     }
 
-    function start(kind, label, target) {
-        var token = ++sequence;
-        clearTimers();
-        if (active) removeInline(active.target);
-        if (!LOADERS[kind]) kind = 'details';
-        active = { token: token, kind: kind, label: label, target: target || null };
-        showToast(kind, label);
-        addInline(target, kind);
-        watchdogTimer = global.setTimeout(function () {
-            if (active && active.token === token) stop(token, true);
+    function armWatchdog(token, kind) {
+        global.clearTimeout(timers.watchdog);
+        timers.watchdog = global.setTimeout(function () {
+            if (!active || active.token !== token) return;
+            // A request that is still in flight gets one extended window;
+            // after that the indicator is cleared so it can never stick.
+            if (active.pending > 0 && !active.watchdogExtended) {
+                active.watchdogExtended = true;
+                armWatchdog(token, kind);
+                return;
+            }
+            stop(token, true);
         }, LOADERS[kind].timeout);
+    }
+
+    function start(kind, label, target, source) {
+        if (!LOADERS[kind]) kind = 'details';
+
+        // A second click on the same busy control must not replace the first
+        // indicator or start a second submission.
+        if (active && target && active.target === target && active.pending > 0) {
+            return active.token;
+        }
+
+        clearTimers();
+        removeToast(true);
+        var token = ++sequence;
+        active = {
+            token: token,
+            kind: kind,
+            label: label,
+            target: target || null,
+            source: source || 'manual',
+            pending: 0,
+            requests: 0,
+            watchdogExtended: false
+        };
+        showToast(kind, label);
+        armWatchdog(token, kind);
         return token;
     }
 
     function stop(token, immediate) {
         if (!active || (token && token !== active.token)) return false;
-        var current = active;
         clearTimers();
-        removeInline(current.target);
         active = null;
-        var toast = region && region.querySelector('.lf-toast');
-        if (!toast) return true;
-        if (immediate) {
-            if (toast.parentNode) toast.parentNode.removeChild(toast);
-        } else {
-            toast.classList.add('is-leaving');
-            hideTimer = global.setTimeout(function () {
-                if (toast.parentNode) toast.parentNode.removeChild(toast);
-            }, 220);
-        }
+        removeToast(Boolean(immediate));
         return true;
     }
 
-    function settle(delay) {
-        if (!active) return;
-        global.clearTimeout(settleTimer);
-        settleTimer = global.setTimeout(function () {
-            if (active) stop(active.token, false);
-        }, typeof delay === 'number' ? delay : 220);
+    function settle(delay, token) {
+        if (!active || (token && token !== active.token)) return;
+        global.clearTimeout(timers.settle);
+        timers.settle = global.setTimeout(function () {
+            if (!active || (token && token !== active.token) || active.pending > 0) return;
+            stop(active.token, false);
+        }, typeof delay === 'number' ? delay : 260);
+    }
+
+    function requestStarted(token) {
+        if (!active || token !== active.token) return null;
+        active.pending += 1;
+        active.requests += 1;
+        global.clearTimeout(timers.settle);
+        timers.settle = null;
+        return token;
+    }
+
+    function requestFinished(token) {
+        if (!active || token !== active.token) return;
+        active.pending = Math.max(0, active.pending - 1);
+        if (active.pending === 0) settle(360, token);
     }
 
     function inferKind(node) {
         if (!node || typeof node.getAttribute !== 'function') return null;
+
+        if (node.hasAttribute('data-lf-skip')) return null;
         var explicit = node.getAttribute('data-loader');
         if (explicit && LOADERS[explicit]) return explicit;
 
-        var id = node.id || '';
+        var rawId = node.id || '';
+        var id = rawId.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
         var text = (node.textContent || node.value || '').toLowerCase();
         var href = node.getAttribute('href') || '';
         var label = node.getAttribute('aria-label') || node.getAttribute('title') || '';
         var haystack = [id, text, href, label].join(' ');
 
         if (SKIP_HINTS.test(id)) return null;
-        if (node.getAttribute('type') === 'reset' || node.hasAttribute('data-section')) {
-            if (node.hasAttribute('data-section')) return 'details';
-            return null;
-        }
-        if (node.hasAttribute('data-export') || node.hasAttribute('data-syl-download')) return 'download';
 
-        // Explicit element IDs keep the feedback honest for the academy flows.
-        if (/adminloginsubmit|adminsubmit/.test(id)) return 'verification';
+        // Navigation, modals, review toggles, CSV export and print actions are
+        // local; they either navigate instantly or already show their own state.
+        if (node.matches('a[href]') && !explicit) return null;
+        if (node.hasAttribute('data-section') ||
+            node.hasAttribute('data-export') ||
+            node.hasAttribute('data-fee-action') ||
+            node.hasAttribute('data-detail') ||
+            node.hasAttribute('data-print-timetable') ||
+            (node.hasAttribute('data-syl-download') && node.getAttribute('data-syl-download') === 'print') ||
+            /review|hide-review|show-review|modal-close/.test(id)) return null;
+
+        // Explicit academy flows.
+        if (/adminloginsubmit|adminsubmit|verify-eligibility-btn/.test(id)) return 'verification';
         if (/studentloginbtn|facultyloginbtn/.test(id)) return 'login';
         if (/enrollbtn/.test(id)) return 'registration';
         if (/generatefacultybtn|generate.*id|forgot/.test(id)) return 'id';
         if (/fetchbtn|paybtn|paymentbutton/.test(id)) return 'fees';
         if (/contactsubmitbtn/.test(id)) return 'verification';
+        if (node.hasAttribute('data-message-action') || node.hasAttribute('data-goto')) return 'details';
 
         if (/forgot id|forgot student|forgot faculty/.test(haystack)) return 'id';
-        if (/download|export|pdf|print|brochure/.test(haystack)) return 'download';
         if (/verif/.test(haystack)) return 'verification';
         if (/result/.test(haystack)) return 'result';
         if (/fee|payment|pay /.test(haystack)) return 'fees';
         if (/generate|enroll|register/.test(haystack)) return 'registration';
         if (/login|sign in/.test(haystack)) return 'login';
-        if (/detail|review|apply|search/.test(haystack)) return 'details';
+        if (/detail|search/.test(haystack)) return 'details';
 
         var path = (global.location && global.location.pathname || '').toLowerCase();
         if (node.matches('button[type="submit"]')) {
             if (path.indexOf('result') !== -1) return 'result';
             if (path.indexOf('admin-login') !== -1) return 'verification';
             if (path.indexOf('enrollment') !== -1) return 'registration';
-            if (path.indexOf('contact') !== -1) return 'verification';
             if (path.indexOf('fee') !== -1) return 'fees';
             return 'details';
         }
         return null;
     }
 
+    function scheduleCancel(event, token) {
+        var check = function () {
+            if (!active || active.token !== token) return;
+            if (active.requests === 0) stop(token, true);
+        };
+        global.setTimeout(check, 0);
+        global.setTimeout(check, 160);
+    }
+
     function onInteraction(event) {
         var node = event.target && event.target.closest ? event.target.closest('[data-loader],button,a') : null;
         if (!node || node.disabled || node.getAttribute('aria-disabled') === 'true') return;
+
+        if (active && active.target === node && active.pending > 0) {
+            // Same action while the first one is still in flight.
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            return;
+        }
+
         var kind = inferKind(node);
         if (!kind) return;
-        var token = start(kind, null, node);
-        // A handler that cancels the action (empty form, blocked navigation)
-        // should not leave a loader behind.
-        global.setTimeout(function () {
-            if (event.defaultPrevented && networkCount === 0 && active && active.token === token) stop(token, true);
-        }, 0);
+        var token = start(kind, null, node, 'click');
+        scheduleCancel(event, token);
     }
 
     document.addEventListener('click', onInteraction, true);
     document.addEventListener('submit', function (event) {
         var node = event.submitter || (event.target && event.target.querySelector ? event.target.querySelector('button[type="submit"],input[type="submit"]') : null);
-        var kind = inferKind(node) || (event.target && inferKind(event.target)) || 'verification';
-        var token = start(kind, null, node || event.target);
-        global.setTimeout(function () {
-            if (event.defaultPrevented && networkCount === 0 && active && active.token === token) stop(token, true);
-        }, 0);
+        if (node && (node.disabled || node.getAttribute('aria-disabled') === 'true')) return;
+
+        // Click capture already started this form action; submit only cleans up
+        // the case where the handler cancelled the default action.
+        if (active && active.source === 'click' &&
+            (node === active.target || (active.target && active.target.contains && active.target.contains(node)))) {
+            scheduleCancel(event, active.token);
+            return;
+        }
+
+        var kind = inferKind(node) || (event.target && inferKind(event.target));
+        if (!kind) return;
+        var token = start(kind, null, node || event.target, 'submit');
+        scheduleCancel(event, token);
     }, true);
 
     // Observe requests without changing them.
     if (typeof global.fetch === 'function') {
         var nativeFetch = global.fetch.bind(global);
         global.fetch = function () {
-            networkCount += 1;
+            var token = active ? active.token : null;
+            if (token) requestStarted(token);
             return nativeFetch.apply(global, arguments).then(function (response) {
-                networkCount = Math.max(0, networkCount - 1);
-                if (networkCount === 0) settle();
+                requestFinished(token);
                 return response;
             }, function (error) {
-                networkCount = Math.max(0, networkCount - 1);
-                if (networkCount === 0) settle();
+                requestFinished(token);
                 throw error;
             });
         };
@@ -278,12 +329,21 @@
     if (global.XMLHttpRequest && global.XMLHttpRequest.prototype && global.XMLHttpRequest.prototype.send) {
         var nativeSend = global.XMLHttpRequest.prototype.send;
         global.XMLHttpRequest.prototype.send = function () {
-            networkCount += 1;
-            this.addEventListener('loadend', function () {
-                networkCount = Math.max(0, networkCount - 1);
-                if (networkCount === 0) settle();
-            }, { once: true });
-            return nativeSend.apply(this, arguments);
+            var token = active ? active.token : null;
+            if (token) requestStarted(token);
+            var done = false;
+            var finish = function () {
+                if (done) return;
+                done = true;
+                requestFinished(token);
+            };
+            this.addEventListener('loadend', finish, { once: true });
+            try {
+                return nativeSend.apply(this, arguments);
+            } catch (error) {
+                finish();
+                throw error;
+            }
         };
     }
 
@@ -292,6 +352,9 @@
         Array.prototype.forEach.call(hosts, function (host) {
             if (host.querySelector('.ld-skeleton')) return;
             host.classList.add('lf-skeleton-host');
+            // The existing .admin-loading spinner/shimmer would stack with the
+            // supplied skeleton; remove it from the visual host only.
+            host.classList.remove('admin-loading');
             host.setAttribute('aria-label', 'Loading');
             host.innerHTML = loaderMarkup('page');
         });
@@ -310,8 +373,11 @@
     global.PinnacleLoadingFeedback = {
         start: start,
         stop: stop,
-        settle: settle,
-        complete: function () { settle(120); },
+        settle: function (delay) { if (active) settle(delay, active.token); },
+        complete: function () { if (active) settle(120, active.token); },
+        state: function () {
+            return active ? { token: active.token, kind: active.kind, pending: active.pending, requests: active.requests } : null;
+        },
         loaderMarkup: loaderMarkup,
         injectSkeletons: injectSkeletons
     };

@@ -8,14 +8,14 @@
 .lf-pagebar {
     position: fixed;
     inset: 0 0 auto 0;
-    z-index: 2147483000;
+    z-index: 10000;
     height: 3px;
     overflow: hidden;
     pointer-events: none;
     opacity: 1;
     transition: opacity .4s ease;
 }
-.lf-pagebar.is-done { opacity: 0; }
+.lf-pagebar.is-done { opacity: 0; visibility: hidden; }
 .lf-pagebar .ld-bar {
     width: 100%;
     max-width: none;
@@ -38,7 +38,7 @@
     position: fixed;
     right: 18px;
     bottom: 18px;
-    z-index: 2147483001;
+    z-index: 10001;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -50,9 +50,9 @@
     align-items: center;
     gap: 12px;
     width: max-content;
-    max-width: min(360px, calc(100vw - 32px));
-    min-width: 248px;
-    padding: 10px 16px 10px 10px;
+    max-width: min(320px, calc(100vw - 32px));
+    min-width: 210px;
+    padding: 8px 14px 8px 8px;
     border: 1px solid rgba(255, 255, 255, .14);
     border-radius: 16px;
     background: rgba(18, 17, 22, .94);
@@ -73,23 +73,24 @@
 }
 .lf-toast__stage {
     flex: none;
-    width: 56px;
-    height: 56px;
-    min-height: 56px;
-    border-radius: 11px;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    border-radius: 10px;
     padding: 0;
 }
 .lf-toast__stage.ld-stage { border-radius: 11px; }
-.lf-toast__stage .ld { --ld-scale: .36; }
-.lf-toast__stage .ld-pulse-rings { --ld-scale: .38; }
-.lf-toast__stage .ld-liquid { --ld-scale: .42; }
-.lf-toast__stage .ld-bar { --ld-scale: .16; width: 320px; }
+.lf-toast__stage .ld { --ld-scale: .26; }
+.lf-toast__stage .ld-pulse-rings { --ld-scale: .28; }
+.lf-toast__stage .ld-liquid { --ld-scale: .3; }
+.lf-toast__stage .ld-bar { --ld-scale: .12; width: 320px; }
 .lf-toast__stage .ld-bar .label { display: none; }
-.lf-toast__stage .ld-percent { --ld-scale: .16; }
-.lf-toast__stage .ld-text-shimmer { --ld-scale: .3; font-size: 28px; }
-.lf-toast__stage .ld-skeleton { --ld-scale: .14; }
-.lf-toast__stage .ld-typing { --ld-scale: .34; }
-.lf-toast__stage .ld-bouncing-dots { --ld-scale: .35; }
+.lf-toast__stage .ld-percent { --ld-scale: .12; }
+.lf-toast__stage .ld-text-shimmer { --ld-scale: .22; font-size: 22px; }
+.lf-toast__stage .ld-skeleton { --ld-scale: .1; }
+.lf-toast__stage .ld-typing { --ld-scale: .24; }
+.lf-toast__stage .ld-bouncing-dots { --ld-scale: .25; }
 .lf-toast__copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .lf-toast__copy strong { font-size: 13px; font-weight: 700; letter-spacing: -.01em; }
 .lf-toast__copy span { font-size: 10.5px; color: rgba(255, 255, 255, .62); }
@@ -102,6 +103,7 @@
     height: 16px;
     margin-right: 7px;
     vertical-align: -3px;
+    pointer-events: none;
     overflow: visible;
 }
 .lf-inline .ld { --ld-scale: .18; }
@@ -127,12 +129,25 @@
 .lf-skeleton-host .line { background: var(--ld-track); }
 .lf-skeleton-host .avatar { background: var(--ld-track); }
 
+.lf-toast__stage::after { display: none; }
+
 @media (max-width: 560px) {
     .lf-region { right: 12px; bottom: 12px; }
     .lf-toast { min-width: 0; padding-right: 12px; }
-    .lf-toast__stage { width: 44px; height: 44px; min-height: 44px; }
+    .lf-toast__stage { width: 36px; height: 36px; min-height: 36px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .lf-pagebar, .lf-toast, .lf-toast.is-leaving { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+    .lf-toast__stage .ld { display: none !important; }
+    .lf-toast__stage::after {
+        display: block;
+        content: "";
+        width: 18px;
+        height: 18px;
+        margin: auto;
+        border: 2px solid rgba(255, 255, 255, .28);
+        border-top-color: var(--ld-orange, #f08a24);
+        border-radius: 50%;
+    }
 }

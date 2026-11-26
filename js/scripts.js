@@ -1136,9 +1136,12 @@ ${examConfig[domain].instructions}
 
     // VERIFY BUTTON
 
-    document
-    .getElementById("verifyEligibilityBtn")
-    .addEventListener("click", async function(){
+    const verifyBtn = document.getElementById("verifyEligibilityBtn");
+    verifyBtn.addEventListener("click", async function(){
+
+        if (verifyBtn.dataset.busy === "1") return;
+        verifyBtn.dataset.busy = "1";
+        verifyBtn.disabled = true;
 
         const studentId =
             document.getElementById("jeeStudentId").value.trim();
@@ -1149,7 +1152,8 @@ ${examConfig[domain].instructions}
         if(!studentId || !dob){
 
             alert("Please enter Student ID and DOB");
-
+            verifyBtn.dataset.busy = "";
+            verifyBtn.disabled = false;
             return;
         }
 
@@ -1296,6 +1300,9 @@ await fetch(
                 "Test system failed.\n\n" +
                 "Check backend server & APIs."
             );
+        }finally{
+            verifyBtn.dataset.busy = "";
+            verifyBtn.disabled = false;
         }
 
     });

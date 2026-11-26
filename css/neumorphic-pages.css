@@ -41,10 +41,10 @@ body.enrollment-page {
     --neu-surface: #e8e8e8;
     --neu-surface-deep: #dedee3;
     --neu-text: #3d3d3d;
-    --neu-muted: #929191;
+    --neu-muted: #5f616b;
     --neu-accent: #a51818;
     --neu-accent-deep: #7a1414;
-    --neu-icon: #8a8a92;
+    --neu-icon: #71717A;
 
     --neu-raised: 18px 18px 38px rgba(163, 163, 168, 0.55),
                   -18px -18px 38px rgba(255, 255, 255, 0.85);
