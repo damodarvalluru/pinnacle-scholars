@@ -322,7 +322,7 @@ app.get("/api/courses", async (req, res) => {
         skillLevel: req.query.level || "Intermediate"
     };
     const cacheKey = `courses-${JSON.stringify(profile)}`;
-    const cached = getCache(cacheKey);
+    const cached = req.query.refresh === "1" ? null : getCache(cacheKey);
     if (cached) return res.json(cached);
 
     const fallback = loadJson("js/courses.js");

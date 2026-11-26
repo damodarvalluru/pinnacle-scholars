@@ -70,26 +70,39 @@
         return { flip: flip, stage: stage, sync: syncFlipHeight };
     }
 
-    const instances = Array.prototype.map.call(
-        document.querySelectorAll('.neu-flip'),
-        setup
-    ).filter(Boolean);
+    // This script is loaded in <head>, before the flip markup exists. Discover
+    // the cards only after the DOM is parsed, otherwise querySelectorAll() sees
+    // nothing and window.syncFlipHeight is never installed.
+    let instances = [];
 
-    if (!instances.length) return;
+    function initFlipInstances() {
+        instances = Array.prototype.map.call(
+            document.querySelectorAll('.neu-flip'),
+            setup
+        ).filter(Boolean);
 
-    // Exposed so each portal's own toggle can call it after rotating. The
-    // optional argument scopes the call to one specific flip; with a single
-    // flip per page the bare call is enough.
-    window.syncFlipHeight = function (scope) {
-        const match = scope
-            ? instances.filter(function (i) { return i.flip === scope || i.stage === scope || i.flip.contains(scope); })[0]
-            : instances[0];
-        if (match) match.sync();
-    };
+        if (!instances.length) return;
 
-    // The Faculty portal's initial state is set in its own window.onload; give
-    // every flip one final measurement after the full load event too.
-    window.addEventListener('load', function () {
-        instances.forEach(function (i) { i.sync(); });
-    });
+        // Exposed so each portal's own toggle can call it after rotating. The
+        // optional argument scopes the call to one specific flip; with a single
+        // flip per page the bare call is enough.
+        window.syncFlipHeight = function (scope) {
+            const match = scope
+                ? instances.filter(function (i) { return i.flip === scope || i.stage === scope || i.flip.contains(scope); })[0]
+                : instances[0];
+            if (match) match.sync();
+        };
+
+        // The Faculty portal's initial state is set in its own window.onload; give
+        // every flip one final measurement after the full load event too.
+        window.addEventListener('load', function () {
+            instances.forEach(function (i) { i.sync(); });
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFlipInstances);
+    } else {
+        initFlipInstances();
+    }
 }());

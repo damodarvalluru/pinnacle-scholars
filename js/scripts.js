@@ -525,8 +525,15 @@ function navigateTo(target) {
         ) || [];
 
     const studentIndex = students.findIndex(
-        s => s.id === studentDetails.student_id
+        s => (s.id || s.student_id) === studentDetails.student_id
     );
+
+    // Declared outside the studentIndex branch so the success alert can still
+    // report the balance when this device has no local enrollment record.
+    let remaining =
+        Number(
+            verificationResult.remainingFees
+        ) || 0;
 
     if (studentIndex !== -1) {
 
@@ -543,7 +550,7 @@ function navigateTo(target) {
         const newPaid =
             oldPaid + amountInINR;
 
-        const remaining =
+        remaining =
             totalFees - newPaid;
 
         students[studentIndex].feesPaid =

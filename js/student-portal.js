@@ -266,7 +266,12 @@
         const payBtn = document.getElementById("portalPaymentButton");
         payBtn.disabled = true;
         payBtn.innerText = "Creating Payment Order...";
+        const resetPayButton = function () {
+            payBtn.disabled = false;
+            payBtn.innerText = "Pay Online Now";
+        };
         if (!activeSessionUserObject) {
+            resetPayButton();
             alert("Session assessment sync breakdown. Please log in again.");
             return;
         }
@@ -274,6 +279,7 @@
         const outstandingLiabilityAmount = activeSessionUserObject.calculatedBalance;
 
         if (outstandingLiabilityAmount <= 0) {
+            resetPayButton();
             alert("Account has zero pending liabilities.");
             return;
         }
@@ -329,11 +335,13 @@
 );
                             location.reload();
                         } else {
+                            resetPayButton();
                             alert("Verification confirmation rejected by server security checklist.");
                         }
                     })
                     .catch(err => {
                         console.error(err);
+                        resetPayButton();
                         alert("Cryptographic computation validation connection transmission link error.");
                     });
                 },
@@ -345,8 +353,7 @@
                 "theme": { "color": "#1a365d" },
                 "modal": {
                     "ondismiss": function() {
-                           payBtn.disabled = false;
-                           payBtn.innerText = "Pay Online Now";
+                        resetPayButton();
                         alert("Transaction interface cancelled by student.");
                     }
                 }
@@ -357,6 +364,7 @@
         })
         .catch(err => {
             console.error(err);
+            resetPayButton();
             alert("Failed to build Order reference payload mappings. Check server status logs.");
         });
     }

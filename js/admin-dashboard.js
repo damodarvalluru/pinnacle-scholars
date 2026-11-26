@@ -921,14 +921,33 @@
                     api('/api/admin/messages/' + bits[1], { method: 'DELETE' }).then(function (result) {
                         toast(result.data.message || 'Message deleted', !result.data.success);
                         loadMessages();
+                    }).catch(function () {
+                        toast('Unable to delete message. Please try again.', true);
                     });
                 } else {
+                    // The backend PATCH writes both flags, so send both current
+                    // values. Otherwise starring a message silently marks it
+                    // unread and marking it read silently unstars it.
+                    var row = action.closest('tr');
+                    var readBtn = row && row.querySelector('[data-message-action^="read:"]');
+                    var starBtn = row && row.querySelector('[data-message-action^="star:"]');
+                    var readBits = readBtn && readBtn.getAttribute('data-message-action').split(':');
+                    var starBits = starBtn && starBtn.getAttribute('data-message-action').split(':');
+                    // Each button stores the value it is about to SET, so the
+                    // current flag is the opposite of that stored value.
+                    var currentRead = readBits ? readBits[2] === '0' : false;
+                    var currentStarred = starBits ? starBits[2] === '0' : false;
+                    var payload = bits[0] === 'read'
+                        ? { isRead: bits[2] === '1', starred: currentStarred }
+                        : { isRead: currentRead, starred: bits[2] === '1' };
                     api('/api/admin/messages/' + bits[1], {
                         method: 'PATCH',
-                        body: bits[0] === 'read' ? { isRead: bits[2] === '1' } : { starred: bits[2] === '1' }
+                        body: payload
                     }).then(function (result) {
                         toast(result.data.message || 'Message updated', !result.data.success);
                         loadMessages();
+                    }).catch(function () {
+                        toast('Unable to update message. Please try again.', true);
                     });
                 }
                 return;

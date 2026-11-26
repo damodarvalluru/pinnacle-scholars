@@ -649,6 +649,19 @@
         </div>
     </div>
 
+    <!-- LEGAL INFORMATION MODAL -->
+    <div class="modal-backdrop" id="legal-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeLegalInfo()">&times;</button>
+            <span class="badge badge-cyan" style="margin-bottom:0.8rem;">Pinnacle Scholars Academy</span>
+            <h2 id="legal-modal-title" class="text-gradient" style="font-family:var(--font-heading); font-size:1.5rem; margin-bottom:1rem;"></h2>
+            <div id="legal-modal-body" style="font-size:0.92rem; line-height:1.7; color:var(--text-muted);"></div>
+            <div style="margin-top:1.5rem;">
+                <button class="btn btn-primary" onclick="closeLegalInfo()">Got it</button>
+            </div>
+        </div>
+    </div>
+
     <!-- FOOTER -->
     <footer class="footer">
         <div class="container">
@@ -682,8 +695,8 @@
                 <div>
                     <h4 class="footer-title">Legal</h4>
                     <ul class="footer-links">
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#" onclick="openLegalInfo('privacy'); return false;">Privacy Policy</a></li>
+                        <li><a href="#" onclick="openLegalInfo('terms'); return false;">Terms of Service</a></li>
                     </ul>
                 </div>
             </div>
@@ -694,6 +707,7 @@
     </footer>
 
     <!-- JS MODULES -->
+    <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/jobs.js"></script>
     <script src="js/courses.js"></script>

@@ -283,8 +283,11 @@ btn.innerText =
             alert("Cannot process blank examination frameworks. Please provide Title and Question schemas.");
             return;
         }
-            try {
-                const newTestEntry = {
+            const btn =
+document.getElementById(
+    "publishTestBtn"
+);
+            const newTestEntry = {
 
     test_type: "JEE",
 
@@ -298,15 +301,12 @@ btn.innerText =
 
     questions: payloadData
 };
-const btn =
-document.getElementById(
-    "publishTestBtn"
-);
 
 btn.disabled = true;
 
 btn.innerText =
 "Publishing Examination...";
+        try {
         const response =
 await fetch(
 "https://pinnacle-backend-5i7n.onrender.com/api/tests/publish-test",
@@ -320,16 +320,17 @@ await fetch(
 );
 const result = await response.json();
 if(!result.success){
-        alert(result.message);
+        alert(result.message || "Test could not be published. Please try again.");
     return;
-}        
+}
         } catch (error) {
+            console.error("Test publishing error:", error);
+            alert("Backend server error. Test was not published — please retry.");
+            return;
+        } finally {
             btn.disabled = false;
             btn.innerText = "Publish Live JEE Format Test";
-            console.warn("Backend server connection offline. Data fallback saved locally to application storage.");
         }
-        btn.disabled = false;
-        btn.innerText = "Publish Live JEE Format Test";
         alert(`Success!Test Published SuccessfullyFaculty ID:${activeFacultySessionObject.faculty_id}Title:${title}`);
         document.getElementById('testTitle').value = '';
         document.getElementById('testQuestions').value = '';

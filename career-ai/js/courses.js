@@ -255,11 +255,33 @@ const COURSES_DATA = [
    ========================================================================== */
 let coursesActiveTab = "All";
 let coursesLastSynced = new Date();
+// The catalog currently rendered in the Courses view. Live refreshes replace
+// it while COURSES_DATA stays untouched as the offline fallback.
+let coursesFeedList = [...COURSES_DATA];
 
-async function fetchCoursesFromSource() {
-    return new Promise(resolve => {
-        setTimeout(() => resolve([...COURSES_DATA]), 600);
-    });
+async function fetchCoursesFromSource({ bustCache = false } = {}) {
+    if (typeof fetchLiveCourses !== "function") {
+        return { ok: false, list: [...COURSES_DATA], message: "Live course feed is not configured on this page." };
+    }
+
+    const payload = await fetchLiveCourses({ useCache: !bustCache });
+
+    if (!payload || payload.fallback) {
+        return { ok: false, list: [...COURSES_DATA], message: payload && payload.error ? payload.error : "The live course source could not be reached." };
+    }
+
+    const list = Array.isArray(payload.courses) ? payload.courses : [];
+    if (!list.length) {
+        return { ok: false, list: [...COURSES_DATA], message: "The live course source returned no listings right now." };
+    }
+
+    return {
+        ok: Number(payload.liveCount) > 0,
+        list: list,
+        liveCount: Number(payload.liveCount) || 0,
+        source: payload.source || "curated-fallback",
+        syncedAt: payload.refreshedAt ? new Date(payload.refreshedAt) : new Date()
+    };
 }
 
 function scoreCourseMatch(course) {
@@ -269,7 +291,7 @@ function scoreCourseMatch(course) {
 }
 
 function initCoursesSection() {
-    renderCoursesGrid(COURSES_DATA);
+    renderCoursesGrid(getFilteredCourses());
     updateCoursesSyncLabel();
 }
 
@@ -281,7 +303,7 @@ function setCoursesTab(tab) {
 
 function getFilteredCourses() {
     const query = document.getElementById("course-search-input") ? document.getElementById("course-search-input").value.toLowerCase() : "";
-    return COURSES_DATA.filter(c => {
+    return coursesFeedList.filter(c => {
         const matchesQuery = c.title.toLowerCase().includes(query) || c.skill.toLowerCase().includes(query) || c.platform.toLowerCase().includes(query);
         const matchesTab = coursesActiveTab === "All" || (coursesActiveTab === "Free" && !c.isPaid) || (coursesActiveTab === "Paid" && c.isPaid);
         return matchesQuery && matchesTab;
@@ -349,14 +371,21 @@ async function refreshCoursesData() {
     if (label) label.textContent = "Fetching latest courses...";
 
     try {
-        const freshList = await fetchCoursesFromSource();
-        coursesLastSynced = new Date();
-        renderCoursesGrid(freshList);
+        const result = await fetchCoursesFromSource({ bustCache: true });
+        coursesFeedList = result.list && result.list.length ? result.list : [...COURSES_DATA];
+        coursesLastSynced = result.syncedAt || new Date();
+        renderCoursesGrid(getFilteredCourses());
+        if (label && !result.ok) {
+            label.textContent = `Showing curated catalog — ${result.message || "live sources unavailable"}`;
+        }
     } catch (err) {
+        coursesFeedList = [...COURSES_DATA];
         if (label) label.textContent = "Sync failed — showing last known catalog.";
-        renderCoursesGrid(COURSES_DATA);
+        renderCoursesGrid(getFilteredCourses());
     } finally {
         if (btn) { btn.disabled = false; btn.textContent = "↻ Refresh Courses"; }
-        updateCoursesSyncLabel();
+        if (label && !label.textContent.startsWith("Showing curated") && !label.textContent.startsWith("Sync failed")) {
+            updateCoursesSyncLabel();
+        }
     }
 }

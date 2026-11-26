@@ -320,6 +320,45 @@ function closeJobModal() {
 }
 
 /* ==========================================================================
+   LEGAL INFORMATION (PINNACLE ACADEMY)
+   ========================================================================== */
+const LEGAL_INFO = {
+    privacy: {
+        title: "Privacy Policy",
+        body: `
+            <p>CareerAI is a career-discovery service offered by <strong>Pinnacle Scholars Academy</strong>. We use the profile details you enter here — name, selected interests, skills and experience level — only to personalise job, internship, course and assessment recommendations.</p>
+            <p>Your profile is saved in this browser's local storage so it is ready on your next visit. Live listings are requested from our CareerAI API when available; if the service is unreachable, the app automatically uses its curated catalogue so you can keep exploring.</p>
+            <p>We do not ask for payment details inside CareerAI, and we do not sell your profile information. Open jobs and courses link to their official providers, whose own privacy terms apply once you leave this site.</p>
+            <p>For questions about how your information is handled, contact Pinnacle Scholars Academy through the contact form on the main website.</p>
+        `
+    },
+    terms: {
+        title: "Terms of Service",
+        body: `
+            <p>CareerAI is provided by <strong>Pinnacle Scholars Academy</strong> for guidance and skill exploration. Recommendations, fit scores, salary ranges and deadlines are indicative and may change without notice.</p>
+            <p>Always verify eligibility, fees and application details on the official employer, internship or course provider website before applying or paying. Pinnacle Scholars Academy is not the employer and does not guarantee placement.</p>
+            <p>Code samples, assessments and resume tools are provided as learning aids. Please submit your own original work and accurate information in real applications.</p>
+            <p>Use of CareerAI is subject to the academy's acceptable-use rules: do not attempt to disrupt the service, scrape it aggressively, or misuse any personal data you encounter.</p>
+        `
+    }
+};
+
+function openLegalInfo(type) {
+    const info = LEGAL_INFO[type];
+    if (!info) return;
+    const title = document.getElementById("legal-modal-title");
+    const body = document.getElementById("legal-modal-body");
+    if (!title || !body) return;
+    title.textContent = info.title;
+    body.innerHTML = info.body;
+    document.getElementById("legal-modal").classList.add("open");
+}
+
+function closeLegalInfo() {
+    document.getElementById("legal-modal").classList.remove("open");
+}
+
+/* ==========================================================================
    EXIT INTENT DIALOG
    ========================================================================== */
 function initExitIntent() {
