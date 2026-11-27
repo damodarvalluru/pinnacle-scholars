@@ -115,6 +115,30 @@
 .lf-inline .ld-percent,
 .lf-inline .ld-text-shimmer { display: none; }
 
+/* Submit/action buttons: one compact spinner on the control itself.
+   A pseudo-element is used so it survives handlers that replace button text. */
+@keyframes lf-button-spin { to { transform: rotate(360deg); } }
+
+body button.lf-busy.lf-busy::before {
+    content: "" !important;
+    display: inline-block !important;
+    position: relative !important;
+    inset: auto !important;
+    flex: none !important;
+    width: 14px !important;
+    height: 14px !important;
+    margin-right: 8px !important;
+    border: 2px solid currentColor !important;
+    border-right-color: transparent !important;
+    border-radius: 50% !important;
+    background: none !important;
+    box-shadow: none !important;
+    vertical-align: -2px !important;
+    animation: lf-button-spin .75s linear infinite !important;
+}
+
+body button.lf-busy { cursor: wait !important; }
+
 /* Admin dashboard loading placeholders receive the supplied skeleton. */
 .lf-skeleton-host {
     display: block;
@@ -139,6 +163,7 @@
 
 @media (prefers-reduced-motion: reduce) {
     .lf-pagebar, .lf-toast, .lf-toast.is-leaving { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+    body button.lf-busy.lf-busy::before { animation: none !important; border-right-color: currentColor !important; opacity: .7; }
     .lf-toast__stage .ld { display: none !important; }
     .lf-toast__stage::after {
         display: block;

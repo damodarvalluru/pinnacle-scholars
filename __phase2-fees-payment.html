@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Fee Payment | Pinnacle Scholars</title>
+
+<link rel="stylesheet" href="css/themes.css?v=p2c639313350087699786">
+<link rel="stylesheet" href="css/global.css?v=p2c639313350087699786">
+<link rel="stylesheet" href="css/animations.css?v=p2c639313350087699786">
+<link rel="stylesheet" href="css/premium-fx.css?v=p2c639313350087699786">
+<link rel="stylesheet" href="css/fees-payment.css?v=p2c639313350087699786">
+<link rel="stylesheet" href="css/session-manager.css?v=p2c639313350087699786">
+<link rel="stylesheet" href="css/receipt.css?v=p2c639313350087699786">
+<link rel="stylesheet" href="css/portal-premium.css?v=p2c639313350087699786">
+<link rel="stylesheet" href="css/responsive.css?v=p2c639313350087699786">
+<link rel="stylesheet" href="css/neumorphic-pages.css?v=p2c639313350087699786">
+<link rel="stylesheet" href="css/crownz-loaders.css?v=p2c639313350087699786">
+<link rel="stylesheet" href="css/loading-feedback.css?v=p2c639313350087699786">
+
+<script src="js/scripts.js?v=p2c639313350087699786"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="js/loading-feedback.js?v=p2c639313350087699786" defer></script>
+<script src="js/forgot-id.js?v=p2c639313350087699786" defer></script>
+<script src="js/fees-payment.js?v=p2c639313350087699786"></script>
+<script src="js/session-manager.js?v=p2c639313350087699786"></script>
+<script src="js/receipt-generator.js?v=p2c639313350087699786"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" defer></script>
+<script>
+    // Initialize global animations for this page
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof initGlobalAnimations === 'function') {
+            initGlobalAnimations();
+        }
+    });
+</script>
+</head>
+
+<body class="fees-payment">
+
+<!-- Floating Scroll Button -->
+<button class="nav-scroll-btn pointing-down" id="globalScrollBtn" onclick="handleNavigation()" title="Navigate Page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 6l6 6-6 6"/>
+    </svg>
+</button>
+
+<!-- DROPLETS -->
+
+<script>
+
+for(let i=0;i<40;i++){
+
+    const drop=document.createElement('div');
+
+    drop.classList.add('droplet');
+
+    drop.style.left=Math.random()*100+'vw';
+
+    drop.style.animationDuration=
+    (Math.random()*5+5)+'s';
+
+    drop.style.animationDelay=
+    Math.random()*5+'s';
+
+    drop.style.width=
+    drop.style.height=
+    (Math.random()*10+5)+'px';
+
+    document.body.appendChild(drop);
+}
+
+</script>
+
+<div class="payment-card">
+
+    <h1>Fee Payment Portal</h1>
+
+    <div class="input-box">
+
+        <label>Enter Student ID</label>
+
+        <input
+            type="text"
+            id="studentId"
+            placeholder="PS-I-2026-001"
+        >
+    </div>
+
+    <div class="input-box">
+
+        <label>Date of Birth</label>
+
+        <input
+            type="date"
+            id="historyDob"
+        >
+        <div class="home-link forgot-id-link">
+            <a href="#" onclick="forgotStudentId(); return false;">Forgot ID?</a>
+        </div>
+    </div>
+
+    <button
+        class="fetch-btn" id="fetchBtn"
+        onclick="fetchStudentDetails()"
+    >
+        Fetch Details
+    </button>
+
+    <div
+        class="student-details"
+        id="studentDetails"
+    >
+
+        <p><strong>Name:</strong> <span id="sName"></span></p>
+
+        <p><strong>Domain:</strong> <span id="sDomain"></span></p>
+
+        <p><strong>Total Fees:</strong>  ₹<span id="sTotal"></span></p>
+
+        <p><strong>Paid Fees:</strong>  ₹<span id="sPaid"></span></p>
+
+        <p><strong>Remaining Fees:</strong>  ₹<span id="sRemain"></span></p>
+
+        <div class="payment-options">
+
+            <label>Select Payment Type</label>
+
+            <select id="paymentType" onchange="togglePartialBox()">
+
+                <option value="FULL">Full Payment</option>
+
+                <option value="PARTIAL">Partial Payment</option>
+
+            </select>
+
+            <div class="partial-box" id="partialBox">
+
+                <input
+                    type="number"
+                    id="partialAmount"
+                    placeholder="Enter Partial Amount"
+                >
+            </div>
+
+            <button
+                class="pay-btn" id="payBtn"
+                onclick="continuePayment()"
+            >
+                Continue Payment
+            </button>
+
+        </div>
+
+        <div id="receiptDownloadArea" aria-live="polite" style="display:none;"></div>
+
+        <div class="payment-history-wrap" id="paymentHistoryWrap">
+            <h3 class="payment-history-title">Payment History</h3>
+            <p class="payment-history-hint" id="paymentHistoryHint">
+                Enter your date of birth above and fetch your details to view previous payments.
+            </p>
+            <div id="paymentHistoryList" class="payment-history-list"></div>
+        </div>
+
+    </div>
+
+    <div class="home-link">
+        <a href="index.html">← Back To Home</a>
+    </div>
+
+</div>
+</body>
+</html>

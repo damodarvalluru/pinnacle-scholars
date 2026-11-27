@@ -92,7 +92,7 @@ body.faculty-portal:has(> .neu-auth:not([style*="display: none"])) .pinnacle-ses
 body.student-portal:has(> .neu-auth:not([style*="display: none"])) footer p,
 body.faculty-portal:has(> .neu-auth:not([style*="display: none"])) footer p {
     color: var(--neu-muted) !important;
-    font-size: 0.85rem !important;
+    font-size: max(12px, 0.85rem) !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -589,4 +589,44 @@ body.faculty-portal:has(> .neu-auth:not([style*="display: none"])) footer p {
     .neu-card__sub {
         margin-bottom: 1.1rem;
     }
+}
+
+/* --------------------------------------------------------------------------
+    Portal auth cards use the available width on larger screens. Page scrolling
+    (see responsive.css) handles tall faces, so the cards no longer need to be
+    narrowed to the shared 430px default.
+    -------------------------------------------------------------------------- */
+body.student-portal .portal-card.neu-card {
+    max-width: min(480px, 100%);
+}
+
+body.faculty-portal .portal-card.neu-card {
+    max-width: min(560px, 100%);
+}
+
+/* Keep auth-card copy readable when the global responsive sheet reduces the
+   root font size on phones and tablets. Inputs already enforce a 16px floor. */
+.neu-auth .neu-card__sub,
+.neu-auth .neu-card label,
+.neu-auth .neu-card__meta,
+.neu-auth .neu-card__switch,
+.neu-auth .neu-card .btn-secondary,
+.neu-auth .neu-card__embedalt,
+.neu-auth .neu-card a,
+.neu-auth .neu-card strong,
+.neu-auth .neu-card span {
+    font-size: max(13px, 0.82rem) !important;
+}
+
+.neu-auth .neu-card .btn,
+.neu-auth .neu-card button[type="submit"],
+.neu-auth .neu-card #generateFacultyBtn,
+.neu-auth .neu-card #facultyLoginBtn,
+.neu-auth .neu-card #studentLoginBtn {
+    font-size: max(13px, 0.95rem) !important;
+}
+
+body.student-portal footer p,
+body.faculty-portal footer p {
+    font-size: max(12px, 0.75rem) !important;
 }

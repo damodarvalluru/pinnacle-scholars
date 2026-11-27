@@ -707,11 +707,12 @@ body {
 
 /* Portal pages: the login/dashboard cards are centered and fit the viewport on
    every device. Horizontal overflow is hidden so nothing scrolls sideways, and
-   vertical scrolling stays available so taller forms remain fully reachable on
-   short screens (especially the Student, Result and Faculty portals). */
+   vertical scrolling stays available so taller forms, payment histories and
+   receipts remain fully reachable on short screens. */
 body.student-portal,
 body.faculty-portal,
-body.result-portal {
+body.result-portal,
+body.fees-payment {
     padding-top: 0;
 }
 
@@ -725,12 +726,10 @@ body.result-portal {
 }
 
 body.student-portal,
-body.result-portal {
+body.faculty-portal,
+body.result-portal,
+body.fees-payment {
     overflow-x: hidden;
-    overflow-y: auto;
-}
-
-body.faculty-portal {
     overflow-y: auto;
 }
 

@@ -1,0 +1,111 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Phase2 contrast audit</title><style>pre{font:12px monospace;white-space:pre-wrap}</style></head><body><pre id="out">RUNNING</pre><script>
+(async function () {
+  var out = document.getElementById('out');
+  var pages = [
+    { file: '__phase2-index.html', targets: ['.hero h1', '.hero p', '.admin-auth-footnote'] },
+    { file: '__phase2-programs.html', targets: ['.prog-hero__kicker', '.prog-card__code', '.prog-back', '.prog-fees__amount', '.prog-test__tag', '.prog-btn--primary', '.prog-btn--gate'] },
+    { file: '__phase2-examinations.html', targets: ['.exam-hero__kicker', '.exam-back', '.exam-btn--primary'] },
+    { file: '__phase2-syllabus-gate.html', targets: ['.syl-stat strong', '.syl-back'] },
+    { file: '__phase2-result-portal.html', targets: ['body.result-portal .card .back', 'body.result-portal .card label', 'body.result-portal .card .btn'] },
+    { file: '__phase2-enrollment.html', targets: ['body.enrollment-page .nav-footer a', 'body.enrollment-page label'] },
+    { file: '__phase2-fees-payment.html', targets: ['body.fees-payment .payment-card a', 'body.fees-payment label'] }
+  ];
+  function parse(c) {
+    var m = String(c).match(/rgba?\(([^)]+)\)/);
+    if (!m) return null;
+    var p = m[1].split(',').map(parseFloat);
+    return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 };
+  }
+  function blend(f, b) {
+    return { r: f.r * f.a + b.r * (1 - f.a), g: f.g * f.a + b.g * (1 - f.a), b: f.b * f.a + b.b * (1 - f.a), a: 1 };
+  }
+  function lum(c) {
+    var f = function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+    return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b);
+  }
+  function ratio(a, b) {
+    var x = lum(a), y = lum(b);
+    return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+  }
+  function bgOf(el) {
+    var n = el, layers = [], gradient = false;
+    while (n) {
+      var cs = getComputedStyle(n);
+      if (cs.backgroundImage && cs.backgroundImage !== 'none') gradient = true;
+      var c = parse(cs.backgroundColor);
+      if (c && c.a > 0) layers.push(c);
+      n = n.parentElement;
+    }
+    var bg = { r: 255, g: 255, b: 255, a: 1 };
+    for (var i = layers.length - 1; i >= 0; i--) bg = blend(layers[i], bg);
+    return { bg: bg, gradient: gradient };
+  }
+  function inspect(el) {
+    var cs = getComputedStyle(el);
+    var b = bgOf(el);
+    var fill = cs.webkitTextFillColor || cs.textFillColor || '';
+    var transparentFill = /rgba\(0,\s*0,\s*0,\s*0\)|transparent/.test(fill);
+    var fg = parse(cs.color);
+    var size = parseFloat(cs.fontSize);
+    var weight = parseInt(cs.fontWeight, 10) || 400;
+    var need = (size >= 24 || (size >= 18.66 && weight >= 700)) ? 3 : 4.5;
+    var direct = Array.prototype.filter.call(el.childNodes, function (n) { return n.nodeType === 3 && n.textContent.trim(); }).map(function (n) { return n.textContent.trim(); }).join(' ');
+    return {
+      text: (direct || el.getAttribute('placeholder') || el.textContent.trim()).slice(0, 36),
+      color: cs.color,
+      background: 'rgb(' + [b.bg.r, b.bg.g, b.bg.b].map(Math.round).join(',') + ')',
+      ratio: fg && !transparentFill ? +ratio(blend(fg, b.bg), b.bg).toFixed(2) : null,
+      need: need,
+      gradient: b.gradient,
+      transparentFill: transparentFill
+    };
+  }
+  function broadAudit(doc) {
+    var bad = [];
+    Array.prototype.forEach.call(doc.querySelectorAll('body *'), function (el) {
+      if (el.closest('.lf-region,.lf-pagebar') || el.hasAttribute('aria-hidden')) return;
+      var cs = getComputedStyle(el);
+      if (cs.visibility === 'hidden' || cs.display === 'none' || parseFloat(cs.opacity) < 0.2 || !el.getClientRects().length) return;
+      var direct = Array.prototype.filter.call(el.childNodes, function (n) { return n.nodeType === 3 && n.textContent.trim(); }).map(function (n) { return n.textContent.trim(); }).join(' ');
+      var ph = el.matches('input,textarea') && el.getAttribute('placeholder') ? el.getAttribute('placeholder') : '';
+      if (!direct && !ph) return;
+      var b = bgOf(el);
+      if (b.gradient) return;
+      var fill = cs.webkitTextFillColor || cs.textFillColor || '';
+      if (/rgba\(0,\s*0,\s*0,\s*0\)|transparent/.test(fill)) return;
+      var fg = parse(cs.color);
+      if (!fg || fg.a === 0) return;
+      var size = parseFloat(cs.fontSize), weight = parseInt(cs.fontWeight, 10) || 400;
+      var need = (size >= 24 || (size >= 18.66 && weight >= 700)) ? 3 : 4.5;
+      var r = ratio(blend(fg, b.bg), b.bg);
+      if (r < need) bad.push({ tag: el.tagName.toLowerCase(), cls: String(el.className).slice(0, 42), text: (direct || ph).slice(0, 30), ratio: +r.toFixed(2), need: need });
+    });
+    return { count: bad.length, worst: bad.sort(function (a, b2) { return a.ratio - b2.ratio; }).slice(0, 5) };
+  }
+  var results = [];
+  try {
+    for (var i = 0; i < pages.length; i++) {
+      var p = pages[i];
+      var frame = document.createElement('iframe');
+      frame.style.cssText = 'position:absolute;left:-10000px;width:1280px;height:900px;border:0';
+      frame.src = p.file + '?audit=' + Date.now() + '-' + i;
+      document.body.appendChild(frame);
+      await new Promise(function (resolve, reject) {
+        frame.addEventListener('load', resolve, { once: true });
+        frame.addEventListener('error', reject, { once: true });
+      });
+      await new Promise(function (resolve) { setTimeout(resolve, 1500); });
+      var d = frame.contentDocument;
+      var targets = p.targets.map(function (sel) {
+        var el = d.querySelector(sel);
+        return el ? Object.assign({ selector: sel }, inspect(el)) : { selector: sel, missing: true };
+      });
+      results.push({ page: p.file, theme: d.documentElement.getAttribute('data-theme'), targets: targets, broad: broadAudit(d) });
+      frame.remove();
+    }
+    out.textContent = 'RESULT ' + JSON.stringify({ ok: true, pages: results });
+  } catch (e) {
+    out.textContent = 'RESULT ' + JSON.stringify({ ok: false, error: String((e && e.stack) || e) });
+  }
+})();
+</script></body></html>

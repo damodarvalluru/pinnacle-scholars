@@ -608,8 +608,54 @@ body.admin-auth-page::after {
 }
 
 /* --------------------------------------------------------------------------
-   9. Responsive and reduced motion
-   -------------------------------------------------------------------------- */
+    8b. Readability guardrails (scoped to the admin login page)
+
+    dashboard-v32.css shares this page and sets very small values for a few
+    text nodes. These rules restore comfortable, high-contrast sizing without
+    touching the dashboard itself or any form behaviour.
+    -------------------------------------------------------------------------- */
+
+body.admin-auth-page .admin-auth-card__head p,
+body.admin-auth-page .admin-credential-picker legend,
+body.admin-auth-page .admin-credential-option__hint,
+body.admin-auth-page .admin-auth-footnote {
+    color: rgba(232, 242, 255, .9);
+    font-size: .88rem;
+    line-height: 1.55;
+}
+
+body.admin-auth-page .admin-auth-card__head p { font-size: .95rem; }
+
+body.admin-auth-page .admin-credential-option__title {
+    color: #FFFFFF;
+    font-size: .95rem;
+    font-weight: 700;
+}
+
+body.admin-auth-page .admin-credential-option {
+    min-height: 5.8rem;
+    padding: 1rem .9rem 1rem 3.2rem;
+}
+
+body.admin-auth-page .admin-credential-option input:focus-visible + .admin-credential-option__title {
+    outline: 2px solid #7DD3FC;
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+body.admin-auth-page .admin-field > span:first-child {
+    background: #0A1D36;
+    color: rgba(232, 242, 255, .95);
+    font-size: .9rem;
+    font-weight: 700;
+}
+
+body.admin-auth-page .admin-auth-submit.lf-busy > svg,
+body.admin-auth-page .admin-auth-submit.lf-busy .admin-auth-submit__label::after { display: none; }
+
+/* --------------------------------------------------------------------------
+    9. Responsive and reduced motion
+    -------------------------------------------------------------------------- */
 
 @media (max-width: 900px) {
     .admin-auth-shell {

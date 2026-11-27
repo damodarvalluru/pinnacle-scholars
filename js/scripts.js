@@ -147,7 +147,7 @@ function initMasterYourMindMedia() {
         voiceAudio = document.createElement('audio');
         voiceAudio.id = 'welcomeVoiceAudio';
         voiceAudio.preload = 'auto';
-        voiceAudio.innerHTML = `<source src="audio/welcome_voice.wav" type="audio/wav">`;
+        voiceAudio.innerHTML = `<source src="audio/welcome_voice.wav?v=female-v2" type="audio/wav">`;
         document.body.appendChild(voiceAudio);
     }
 
@@ -164,6 +164,12 @@ function initMasterYourMindMedia() {
             utterance.rate = 0.92;
             utterance.pitch = 1.0;
             utterance.volume = 1.0;
+            // Keep the fallback consistent with the recorded welcome voice:
+            // use an installed female English voice when one is available.
+            const voices = window.speechSynthesis.getVoices() || [];
+            const femaleVoice = voices.find(v => /zira|female|samantha|victoria|karen|moira|serena|allison|jenny|aria/i.test(v.name || ''));
+            if (femaleVoice) utterance.voice = femaleVoice;
+            else utterance.lang = 'en-US';
             window.speechSynthesis.speak(utterance);
         }
     }

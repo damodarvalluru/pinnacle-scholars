@@ -69,6 +69,16 @@
         }
     }
 
+    // Buttons get a single, small spinner on the control itself. Using a
+    // pseudo-element keeps it visible even when an existing handler replaces
+    // the button's text (innerText/textContent) during the request.
+    function markButton(target, busy) {
+        if (!target || target.nodeType !== 1 || target.tagName !== 'BUTTON') return;
+        target.classList.toggle('lf-busy', busy);
+        if (busy) target.setAttribute('aria-busy', 'true');
+        else target.removeAttribute('aria-busy');
+    }
+
     function ensureRegion() {
         if (region && region.isConnected) return region;
         region = element('div', 'lf-region');
@@ -156,24 +166,28 @@
 
         // A second click on the same busy control must not replace the first
         // indicator or start a second submission.
-        if (active && target && active.target === target && active.pending > 0) {
+        if (active && target && active.target === target) {
             return active.token;
         }
 
         clearTimers();
         removeToast(true);
+        if (active && active.button) markButton(active.button, false);
         var token = ++sequence;
+        var button = target && target.nodeType === 1 && target.tagName === 'BUTTON' ? target : null;
         active = {
             token: token,
             kind: kind,
             label: label,
             target: target || null,
+            button: button,
             source: source || 'manual',
             pending: 0,
             requests: 0,
             watchdogExtended: false
         };
-        showToast(kind, label);
+        if (button) markButton(button, true);
+        else showToast(kind, label);
         armWatchdog(token, kind);
         return token;
     }
@@ -181,6 +195,7 @@
     function stop(token, immediate) {
         if (!active || (token && token !== active.token)) return false;
         clearTimers();
+        if (active.button) markButton(active.button, false);
         active = null;
         removeToast(Boolean(immediate));
         return true;
@@ -225,6 +240,7 @@
         var haystack = [id, text, href, label].join(' ');
 
         if (SKIP_HINTS.test(id)) return null;
+        if (/\b(download|print|close|toggle|collapse|expand)\b/.test(haystack)) return null;
 
         // Navigation, modals, review toggles, CSV export and print actions are
         // local; they either navigate instantly or already show their own state.
@@ -238,12 +254,12 @@
             /review|hide-review|show-review|modal-close/.test(id)) return null;
 
         // Explicit academy flows.
-        if (/adminloginsubmit|adminsubmit|verify-eligibility-btn/.test(id)) return 'verification';
-        if (/studentloginbtn|facultyloginbtn/.test(id)) return 'login';
-        if (/enrollbtn/.test(id)) return 'registration';
-        if (/generatefacultybtn|generate.*id|forgot/.test(id)) return 'id';
-        if (/fetchbtn|paybtn|paymentbutton/.test(id)) return 'fees';
-        if (/contactsubmitbtn/.test(id)) return 'verification';
+        if (/admin-login-submit|admin-submit|verify-eligibility-btn/.test(id)) return 'verification';
+        if (/student-login-btn|faculty-login-btn/.test(id)) return 'login';
+        if (/enroll-btn/.test(id)) return 'registration';
+        if (/generate-faculty-btn|generate.*id|forgot/.test(id)) return 'id';
+        if (/fetch-btn|pay-btn|payment-button/.test(id)) return 'fees';
+        if (/contact-submit-btn/.test(id)) return 'verification';
         if (node.hasAttribute('data-message-action') || node.hasAttribute('data-goto')) return 'details';
 
         if (/forgot id|forgot student|forgot faculty/.test(haystack)) return 'id';
@@ -278,7 +294,7 @@
         var node = event.target && event.target.closest ? event.target.closest('[data-loader],button,a') : null;
         if (!node || node.disabled || node.getAttribute('aria-disabled') === 'true') return;
 
-        if (active && active.target === node && active.pending > 0) {
+        if (active && active.target === node) {
             // Same action while the first one is still in flight.
             event.preventDefault();
             event.stopImmediatePropagation();

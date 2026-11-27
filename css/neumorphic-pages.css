@@ -610,3 +610,75 @@ body.enrollment-page .pinnacle-session-clock em {
         transition: none !important;
     }
 }
+
+/* --------------------------------------------------------------------------
+    Use the available browser width for the taller portal cards. The receipt
+    needs the extra room so its rows stay on one line; the page itself scrolls,
+    so no content is clipped inside the card.
+    -------------------------------------------------------------------------- */
+body.result-portal .card {
+    max-width: min(520px, 100%);
+}
+
+body.fees-payment .payment-card {
+    max-width: min(720px, 100%);
+}
+
+body.enrollment-page .enroll-card {
+    max-width: min(560px, 100%);
+}
+
+/* The global responsive sheet lowers the root font size on phones and
+   tablets. Give portal-card copy a readable floor without touching untouched
+   pages; inputs already enforce a 16px floor to avoid iOS zooming. */
+body.result-portal .card,
+body.fees-payment .payment-card,
+body.enrollment-page .enroll-card {
+    font-size: max(13px, 0.82rem) !important;
+}
+
+body.result-portal .card p,
+body.result-portal .card label,
+body.result-portal .card a,
+body.result-portal .card strong,
+body.result-portal .card span,
+body.result-portal .card .subtitle,
+body.result-portal .card .info-text,
+body.fees-payment .payment-card p,
+body.fees-payment .payment-card label,
+body.fees-payment .payment-card a,
+body.fees-payment .payment-card strong,
+body.fees-payment .payment-card span,
+body.fees-payment .payment-card h3,
+body.enrollment-page .enroll-card p,
+body.enrollment-page .enroll-card label,
+body.enrollment-page .enroll-card a,
+body.enrollment-page .enroll-card strong,
+body.enrollment-page .enroll-card span,
+body.enrollment-page .enroll-card h3 {
+    font-size: max(13px, 0.82rem) !important;
+}
+
+body.result-portal .card .btn,
+body.fees-payment .fetch-btn,
+body.fees-payment .pay-btn,
+body.enrollment-page .enroll-card .btn-submit {
+    font-size: max(13px, 0.85rem) !important;
+}
+
+body.fees-payment .pinnacle-session-clock,
+body.enrollment-page .pinnacle-session-clock,
+body.fees-payment .pinnacle-session-clock strong,
+body.fees-payment .pinnacle-session-clock span,
+body.fees-payment .pinnacle-session-clock em,
+body.enrollment-page .pinnacle-session-clock strong,
+body.enrollment-page .pinnacle-session-clock span,
+body.enrollment-page .pinnacle-session-clock em {
+    font-size: max(12px, 0.75rem) !important;
+}
+
+body.result-portal footer p,
+body.fees-payment footer p,
+body.enrollment-page footer p {
+    font-size: max(12px, 0.75rem) !important;
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Student Portal | Pinnacle Scholars</title>
+    <link rel="stylesheet" href="css/themes.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/global.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/animations.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/premium-fx.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/student-portal.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/session-manager.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/receipt.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/portal-premium.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/responsive.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/neumorphic-auth.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/crownz-loaders.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/loading-feedback.css?v=p2c639313350087699786">
+
+    <script src="js/scripts.js?v=p2c639313350087699786"></script>
+    <script src="js/loading-feedback.js?v=p2c639313350087699786" defer></script>
+    <script src="js/forgot-id.js?v=p2c639313350087699786" defer></script>
+    <script src="js/student-portal.js?v=p2c639313350087699786"></script>
+    <script src="js/session-manager.js?v=p2c639313350087699786"></script>
+    <script src="js/neumorphic-flip.js?v=p2c639313350087699786"></script>
+    <script src="js/receipt-generator.js?v=p2c639313350087699786"></script>
+    <script src="js/student-reference-background.js?v=p2c639313350087699786"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" defer></script>
+    <script>
+        // Disable global animations for student portal - use reference image background instead
+        document.addEventListener('DOMContentLoaded', function() {
+            // Global animations are disabled to allow reference image background
+        });
+    </script>
+</head>
+<body class="student-portal">
+    <!-- Premium Animated Background will be initialized by premium-background.js -->
+    
+    <!-- Original Student Portal Background Elements -->
+    <div class="student-portal-bg">
+        <div class="curved-region-1"></div>
+        <div class="curved-region-2"></div>
+        <div class="curved-region-3"></div>
+    </div>
+    <canvas id="portalGeometryCanvas"></canvas>
+
+    <!-- Floating Scroll Button -->
+    <button class="nav-scroll-btn pointing-down" id="globalScrollBtn" onclick="handleNavigation()" title="Navigate Page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 6l6 6-6 6"/>
+        </svg>
+    </button>
+
+    <div class="login-container neu-auth" id="loginArea">
+        <div class="neu-flip" id="studentAuthFlip">
+            <div class="neu-flip__stage" id="studentAuthFlipStage">
+
+                <!-- Front face: the existing student login form, unchanged -->
+                <div class="neu-flip__face neu-flip__face--front">
+                <form class="portal-card neu-card" id="studentLoginForm" onsubmit="checkLogin(); return false;">
+                    <h2>Student Login</h2>
+                    <p class="neu-card__sub">Sign in with the Enrollment ID and Date of Birth issued at registration.</p><br>
+
+                    <input type="text" id="loginId" placeholder="Enrollment ID (PS-I/M-2026-XXXX)" autocomplete="off">
+                    <input type="date" id="loginDob" aria-label="Date of Birth">
+
+                    <div class="neu-card__meta">
+                        <a href="#" onclick="forgotStudentId(); return false;">Forgot ID?</a>
+                    </div>
+
+                    <button id="studentLoginBtn" class="btn" type="submit">Login to Dashboard</button>
+
+                    <p class="neu-card__switch">Not enrolled? <a href="#" onclick="toggleStudentAuthViews(true); return false;"><strong>Register here</strong></a></p>
+
+                    <p class="neu-card__actions">
+                        <button class="btn" type="button" onclick="window.location.href='index.html'" style="padding: 6px 12px; width: auto;">🏠 Home</button>
+                        <button class="btn" type="button" onclick="window.location.href='career-ai/index.html'" style="padding: 6px 12px; width: auto; margin-left: 8px;">⚡ AI Career Enhancement</button>
+                    </p>
+                </form>
+                </div>
+
+                <!-- Back face: the real enrollment.html, embedded rather than
+                     duplicated. The form, its fields, its ids, its validation
+                     and its backend call all still live in enrollment.html. -->
+                <div class="neu-flip__face neu-flip__face--back">
+                <div class="portal-card neu-card neu-card--embed" id="studentEnrollArea">
+                    <h2>New Student Enrollment</h2>
+                    <p class="neu-card__sub">Complete your registration to receive a unique Enrollment ID.</p>
+
+                    <iframe id="studentEnrollFrame" class="neu-embed-frame" src="enrollment.html?embed=1"
+                            title="Student enrollment form" loading="lazy"></iframe>
+
+                    <p class="neu-card__switch">Already enrolled? <a href="#" onclick="toggleStudentAuthViews(false); return false;"><strong>Login here</strong></a></p>
+                    <p class="neu-card__embedalt"><a href="enrollment.html">Open enrollment in a full page</a></p>
+                </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard" id="dashboardArea">
+        <h1 style="color: #1a365d; margin-top: 0;">Welcome, <span id="dispName"></span></h1>
+        
+        <div class="info-card">
+            <h3 style="margin-top: 0; color: #1a365d;">Current Enrollment Status</h3>
+            <p><strong>Enrollment ID:</strong> <span id="dispId"></span></p>
+            <p><strong>Selected Coaching Domain:</strong> <span id="dispDomain"></span></p>
+            <button class="btn" style="background: linear-gradient(135deg, #7c3aed, #06b6d4); width: auto; padding: 8px 20px; margin-top: 10px;" onclick="window.location.href='career-ai/index.html'">⚡ Launch GATE AI Career Enhancement</button>
+        </div>
+
+        <div class="info-card">
+            <h3 style="margin-top: 0; color: #1a365d;">Fee Summary Profile (5% Brochure Discount Factored)</h3>
+            <p><strong>Adjusted Base Fee:</strong> ₹<span id="dispTotal"></span></p>
+            <p><strong>Verified Amount Paid:</strong> ₹<span id="dispPaid"></span></p>
+            <p><strong>Outstanding Balance:</strong> ₹<span id="dispBalance"></span></p>
+            <p>    <strong>Live Remaining Fees:</strong>
+                   <span id="remainingFees">Loading...</span>
+</p>
+            <p><strong>Account Status:</strong> <span class="fee-status" id="dispStatus">PENDING BALANCE SETTLEMENT</span></p>
+            <button id="portalPaymentButton" class="btn" style="background: #38a169; width: auto; padding: 10px 25px; margin-top: 10px;" onclick="executeStudentPortalPayment()">Pay Online Now</button>
+        </div>
+
+        <div class="info-card" id="portalPaymentHistoryCard">
+            <h3 style="margin-top: 0; color: #1a365d;">Payment History</h3>
+            <p class="portal-history-hint" id="portalPaymentHistoryHint">Loading payment history…</p>
+            <div class="portal-history-list" id="portalPaymentHistoryList"></div>
+        </div>
+
+        <div class="info-card" id="portalResultHistoryCard">
+            <h3 style="margin-top: 0; color: #1a365d;">Result History</h3>
+            <p class="portal-history-hint" id="portalResultHistoryHint">Loading result history…</p>
+            <div class="portal-history-list" id="portalResultHistoryList"></div>
+        </div>
+
+        <button class="btn" onclick="PinnacleSession.logout(); location.reload()" style="padding: 10px 20px; width: auto;">Logout Session</button>
+    </div>
+<footer style="position: relative; z-index: 5; padding: 20px 0; width: 100%;">
+    <p style="text-align: center; color: white; font-size: x-large; letter-spacing: 0.5px;">
+        © 2026 Pinnacle Scholars Academy, Noida. Empowering Futures.
+    </p>
+</footer>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</body>
+</html>

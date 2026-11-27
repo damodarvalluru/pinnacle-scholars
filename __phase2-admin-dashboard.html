@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Dashboard | Pinnacle Scholars Academy</title>
+
+    <link rel="stylesheet" href="css/themes.css?v=p2639313344894520386">
+    <link rel="stylesheet" href="css/global.css?v=p2639313344894520386">
+    <link rel="stylesheet" href="css/animations.css?v=p2639313344894520386">
+    <link rel="stylesheet" href="css/premium-fx.css?v=p2639313344894520386">
+    <link rel="stylesheet" href="css/admin.css?v=p2639313344894520386">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=JetBrains+Mono:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+    <!-- V2 glass re-skin: loaded after the original admin styles. -->
+    <link rel="stylesheet" href="css/admin-dashboard-v2.css?v=p2639313344894520386">
+    <!-- Premium credential experience: loaded last so it can refine the settings view. -->
+    <link rel="stylesheet" href="css/admin-credentials-premium.css?v=p2639313344894520386">
+    <!-- V32 design language: adapted to the existing .adm-v2 markup and menu. -->
+    <link rel="stylesheet" href="css/dashboard-v32.css?v=p2639313344894520386">
+    <link rel="stylesheet" href="css/crownz-loaders.css?v=p2639313344894520386">
+    <link rel="stylesheet" href="css/loading-feedback.css?v=p2639313344894520386">
+    <script src="js/loading-feedback.js?v=p2639313344894520386" defer></script>
+    <script src="js/admin-dashboard.js?v=p2639313344894520386" defer></script>
+    <script src="js/admin-dashboard-v2.js?v=p2639313344894520386" defer></script>
+</head>
+<body class="admin-dashboard-page adm-v2">
+
+    <!-- Shared icon sprite: keeps navigation icons consistent and lightweight. -->
+    <svg class="admin-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="i-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></symbol>
+        <symbol id="i-students" viewBox="0 0 24 24"><path d="M2.5 8.5 12 4l9.5 4.5L12 13 2.5 8.5Z"/><path d="m6.5 10.5.2 4.2c.1 1.7 2.4 3 5.3 3s5.2-1.3 5.3-3l.2-4.2"/><path d="M21.5 8.5V14"/></symbol>
+        <symbol id="i-faculty" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20v-1.1c0-3 2.7-5.4 6-5.4s6 2.4 6 5.4V20"/><path d="m16 5 1.4 1.4L20 3.8"/><path d="M19 12v8"/></symbol>
+        <symbol id="i-exams" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2.2"/><path d="M9 4V3h6v1"/><path d="M9 10h6M9 14h6M9 18h3"/></symbol>
+        <symbol id="i-results" viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4v1.5A3.5 3.5 0 0 0 7.5 11M17 6h3v1.5a3.5 3.5 0 0 1-3.5 3.5"/><path d="M12 14v4M9 21h6M10 18h4"/></symbol>
+        <symbol id="i-syllabus" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v16H6.5A2.5 2.5 0 0 0 4 21.5V5.5Z"/><path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H19"/><path d="M8 7.5h7M8 11h5"/></symbol>
+        <symbol id="i-timetable" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="16" rx="2.2"/><path d="M8 3v4M16 3v4M3.5 10h17"/><path d="M8 14h3M14 14h3M8 18h3"/></symbol>
+        <symbol id="i-fees" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19M6 15h4"/></symbol>
+        <symbol id="i-programs" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></symbol>
+        <symbol id="i-guidelines" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M15 3v5h4"/><path d="M8 12h8M8 16h6"/></symbol>
+        <symbol id="i-messages" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.2"/><path d="m3.5 6.5 8.5 6 8.5-6"/></symbol>
+        <symbol id="i-reports" viewBox="0 0 24 24"><path d="M4 20V4"/><path d="M4 20h17"/><path d="M8 16v-5M13 16V7M18 16v-8"/></symbol>
+        <symbol id="i-analytics" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9h-9V3Z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15V3.5Z"/></symbol>
+        <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21h-4v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.3 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3v-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.3 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3h4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21v4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></symbol>
+        <symbol id="i-collapse" viewBox="0 0 24 24"><path d="M14 6 8 12l6 6M20 5v14"/></symbol>
+        <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/></symbol>
+        <symbol id="i-logout" viewBox="0 0 24 24"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+        <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M3 12h4M17 12h4M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></symbol>
+    </svg>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="admin-sidebar__inner">
+            <div class="admin-sidebar__brand">
+                <span class="admin-sidebar__mark" aria-hidden="true"><svg><use href="#i-spark"></use></svg></span>
+                <span class="admin-sidebar__brand-copy"><strong>Pinnacle Academy</strong><span>ADMIN CONSOLE</span></span>
+                <button class="admin-sidebar__collapse" id="adminSidebarCollapse" type="button" title="Collapse sidebar" aria-label="Collapse sidebar" aria-expanded="true"><svg aria-hidden="true"><use href="#i-collapse"></use></svg></button>
+            </div>
+
+            <nav class="admin-nav" aria-label="Admin dashboard sections">
+                <div class="admin-nav-group">
+                    <p class="admin-nav-group__title">Workspace</p>
+                    <button class="admin-nav-item is-active" type="button" data-section="overview" title="Dashboard" aria-current="page"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-dashboard"></use></svg></span><span class="admin-nav-item__label">Dashboard</span></button>
+                </div>
+                <div class="admin-nav-group">
+                    <p class="admin-nav-group__title">People</p>
+                    <button class="admin-nav-item" type="button" data-section="students" title="Students"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-students"></use></svg></span><span class="admin-nav-item__label">Students</span></button>
+                    <button class="admin-nav-item" type="button" data-section="faculty" title="Faculty"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-faculty"></use></svg></span><span class="admin-nav-item__label">Faculty</span></button>
+                </div>
+                <div class="admin-nav-group">
+                    <p class="admin-nav-group__title">Academics</p>
+                    <button class="admin-nav-item" type="button" data-section="exams" title="Exams"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-exams"></use></svg></span><span class="admin-nav-item__label">Exams</span></button>
+                    <button class="admin-nav-item" type="button" data-section="performance" title="Exam Results"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-results"></use></svg></span><span class="admin-nav-item__label">Exam Results</span></button>
+                    <button class="admin-nav-item" type="button" data-section="syllabus" title="Syllabus"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-syllabus"></use></svg></span><span class="admin-nav-item__label">Syllabus</span></button>
+                    <button class="admin-nav-item" type="button" data-section="timetables" title="Timetables"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-timetable"></use></svg></span><span class="admin-nav-item__label">Timetables</span></button>
+                    <button class="admin-nav-item" type="button" data-section="programs" title="Programs"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-programs"></use></svg></span><span class="admin-nav-item__label">Programs</span></button>
+                    <button class="admin-nav-item" type="button" data-section="guidelines" title="Guidelines"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-guidelines"></use></svg></span><span class="admin-nav-item__label">Guidelines</span></button>
+                </div>
+                <div class="admin-nav-group">
+                    <p class="admin-nav-group__title">Administration</p>
+                    <button class="admin-nav-item" type="button" data-section="fees" title="Fees"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-fees"></use></svg></span><span class="admin-nav-item__label">Fees</span></button>
+                    <button class="admin-nav-item" type="button" data-section="messages" title="Contact Messages"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-messages"></use></svg></span><span class="admin-nav-item__label">Contact Messages</span></button>
+                </div>
+                <div class="admin-nav-group">
+                    <p class="admin-nav-group__title">Insights &amp; system</p>
+                    <button class="admin-nav-item" type="button" data-section="reports" title="Reports"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-reports"></use></svg></span><span class="admin-nav-item__label">Reports</span></button>
+                    <button class="admin-nav-item" type="button" data-section="gate-jee" title="GATE & JEE Statistics"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-analytics"></use></svg></span><span class="admin-nav-item__label">GATE &amp; JEE Stats</span></button>
+                    <button class="admin-nav-item" type="button" data-section="settings" title="Settings"><span class="admin-nav-item__icon"><svg aria-hidden="true"><use href="#i-settings"></use></svg></span><span class="admin-nav-item__label">Settings</span></button>
+                </div>
+            </nav>
+
+            <div class="adm-v2-plan" aria-hidden="true">
+                <div class="adm-v2-plan__row"><strong>Business plan</strong><span>13 of 20 seats</span></div>
+                <div class="adm-v2-plan__track"><span class="adm-v2-plan__fill"></span></div>
+            </div>
+
+            <div class="admin-sidebar__footer">
+                <span class="admin-sidebar__avatar" aria-hidden="true">AD</span>
+                <span class="admin-sidebar__user"><strong>Administrator</strong><span>Secure session</span></span>
+                <span class="admin-sidebar__status" title="Session active" aria-hidden="true"></span>
+            </div>
+        </div>
+    </aside>
+
+    <div class="admin-backdrop" id="adminBackdrop"></div>
+
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <button class="admin-menu-toggle" id="adminMenuToggle" type="button" aria-label="Toggle admin navigation"><svg aria-hidden="true"><use href="#i-menu"></use></svg></button>
+            <div class="admin-topbar__titles">
+                <h1 id="adminPageTitle">Dashboard</h1>
+                <p id="adminPageSubtitle">Live records from the academy database</p>
+            </div>
+            <div class="admin-topbar__actions">
+                <span class="admin-pill" id="adminSessionPill" aria-live="polite"><i aria-hidden="true"></i> Admin session active</span>
+                <a class="admin-icon-btn" href="index.html" title="View website" aria-label="View website"><svg aria-hidden="true"><use href="#i-external"></use></svg></a>
+                <button class="admin-icon-btn" id="adminLogoutBtn" type="button" title="Log out" aria-label="Log out"><svg aria-hidden="true"><use href="#i-logout"></use></svg></button>
+                <span class="adm-v2-avatar" aria-hidden="true">AD</span>
+            </div>
+        </header>
+
+        <div class="admin-content" id="adminContent">
+
+            <!-- 1. OVERVIEW -->
+            <section class="admin-section" id="section-overview">
+                <div class="admin-hero">
+                    <div class="admin-hero__copy">
+                        <span class="admin-eyebrow">Command center</span>
+                        <h2>Academy Overview</h2>
+                        <p>Live counts, charts and recent activity read directly from the academy database.</p>
+                    </div>
+                    <div class="admin-hero__side">
+                        <span class="admin-hero__sync" id="ovSynced">Awaiting live snapshot…</span>
+                        <div class="admin-hero__actions">
+                            <button class="admin-btn admin-btn--light" type="button" data-goto="students">View students</button>
+                            <button class="admin-btn admin-btn--glass" type="button" data-goto="reports">Open reports</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-stat-grid" id="ovStats"><div class="admin-loading">Loading statistics…</div></div>
+                <div class="admin-grid admin-grid--charts">
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Students by program</h3><p>From student domain records</p></div>
+                        <div class="admin-card__body" id="ovDomainBars"><div class="admin-loading">Loading…</div></div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Published exams by type</h3><p>From published test papers</p></div>
+                        <div class="admin-card__body" id="ovTypeDonut"><div class="admin-loading">Loading…</div></div>
+                    </div>
+                </div>
+                <div class="admin-grid admin-grid--two" style="margin-top:1.1rem">
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Recent registrations</h3><p>Latest student records</p></div>
+                        <div class="admin-card__body admin-card__body--flush" id="ovRecentStudents"><div class="admin-loading">Loading…</div></div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Recent activity</h3><p>Latest exams and messages</p></div>
+                        <div class="admin-card__body admin-card__body--flush" id="ovRecentExams"></div>
+                        <div class="admin-card__body admin-card__body--flush" id="ovRecentMessages"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. STUDENTS -->
+            <section class="admin-section" id="section-students" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Records</span><h2>Student Statistics</h2><p>Registered students, profiles and fee position.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="students">Export CSV</button>
+                </div>
+                <div class="admin-card">
+                    <form class="admin-filters" id="studentsFilters">
+                        <div class="admin-filter-field"><label for="stQ">Search</label><input id="stQ" data-param="q" placeholder="ID, name or domain"></div>
+                        <div class="admin-filter-field"><label for="stDomain">Program</label><input id="stDomain" data-param="domain" placeholder="e.g. MPC-JEE"></div>
+                        <div class="admin-filter-field"><label for="stStatus">Fee status</label><select id="stStatus" data-param="status"><option value="">All</option><option value="paid">Fully paid</option><option value="partial">Partial</option><option value="unpaid">Unpaid</option></select></div>
+                        <div class="admin-filter-field"><label for="stSort">Sort by</label><select id="stSort" data-param="sort"><option value="student_id">Student ID</option><option value="name">Name</option><option value="enrollment_date">Enrollment date</option><option value="fees_paid">Fees paid</option><option value="remaining_fees">Remaining fees</option></select></div>
+                        <div class="admin-filter-field"><label for="stOrder">Order</label><select id="stOrder" data-param="order"><option value="asc">Ascending</option><option value="desc">Descending</option></select></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="studentsCount">Loading records…</div></div>
+                    <div class="admin-table-wrap" id="studentsTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 3. FACULTY -->
+            <section class="admin-section" id="section-faculty" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">People</span><h2>Faculty Management</h2><p>Existing faculty records and exams published by each member.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="faculty">Export CSV</button>
+                </div>
+                <div class="admin-card">
+                    <form class="admin-filters" id="facultyFilters">
+                        <div class="admin-filter-field"><label for="fcQ">Search</label><input id="fcQ" data-param="q" placeholder="ID, name, email or mobile"></div>
+                        <div class="admin-filter-field"><label for="fcDomain">Domain</label><input id="fcDomain" data-param="domain" placeholder="e.g. maths"></div>
+                        <div class="admin-filter-field"><label for="fcSort">Sort by</label><select id="fcSort" data-param="sort"><option value="faculty_id">Faculty ID</option><option value="name">Name</option><option value="domain">Domain</option><option value="enrollment_date">Enrollment date</option></select></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="facultyCount">Loading records…</div></div>
+                    <div class="admin-table-wrap" id="facultyTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 4. EXAMS -->
+            <section class="admin-section" id="section-exams" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Academics</span><h2>Exam Management</h2><p>Published papers, submissions and paper details.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="exams">Export CSV</button>
+                </div>
+                <div class="admin-stat-grid" id="examStats"></div>
+                <div class="admin-card">
+                    <form class="admin-filters" id="examsFilters">
+                        <div class="admin-filter-field"><label for="exQ">Search</label><input id="exQ" data-param="q" placeholder="Test ID, title or faculty"></div>
+                        <div class="admin-filter-field"><label for="exType">Type</label><input id="exType" data-param="type" placeholder="jee / gate"></div>
+                        <div class="admin-filter-field"><label for="exFaculty">Faculty ID</label><input id="exFaculty" data-param="facultyId" placeholder="Faculty ID"></div>
+                        <div class="admin-filter-field"><label for="exStatus">State</label><select id="exStatus" data-param="status"><option value="">All</option><option value="completed">Completed (submissions)</option><option value="pending">Pending (no submissions)</option></select></div>
+                        <div class="admin-filter-field"><label for="exFrom">Published from</label><input id="exFrom" data-param="from" type="date"></div>
+                        <div class="admin-filter-field"><label for="exTo">Published to</label><input id="exTo" data-param="to" type="date"></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="examsCount">Loading records…</div><div id="examsNoteText"></div></div>
+                    <div class="admin-table-wrap" id="examsTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 5. PERFORMANCE -->
+            <section class="admin-section" id="section-performance" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Results &amp; rankings</span><h2>Exam Results</h2><p>Attempts, scores, ranks and performance metrics from submitted exams.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="performance">Export CSV</button>
+                </div>
+                <div class="admin-stat-grid" id="perfStats"></div>
+                <div class="admin-card">
+                    <form class="admin-filters" id="performanceFilters">
+                        <div class="admin-filter-field"><label for="pfQ">Search</label><input id="pfQ" data-param="q" placeholder="Student or exam"></div>
+                        <div class="admin-filter-field"><label for="pfTest">Test ID</label><input id="pfTest" data-param="testId" placeholder="Test ID"></div>
+                        <div class="admin-filter-field"><label for="pfStudent">Student ID</label><input id="pfStudent" data-param="studentId" placeholder="Student ID"></div>
+                        <div class="admin-filter-field"><label for="pfDomain">Program</label><input id="pfDomain" data-param="domain" placeholder="Domain"></div>
+                        <div class="admin-filter-field"><label for="pfFrom">From</label><input id="pfFrom" data-param="from" type="date"></div>
+                        <div class="admin-filter-field"><label for="pfTo">To</label><input id="pfTo" data-param="to" type="date"></div>
+                        <div class="admin-filter-field"><label for="pfSort">Sort by</label><select id="pfSort" data-param="sort"><option value="submitted_at">Submitted</option><option value="score">Score</option><option value="student_id">Student ID</option></select></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="performanceCount">Loading records…</div></div>
+                    <div class="admin-table-wrap" id="performanceTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 6. SYLLABUS -->
+            <section class="admin-section" id="section-syllabus" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Curriculum</span><h2>Syllabus Management</h2><p>Subjects taken from questions in published exam papers.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="syllabus">Export CSV</button>
+                </div>
+                <div class="admin-card">
+                    <form class="admin-filters" id="syllabusFilters">
+                        <div class="admin-filter-field"><label for="syQ">Search</label><input id="syQ" data-param="q" placeholder="Subject or exam title"></div>
+                        <div class="admin-filter-field"><label for="syType">Exam type</label><input id="syType" data-param="type" placeholder="jee / gate"></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="syllabusCount">Loading records…</div><div id="syllabusNoteText"></div></div>
+                    <div class="admin-table-wrap" id="syllabusTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 7. FEES -->
+            <section class="admin-section" id="section-fees" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Finance</span><h2>Fee Management</h2><p>Fee structures, student dues and payment history.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="fees">Export CSV</button>
+                </div>
+                <div class="admin-stat-grid" id="feeStats"></div>
+                <div class="admin-card" style="margin-bottom:1.1rem">
+                    <div class="admin-card__head"><h3>Student fee records</h3><p>Paid, partial and unpaid students</p></div>
+                    <form class="admin-filters" id="feesFilters">
+                        <div class="admin-filter-field"><label for="feQ">Search</label><input id="feQ" data-param="q" placeholder="Student ID or name"></div>
+                        <div class="admin-filter-field"><label for="feDomain">Program</label><input id="feDomain" data-param="domain" placeholder="Domain"></div>
+                        <div class="admin-filter-field"><label for="feStatus">Fee status</label><select id="feStatus" data-param="status"><option value="">All</option><option value="paid">Fully paid</option><option value="partial">Partial</option><option value="unpaid">Unpaid</option></select></div>
+                        <div class="admin-filter-field"><label for="feSort">Sort by</label><select id="feSort" data-param="sort"><option value="student_id">Student ID</option><option value="name">Name</option><option value="fees_paid">Fees paid</option><option value="remaining_fees">Remaining</option></select></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="feesCount">Loading records…</div></div>
+                    <div class="admin-table-wrap" id="feesTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card__head"><h3>Payment history</h3><p>Recorded transactions from payment_history</p></div>
+                    <form class="admin-filters" id="paymentsFilters">
+                        <div class="admin-filter-field"><label for="payQ">Search</label><input id="payQ" data-param="q" placeholder="Student, payment ID"></div>
+                        <div class="admin-filter-field"><label for="payStatus">Status</label><input id="payStatus" data-param="status" placeholder="SUCCESS"></div>
+                        <div class="admin-filter-field"><label for="payType">Type</label><input id="payType" data-param="type" placeholder="PARTIAL / FULL"></div>
+                        <div class="admin-filter-field"><label for="payFrom">From</label><input id="payFrom" data-param="from" type="date"></div>
+                        <div class="admin-filter-field"><label for="payTo">To</label><input id="payTo" data-param="to" type="date"></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="paymentsCount">Loading records…</div></div>
+                    <div class="admin-table-wrap" id="paymentsTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 8. TIMETABLES -->
+            <section class="admin-section" id="section-timetables" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Academic information</span><h2>Timetables</h2><p>Database-backed schedules and announcements.</p></div>
+                </div>
+                <div class="admin-grid admin-grid--two" id="academicContent"><div class="admin-loading">Loading…</div></div>
+            </section>
+
+            <!-- 9. PROGRAMS -->
+            <section class="admin-section" id="section-programs" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Academics</span><h2>Programs Management</h2><p>Student counts and fee position for each program in the database.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="programs">Export CSV</button>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-note"><span>ℹ️</span><div id="programsNoteText">Loading…</div></div>
+                    <div class="admin-table-wrap" id="programsTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 9b. GUIDELINES -->
+            <section class="admin-section" id="section-guidelines" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Academic information</span><h2>Guidelines</h2><p>Guidance records stored in the academy database.</p></div>
+                </div>
+                <div class="admin-grid admin-grid--two" id="guidelinesContent"><div class="admin-loading">Loading…</div></div>
+            </section>
+
+            <!-- 10. MESSAGES -->
+            <section class="admin-section" id="section-messages" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Communication</span><h2>Contact Messages</h2><p>Messages submitted by students and visitors.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="messages">Export CSV</button>
+                </div>
+                <div class="admin-stat-grid" id="messageStats"></div>
+                <div class="admin-card">
+                    <form class="admin-filters" id="messagesFilters">
+                        <div class="admin-filter-field"><label for="msQ">Search</label><input id="msQ" data-param="q" placeholder="Name, email or message"></div>
+                        <div class="admin-filter-field"><label for="msRead">Read status</label><select id="msRead" data-param="read"><option value="">All</option><option value="unread">Unread</option><option value="read">Read</option></select></div>
+                        <div class="admin-filter-field"><label for="msStarred">Starred</label><select id="msStarred" data-param="starred"><option value="">All</option><option value="yes">Starred only</option></select></div>
+                        <div class="admin-filter-field"><label for="msFrom">From</label><input id="msFrom" data-param="from" type="date"></div>
+                        <div class="admin-filter-field"><label for="msTo">To</label><input id="msTo" data-param="to" type="date"></div>
+                        <button class="admin-btn" type="submit">Apply</button>
+                        <button class="admin-btn admin-btn--ghost" type="reset">Reset</button>
+                    </form>
+                    <div class="admin-note"><span>ℹ️</span><div id="messagesCount">Loading records…</div></div>
+                    <div class="admin-table-wrap" id="messagesTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 11. GATE / JEE -->
+            <section class="admin-section" id="section-gate-jee" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Program analytics</span><h2>GATE &amp; JEE Statistics</h2><p>Separate student counts and records by program category.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="gate-jee">Export CSV</button>
+                </div>
+                <div class="admin-stat-grid" id="gateJeeStats"></div>
+                <div class="admin-card">
+                    <div class="admin-note"><span>ℹ️</span><div id="gateJeeNoteText">Loading…</div></div>
+                    <div class="admin-table-wrap" id="gateJeeTable"><div class="admin-loading">Loading…</div></div>
+                </div>
+            </section>
+
+            <!-- 11b. REPORTS -->
+            <section class="admin-section" id="section-reports" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Consolidated insights</span><h2>Reports</h2><p>Combined views derived from live student, exam, result, fee and message records.</p></div>
+                    <button class="admin-btn admin-btn--ghost" type="button" data-export="reports">Export CSV</button>
+                </div>
+                <div class="admin-stat-grid" id="reportsStats"><div class="admin-loading">Loading statistics…</div></div>
+                <div class="admin-grid admin-grid--two">
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Program snapshot</h3><p>Students and fee position by program</p></div>
+                        <div class="admin-card__body admin-card__body--flush" id="reportsPrograms"><div class="admin-loading">Loading…</div></div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Score distribution</h3><p>Submitted results grouped by score band</p></div>
+                        <div class="admin-card__body" id="reportsScores"><div class="admin-loading">Loading…</div></div>
+                    </div>
+                </div>
+                <div class="admin-grid admin-grid--two" style="margin-top:1.1rem">
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Top performers</h3><p>Highest submitted scores</p></div>
+                        <div class="admin-card__body admin-card__body--flush" id="reportsTop"><div class="admin-loading">Loading…</div></div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card__head"><h3>Communication load</h3><p>Contact message flags from the database</p></div>
+                        <div class="admin-card__body" id="reportsMessages"><div class="admin-loading">Loading…</div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 12. SETTINGS -->
+            <section class="admin-section admin-credentials-stage" id="section-settings" hidden>
+                <div class="admin-section-head">
+                    <div><span class="admin-eyebrow">Account &amp; security</span><h2>Admin Settings</h2><p>Review your session and update the admin password and security PIN.</p></div>
+                </div>
+                <div class="admin-grid admin-grid--two">
+                    <div class="admin-card admin-settings admin-credentials-card">
+                        <div class="admin-card__head admin-credentials__head">
+                            <div class="admin-credentials__headline">
+                                <span class="admin-credentials__emblem" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24"><path d="M12 2.5 20 6v6c0 5-3.4 8.4-8 9.5-4.6-1.1-8-4.5-8-9.5V6l8-3.5Z"/><path d="M9.2 12.1 11.3 14l3.6-4"/></svg>
+                                </span>
+                                <div><h3>Credentials</h3><p>Both current credentials are required</p></div>
+                            </div>
+                            <span class="admin-credentials__seclevel">● SECURE</span>
+                        </div>
+                        <div class="admin-card__body">
+                            <p class="admin-settings__notice">New credentials are salted and hashed on the server before being stored. Changing them ends other active admin sessions and takes effect immediately.</p>
+                            <form id="credentialForm" novalidate>
+                                <div class="admin-settings__group admin-credentials__group">
+                                    <div class="admin-credentials__group-head">
+                                        <span class="admin-credentials__step" aria-hidden="true">01</span>
+                                        <div class="admin-credentials__group-copy"><h4>Verify identity</h4><p>Enter the credentials currently in use.</p></div>
+                                    </div>
+                                    <label class="admin-field" for="currentPassword">
+                                        <span>Current password</span>
+                                        <span class="admin-field__input">
+                                            <input id="currentPassword" type="password" placeholder=" " autocomplete="current-password" required>
+                                            <button class="admin-field__reveal admin-credentials__reveal" type="button" data-reveal="currentPassword" aria-label="Show current password" aria-pressed="false">Show</button>
+                                        </span>
+                                    </label>
+                                    <label class="admin-field" for="currentPin">
+                                        <span>Current PIN</span>
+                                        <span class="admin-field__input">
+                                            <input id="currentPin" type="password" inputmode="numeric" maxlength="6" placeholder=" " autocomplete="off" required>
+                                            <button class="admin-field__reveal admin-credentials__reveal" type="button" data-reveal="currentPin" aria-label="Show current PIN" aria-pressed="false">Show</button>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="admin-settings__group admin-credentials__group">
+                                    <div class="admin-credentials__group-head">
+                                        <span class="admin-credentials__step" aria-hidden="true">02</span>
+                                        <div class="admin-credentials__group-copy"><h4>Choose new credentials</h4><p>Pick a strong password and a 6-digit PIN.</p></div>
+                                    </div>
+                                    <label class="admin-field" for="newPassword">
+                                        <span>New password (12+ characters)</span>
+                                        <span class="admin-field__input">
+                                            <input id="newPassword" type="password" placeholder=" " autocomplete="new-password" required>
+                                            <button class="admin-field__reveal admin-credentials__reveal" type="button" data-reveal="newPassword" aria-label="Show new password" aria-pressed="false">Show</button>
+                                        </span>
+                                    </label>
+                                    <div class="admin-credentials__strength" id="credentialStrength" data-strength="0" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+                                    <p class="admin-credentials__strength-hint" id="credentialStrengthHint">Use 12+ characters with a number and a symbol.</p>
+                                    <label class="admin-field" for="newPin">
+                                        <span>New PIN (6 digits)</span>
+                                        <span class="admin-field__input">
+                                            <input id="newPin" type="password" inputmode="numeric" maxlength="6" placeholder=" " autocomplete="off" required>
+                                            <button class="admin-field__reveal admin-credentials__reveal" type="button" data-reveal="newPin" aria-label="Show new PIN" aria-pressed="false">Show</button>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div id="credentialError" class="admin-auth-error" role="alert" hidden></div>
+                                <button class="admin-auth-submit" type="submit"><span class="admin-auth-submit__label">Update Credentials</span></button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="admin-card admin-credentials-session">
+                        <div class="admin-card__head">
+                            <div class="admin-credentials__headline">
+                                <span class="admin-credentials__emblem admin-credentials__emblem--mint" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 7.8 7.5 9 4.4-1.2 7.5-4.4 7.5-9V6L12 3Z"/><path d="M8.8 12.3 11 14.5l4.3-5"/></svg>
+                                </span>
+                                <div><h3>Session &amp; security</h3><p>Information about this admin session</p></div>
+                            </div>
+                        </div>
+                        <div class="admin-card__body">
+                            <div class="admin-settings__status" id="settingsSessionStatus">Session details load after sign in.</div>
+                            <ul class="admin-settings__checklist">
+                                <li><span>✓</span><div><strong>Server-side session</strong><small>Access is tied to this signed-in browser session.</small></div></li>
+                                <li><span>✓</span><div><strong>Hashed credentials</strong><small>Passwords and PINs are never stored in plain text.</small></div></li>
+                                <li><span>✓</span><div><strong>Immediate invalidation</strong><small>Updating credentials ends other active admin sessions.</small></div></li>
+                            </ul>
+                            <p class="admin-settings__notice">Use a unique password and PIN. If you suspect unauthorized access, update both credentials here and sign out of other devices.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <div class="admin-modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+        <div class="admin-modal__card">
+            <div class="admin-modal__head">
+                <h3 id="adminModalTitle">Details</h3>
+                <button class="admin-icon-btn" type="button" id="adminModalClose" aria-label="Close">✕</button>
+            </div>
+            <div class="admin-modal__body" id="adminModalBody"></div>
+        </div>
+    </div>
+
+    <div id="adminToast" role="status" aria-live="polite"></div>
+
+</body>
+</html>

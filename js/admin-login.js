@@ -43,6 +43,16 @@
         errorBox.hidden = true;
     }
 
+    // Visual state only: the loading-feedback bridge provides the single
+    // spinner on the button itself. Keep the label in sync on failure.
+    function setSubmitting(busy) {
+        submitButton.disabled = busy;
+        if (busy) submitButton.setAttribute('aria-busy', 'true');
+        else submitButton.removeAttribute('aria-busy');
+        submitButton.querySelector('.admin-auth-submit__label').textContent =
+            busy ? 'Verifying…' : 'Verify & Continue';
+    }
+
     document.querySelectorAll('.admin-field__reveal').forEach(function (button) {
         button.addEventListener('click', function () {
             var input = document.getElementById(button.getAttribute('data-reveal'));
@@ -91,8 +101,7 @@
             }
         }
 
-        submitButton.disabled = true;
-        submitButton.querySelector('.admin-auth-submit__label').textContent = 'Verifying…';
+        setSubmitting(true);
 
         fetch(API_BASE + '/api/admin/login', {
             method: 'POST',
@@ -116,12 +125,10 @@
             showError(message);
             if (method === 'password') passwordInput.value = '';
             else pinInput.value = '';
-            submitButton.disabled = false;
-            submitButton.querySelector('.admin-auth-submit__label').textContent = 'Verify & Continue';
+            setSubmitting(false);
         }).catch(function () {
             showError('The authentication service is unreachable. Please retry shortly.');
-            submitButton.disabled = false;
-            submitButton.querySelector('.admin-auth-submit__label').textContent = 'Verify & Continue';
+            setSubmitting(false);
         });
     });
 })();

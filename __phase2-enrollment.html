@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Student Enrollment | Pinnacle Scholars</title>
+    <link rel="stylesheet" href="css/themes.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/global.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/animations.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/premium-fx.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/enrollment.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/session-manager.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/portal-premium.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/responsive.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/neumorphic-pages.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/enrollment-embed.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/crownz-loaders.css?v=p2c639313350087699786">
+    <link rel="stylesheet" href="css/loading-feedback.css?v=p2c639313350087699786">
+    <!-- Embedded mode: student-portal.html flips its card to this page inside an
+         iframe (enrollment.html?embed=1) instead of duplicating this form.
+         The class is set before the body renders, so there is no flash, and it
+         is only ever set when ?embed=1 is present - a normal direct visit is
+         completely unaffected. -->
+    <script>
+        if (/[?&]embed=1(&|$)/.test(location.search)) {
+            document.documentElement.classList.add('is-embedded');
+
+            // The post-registration link points at student-portal.html, which
+            // is the page hosting this iframe. Left alone it would replace the
+            // iframe's content with a second, nested copy of the portal, so it
+            // is forced to target the top-level browsing context.
+            document.addEventListener('DOMContentLoaded', function () {
+                var link = document.querySelector('.success-box .portal-link');
+                if (link) link.setAttribute('target', '_top');
+            });
+        }
+    </script>
+    <script src="js/loading-feedback.js?v=p2c639313350087699786" defer></script>
+    <script src="js/enrollment.js?v=p2c639313350087699786"></script>
+    <script src="js/session-manager.js?v=p2c639313350087699786"></script>
+</head>
+<body class="enrollment-page">
+<canvas id="bg-canvas"></canvas>
+    <!-- Center Content Containment Envelope -->
+    <div class="page-center-envelope">
+        <div class="enroll-container">
+            <div class="enroll-card">
+                <!-- Dynamic Active Entry Form Structure -->
+                <div id="enrollFormContainer">
+                    <h2>New Student Enrollment</h2>
+                    <div class="form-group">
+                        <label for="studentName">Full Name</label>
+                        <input type="text" id="studentName" placeholder="e.g. Alex Mercer" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" id="dob" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="domain">Select Academic Domain</label>
+                        <select id="domain">
+                            <optgroup label="Intermediate Programs">
+                                <option value="MPC-JEE">MPC (JEE Main/Adv)</option>
+                                <option value="BIPC-NEET">BiPC (NEET)</option>
+                            </optgroup>
+                            <optgroup label="M.Tech Postgrad Specializations">
+                                <option value="MTECH-CS">Computer Science Engineering</option>
+                                <option value="MTECH-STR">Structural Engineering</option>
+                                <option value="MTECH-VLSI">VLSI Design Systems</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <button class="btn-submit" id="enrollBtn" onclick="enrollStudent()">Complete Enrollment</button>
+                    <div class="nav-footer">
+                        <a href="student-portal.html" class="btn-portal-shortcut"><span>🔑</span> Go to Student Portal to Login</a>
+                        <a href="index.html" class="btn-home"><span>🏠</span> Back to Home</a>
+                    </div>
+                </div>
+                <!-- UI Success Confirmation Card Output View -->
+                <div id="successBox" class="success-box">
+                    <div class="success-icon">✓</div>
+                    <h3>Registration Complete</h3>
+                    <p style="color: var(--text-secondary);">Welcome to Pinnacle Scholars Academy.</p>
+                    
+                    <div class="id-badge">
+                        <p>YOUR UNIQUE ACADEMIC IDENTIFIER</p>
+                        <strong id="newId"></strong>
+                    </div>
+                    
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;">
+                        Please secure this ID alongside your selected DOB parameters for full dashboard ecosystem authorization.
+                    </p>
+                    <a href="student-portal.html" class="portal-link">Enter Student Portal &rarr;</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Perfectly Fixed Legible Anchored Copyright Footer -->
+    <footer>
+        <p>© 2026 Pinnacle Scholars Academy, Noida. Empowering Futures.</p>
+    </footer>
+</body>
+</html>
